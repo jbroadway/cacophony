@@ -1,0 +1,168 @@
+<!DOCTYPE html>  <html> <head>   <title>core.js</title>   <meta http-equiv="content-type" content="text/html; charset=UTF-8">   <link rel="stylesheet" media="all" href="docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>            <div id="jump_to">         Jump To &hellip;         <div id="jump_wrapper">           <div id="jump_page">                                           <a class="source" href="cacophony.html">                 cacophony.js               </a>                                           <a class="source" href="circles.html">                 circles.js               </a>                                           <a class="source" href="context.html">                 context.js               </a>                                           <a class="source" href="core.html">                 core.js               </a>                                           <a class="source" href="cube.html">                 cube.js               </a>                                           <a class="source" href="datafeed.html">                 datafeed.js               </a>                                           <a class="source" href="flicker.html">                 flicker.js               </a>                                           <a class="source" href="input.html">                 input.js               </a>                                           <a class="source" href="lyrics.html">                 lyrics.js               </a>                                           <a class="source" href="ribbon.html">                 ribbon.js               </a>                                           <a class="source" href="skyline.html">                 skyline.js               </a>                                           <a class="source" href="three.html">                 three.js               </a>                                           <a class="source" href="volume.html">                 volume.js               </a>                                           <a class="source" href="index.html">                 index.js               </a>                                           <a class="source" href="settings.html">                 settings.js               </a>                                           <a class="source" href="story.html">                 story.js               </a>                        </div>         </div>       </div>          <table cellpadding="0" cellspacing="0">       <thead>         <tr>           <th class="docs">             <h1>               core.js             </h1>           </th>           <th class="code">           </th>         </tr>       </thead>       <tbody>                               <tr id="section-1">             <td class="docs">               <div class="octowrap">                 <a class="octothorpe" href="#section-1">#</a>               </div>               <p>A variety of basic effects to control player flow, modify the
+background colour of the video, and jump to different points
+in the video.</p>             </td>             <td class="code">               <div class="highlight"><pre></pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="octowrap">                 <a class="octothorpe" href="#section-2">#</a>               </div>               <p>Set the background colour of the bottom canvas layer (above the video layer).</p>
+
+<p>Usage:</p>
+
+<pre><code>{a:'bg_colour', d:{colour: '#eee'}}
+</code></pre>             </td>             <td class="code">               <div class="highlight"><pre><span class="kd">function</span> <span class="nx">bg_colour</span> <span class="p">(</span><span class="nx">data</span><span class="p">)</span> <span class="p">{</span>
+	<span class="nx">cacophony</span><span class="p">.</span><span class="nx">bg</span><span class="p">.</span><span class="nx">fill</span> <span class="o">=</span> <span class="nx">data</span><span class="p">.</span><span class="nx">colour</span><span class="p">;</span>
+	<span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#wrapper&#39;</span><span class="p">).</span><span class="nx">css</span> <span class="p">(</span><span class="s1">&#39;background-color&#39;</span><span class="p">,</span> <span class="nx">data</span><span class="p">.</span><span class="nx">colour</span><span class="p">);</span>
+<span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-3">             <td class="docs">               <div class="octowrap">                 <a class="octothorpe" href="#section-3">#</a>               </div>               <p>Fade the background colour of the bottom canvas layer (above the video layer).
+Colour must be specified as <code>rgba()</code> with <code>%d</code> for the alpha value.</p>
+
+<p>Usage:</p>
+
+<pre><code>{a:'bg_fade_to', d:{colour: 'rgba(123, 123, 123, %d)'}}
+</code></pre>             </td>             <td class="code">               <div class="highlight"><pre><span class="kd">function</span> <span class="nx">bg_fade_to</span> <span class="p">(</span><span class="nx">data</span><span class="p">,</span> <span class="nx">alpha</span><span class="p">)</span> <span class="p">{</span>
+	<span class="k">if</span> <span class="p">(</span><span class="o">!</span> <span class="nx">alpha</span><span class="p">)</span> <span class="p">{</span>
+		<span class="nx">alpha</span> <span class="o">=</span> <span class="mf">0.1</span><span class="p">;</span>
+	<span class="p">}</span>
+	<span class="nx">cacophony</span><span class="p">.</span><span class="nx">bg2</span><span class="p">.</span><span class="nx">fill</span> <span class="o">=</span> <span class="nx">data</span><span class="p">.</span><span class="nx">colour</span><span class="p">.</span><span class="nx">replace</span> <span class="p">(</span><span class="s1">&#39;%d&#39;</span><span class="p">,</span> <span class="nx">alpha</span><span class="p">);</span>
+	<span class="k">if</span> <span class="p">(</span><span class="nx">alpha</span> <span class="o">&gt;=</span> <span class="mf">0.98</span><span class="p">)</span> <span class="p">{</span>
+		<span class="nx">cacophony</span><span class="p">.</span><span class="nx">bg</span><span class="p">.</span><span class="nx">fill</span> <span class="o">=</span> <span class="nx">data</span><span class="p">.</span><span class="nx">colour</span><span class="p">.</span><span class="nx">replace</span> <span class="p">(</span><span class="s1">&#39;%d&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
+		<span class="nx">cacophony</span><span class="p">.</span><span class="nx">bg2</span><span class="p">.</span><span class="nx">fill</span> <span class="o">=</span> <span class="s1">&#39;rgba(27, 1, 1, 0)&#39;</span><span class="p">;</span>
+		<span class="k">return</span><span class="p">;</span>
+	<span class="p">}</span>
+	<span class="nx">setTimeout</span> <span class="p">(</span><span class="s1">&#39;bg_fade_to ({colour: &quot;&#39;</span> <span class="o">+</span> <span class="nx">data</span><span class="p">.</span><span class="nx">colour</span> <span class="o">+</span> <span class="s1">&#39;&quot;}, &#39;</span> <span class="o">+</span> <span class="p">(</span><span class="nx">alpha</span> <span class="o">+</span> <span class="mf">0.1</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;)&#39;</span><span class="p">,</span> <span class="nx">cacophony</span><span class="p">.</span><span class="nx">beatLength</span> <span class="p">()</span> <span class="o">/</span> <span class="mi">12</span><span class="p">);</span>
+<span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-4">             <td class="docs">               <div class="octowrap">                 <a class="octothorpe" href="#section-4">#</a>               </div>               <p>Fade in, revealing the underlying video and ending with the background
+of the bottom canvas set to alpha 0.</p>
+
+<p>Usage:</p>
+
+<pre><code>{a:'bg_fade_in'}
+</code></pre>             </td>             <td class="code">               <div class="highlight"><pre><span class="kd">function</span> <span class="nx">bg_fade_in</span> <span class="p">(</span><span class="nx">op</span><span class="p">)</span> <span class="p">{</span>
+	<span class="k">if</span> <span class="p">(</span><span class="o">!</span> <span class="nx">op</span><span class="p">)</span> <span class="p">{</span>
+		<span class="nx">op</span> <span class="o">=</span> <span class="mi">10</span><span class="p">;</span>
+	<span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+		<span class="nx">op</span> <span class="o">-=</span> <span class="mi">1</span><span class="p">;</span>
+	<span class="p">}</span>
+
+	<span class="k">if</span> <span class="p">(</span><span class="o">!</span> <span class="nx">f</span><span class="p">)</span> <span class="p">{</span>
+		<span class="nx">f</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Rectangle</span> <span class="p">(</span><span class="nx">cacophony</span><span class="p">.</span><span class="nx">width</span><span class="p">,</span> <span class="nx">cacophony</span><span class="p">.</span><span class="nx">height</span><span class="p">);</span>
+		<span class="nx">f</span><span class="p">.</span><span class="nx">x</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+		<span class="nx">f</span><span class="p">.</span><span class="nx">y</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+	<span class="p">}</span>
+
+	<span class="nx">f</span><span class="p">.</span><span class="nx">fill</span> <span class="o">=</span> <span class="s1">&#39;rgba(27, 1, 1, &#39;</span> <span class="o">+</span> <span class="p">(</span><span class="nx">op</span> <span class="o">/</span> <span class="mi">10</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;)&#39;</span><span class="p">;</span>
+	<span class="nx">cacophony</span><span class="p">.</span><span class="nx">canvas</span><span class="p">.</span><span class="nx">append</span> <span class="p">(</span><span class="nx">f</span><span class="p">);</span>
+
+	<span class="nx">cacophony</span><span class="p">.</span><span class="nx">bg</span><span class="p">.</span><span class="nx">fill</span> <span class="o">=</span> <span class="s1">&#39;rgba(27, 1, 1, 0)&#39;</span><span class="p">;</span>
+
+	<span class="k">if</span> <span class="p">(</span><span class="nx">op</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+		<span class="nx">setTimeout</span> <span class="p">(</span><span class="s1">&#39;bg_fade_in (&#39;</span> <span class="o">+</span> <span class="nx">op</span> <span class="o">+</span> <span class="s1">&#39;);&#39;</span><span class="p">,</span> <span class="mi">53</span><span class="p">);</span>
+	<span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+		<span class="nx">cacophony</span><span class="p">.</span><span class="nx">canvas</span><span class="p">.</span><span class="nx">remove</span> <span class="p">(</span><span class="nx">f</span><span class="p">);</span>
+		<span class="nx">f</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+	<span class="p">}</span>
+<span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-5">             <td class="docs">               <div class="octowrap">                 <a class="octothorpe" href="#section-5">#</a>               </div>               <p>Fade to black, hiding the underlying video.</p>
+
+<p>Usage:</p>
+
+<pre><code>{a:'bg_fade_out'}
+</code></pre>             </td>             <td class="code">               <div class="highlight"><pre><span class="kd">function</span> <span class="nx">bg_fade_out</span> <span class="p">(</span><span class="nx">op</span><span class="p">)</span> <span class="p">{</span>
+	<span class="k">if</span> <span class="p">(</span><span class="o">!</span> <span class="nx">op</span><span class="p">)</span> <span class="p">{</span>
+		<span class="nx">op</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+	<span class="p">}</span>
+	<span class="nx">op</span> <span class="o">+=</span> <span class="mf">0.8</span><span class="p">;</span>
+
+	<span class="k">if</span> <span class="p">(</span><span class="o">!</span> <span class="nx">f</span><span class="p">)</span> <span class="p">{</span>
+		<span class="nx">f</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Rectangle</span> <span class="p">(</span><span class="nx">cacophony</span><span class="p">.</span><span class="nx">width</span><span class="p">,</span> <span class="nx">cacophony</span><span class="p">.</span><span class="nx">height</span><span class="p">);</span>
+		<span class="nx">f</span><span class="p">.</span><span class="nx">x</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+		<span class="nx">f</span><span class="p">.</span><span class="nx">y</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+	<span class="p">}</span>
+
+	<span class="nx">f</span><span class="p">.</span><span class="nx">fill</span> <span class="o">=</span> <span class="s1">&#39;rgba(27, 1, 1, &#39;</span> <span class="o">+</span> <span class="p">(</span><span class="nx">op</span> <span class="o">/</span> <span class="mi">10</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;)&#39;</span><span class="p">;</span>
+	<span class="nx">cacophony</span><span class="p">.</span><span class="nx">canvas</span><span class="p">.</span><span class="nx">append</span> <span class="p">(</span><span class="nx">f</span><span class="p">);</span>
+	<span class="k">if</span> <span class="p">(</span><span class="nx">op</span> <span class="o">&lt;</span> <span class="mi">10</span><span class="p">)</span> <span class="p">{</span>
+		<span class="nx">setTimeout</span> <span class="p">(</span><span class="s1">&#39;bg_fade_out (&#39;</span> <span class="o">+</span> <span class="nx">op</span> <span class="o">+</span> <span class="s1">&#39;);&#39;</span><span class="p">,</span> <span class="mi">53</span><span class="p">);</span>
+	<span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+		<span class="nx">cacophony</span><span class="p">.</span><span class="nx">canvas</span><span class="p">.</span><span class="nx">remove</span> <span class="p">(</span><span class="nx">f</span><span class="p">);</span>
+		<span class="nx">f</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+		<span class="nx">bg_colour</span> <span class="p">({</span><span class="nx">colour</span><span class="o">:</span> <span class="s1">&#39;rgba(27, 1, 1, 1)&#39;</span><span class="p">});</span>
+	<span class="p">}</span>
+<span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-6">             <td class="docs">               <div class="octowrap">                 <a class="octothorpe" href="#section-6">#</a>               </div>               <p>Jump to the specified beat of the song.</p>
+
+<p>Usage:</p>
+
+<pre><code>{a:'jump_to', d:12}
+</code></pre>             </td>             <td class="code">               <div class="highlight"><pre><span class="kd">function</span> <span class="nx">core_jump_to</span> <span class="p">(</span><span class="nx">data</span><span class="p">)</span> <span class="p">{</span>
+	<span class="nx">cacophony</span><span class="p">.</span><span class="nx">jumpTo</span> <span class="p">(</span><span class="nx">data</span><span class="p">);</span>
+<span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-7">             <td class="docs">               <div class="octowrap">                 <a class="octothorpe" href="#section-7">#</a>               </div>               <p>Pause the video.</p>
+
+<p>Usage:</p>
+
+<pre><code>{a:'pause'}
+</code></pre>
+
+<p>Optional duration:</p>
+
+<pre><code>{a:'pause', d:4}
+</code></pre>             </td>             <td class="code">               <div class="highlight"><pre><span class="kd">function</span> <span class="nx">core_pause</span> <span class="p">(</span><span class="nx">data</span><span class="p">)</span> <span class="p">{</span>
+	<span class="k">if</span> <span class="p">(</span><span class="nx">data</span><span class="p">)</span> <span class="p">{</span>
+		<span class="nx">setTimeout</span> <span class="p">(</span><span class="nx">core_continue</span><span class="p">,</span> <span class="nx">cacophony</span><span class="p">.</span><span class="nx">beatLength</span> <span class="o">*</span> <span class="nx">data</span><span class="p">);</span>
+	<span class="p">}</span>
+	<span class="nx">cacophony</span><span class="p">.</span><span class="nx">pause</span> <span class="p">();</span>
+<span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-8">             <td class="docs">               <div class="octowrap">                 <a class="octothorpe" href="#section-8">#</a>               </div>               <p>Resume playback.</p>
+
+<p>Usage:</p>
+
+<pre><code>{a:'continue'}
+</code></pre>             </td>             <td class="code">               <div class="highlight"><pre><span class="kd">function</span> <span class="nx">core_continue</span> <span class="p">()</span> <span class="p">{</span>
+	<span class="nx">cacophony</span><span class="p">.</span><span class="nx">play</span> <span class="p">();</span>
+<span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-9">             <td class="docs">               <div class="octowrap">                 <a class="octothorpe" href="#section-9">#</a>               </div>               <p>Assign HTML to the video.</p>
+
+<p>Usage:</p>
+
+<pre><code>{a:'html', d:{html:'&lt;h1&gt;Markup here&lt;/h1&gt;'}}
+
+{a:'html', d:{html:'&lt;h1&gt;Markup here&lt;/h1&gt;', top:50, left:50}}
+</code></pre>             </td>             <td class="code">               <div class="highlight"><pre><span class="kd">function</span> <span class="nx">core_html</span> <span class="p">(</span><span class="nx">data</span><span class="p">)</span> <span class="p">{</span>
+	<span class="k">if</span> <span class="p">(</span><span class="nx">data</span><span class="p">.</span><span class="nx">top</span> <span class="o">!=</span> <span class="kc">null</span><span class="p">)</span> <span class="p">{</span>
+		<span class="nx">cacophony</span><span class="p">.</span><span class="nx">html</span> <span class="p">(</span><span class="nx">data</span><span class="p">.</span><span class="nx">html</span><span class="p">,</span> <span class="nx">data</span><span class="p">.</span><span class="nx">top</span><span class="p">,</span> <span class="nx">data</span><span class="p">.</span><span class="nx">left</span><span class="p">);</span>
+	<span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+		<span class="nx">cacophony</span><span class="p">.</span><span class="nx">html</span> <span class="p">(</span><span class="nx">data</span><span class="p">.</span><span class="nx">html</span><span class="p">);</span>
+	<span class="p">}</span>
+<span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-10">             <td class="docs">               <div class="octowrap">                 <a class="octothorpe" href="#section-10">#</a>               </div>               <p>Clear any HTML in the video.</p>
+
+<p>Usage:</p>
+
+<pre><code>{a:'clear_html'}
+</code></pre>             </td>             <td class="code">               <div class="highlight"><pre><span class="kd">function</span> <span class="nx">core_clear_html</span> <span class="p">()</span> <span class="p">{</span>
+	<span class="nx">cacophony</span><span class="p">.</span><span class="nx">html</span> <span class="p">();</span>
+<span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-11">             <td class="docs">               <div class="octowrap">                 <a class="octothorpe" href="#section-11">#</a>               </div>               <p>Assign clickable areas to the video with callbacks. Callbacks will have
+a <code>return false</code> added to them automatically.</p>
+
+<p>Usage:</p>
+
+<pre><code>{a:'clickable_areas', d:{
+    coords: [
+        {x:25, y:25, h:75, w:75, callback:'my_function1 ()'},
+        {x:125, y:125, h:75, w:75, callback:'my_function2 ()'},
+        {x:225, y:225, h:75, w:75, callback:'my_function3 ()'}
+    ]
+}}
+</code></pre>             </td>             <td class="code">               <div class="highlight"><pre><span class="kd">function</span> <span class="nx">core_clickable_areas</span> <span class="p">(</span><span class="nx">data</span><span class="p">)</span> <span class="p">{</span>
+	<span class="kd">var</span> <span class="nx">html</span> <span class="o">=</span> <span class="s1">&#39;&lt;div style=&quot;width: &#39;</span> <span class="o">+</span> <span class="nx">cacophony</span><span class="p">.</span><span class="nx">width</span> <span class="o">+</span> <span class="s1">&#39;px; height: &#39;</span> <span class="o">+</span> <span class="nx">cacophony</span><span class="p">.</span><span class="nx">height</span> <span class="o">+</span> <span class="s1">&#39;px; position: relative; border: 0px&quot;&gt;&#39;</span><span class="p">;</span>
+
+	<span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">data</span><span class="p">.</span><span class="nx">coords</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+		<span class="nx">html</span> <span class="o">+=</span> <span class="s1">&#39;&lt;a href=&quot;#&quot; onclick=&quot;&#39;</span> <span class="o">+</span> <span class="nx">data</span><span class="p">.</span><span class="nx">coords</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">callback</span> <span class="o">+</span> <span class="s1">&#39;; return false&quot;&gt;&#39;</span>
+			<span class="o">+</span> <span class="s1">&#39;&lt;img src=&quot;data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABAQMAAAAl21bKAAAAA1BMVEUAAACnej3aAAAAAXRSTlMAQObYZgAAAApJREFUCNdjYAAAAAIAAeIhvDMAAAAASUVORK5CYII=&quot; &#39;</span>
+			<span class="o">+</span> <span class="s1">&#39;style=&quot;position:absolute; border: 0px none; top: &#39;</span> <span class="o">+</span> <span class="nx">data</span><span class="p">.</span><span class="nx">coords</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">y</span> <span class="o">+</span> <span class="s1">&#39;px; left: &#39;</span> <span class="o">+</span> <span class="nx">data</span><span class="p">.</span><span class="nx">coords</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">x</span> <span class="o">+</span> <span class="s1">&#39;px; height: &#39;</span> <span class="o">+</span> <span class="nx">data</span><span class="p">.</span><span class="nx">coords</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">h</span> <span class="o">+</span> <span class="s1">&#39;px; width: &#39;</span> <span class="o">+</span> <span class="nx">data</span><span class="p">.</span><span class="nx">coords</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">w</span> <span class="o">+</span> <span class="s1">&#39;px&quot; /&gt;&lt;/a&gt;&#39;</span><span class="p">;</span>
+	<span class="p">}</span>
+
+	<span class="nx">html</span> <span class="o">+=</span> <span class="s1">&#39;&lt;/div&gt;&#39;</span><span class="p">;</span>
+
+	<span class="nx">cacophony</span><span class="p">.</span><span class="nx">html</span> <span class="p">(</span><span class="nx">html</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+<span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-12">             <td class="docs">               <div class="octowrap">                 <a class="octothorpe" href="#section-12">#</a>               </div>               <p>Register all effects.</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="nx">_e</span><span class="p">[</span><span class="s1">&#39;bg_colour&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nx">bg_colour</span><span class="p">;</span>
+<span class="nx">_e</span><span class="p">[</span><span class="s1">&#39;bg_fade_to&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nx">bg_fade_to</span><span class="p">;</span>
+<span class="nx">_e</span><span class="p">[</span><span class="s1">&#39;bg_fade_in&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nx">bg_fade_in</span><span class="p">;</span>
+<span class="nx">_e</span><span class="p">[</span><span class="s1">&#39;bg_fade_out&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nx">bg_fade_out</span><span class="p">;</span>
+<span class="nx">_e</span><span class="p">[</span><span class="s1">&#39;jump_to&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nx">core_jump_to</span><span class="p">;</span>
+<span class="nx">_e</span><span class="p">[</span><span class="s1">&#39;pause&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nx">core_pause</span><span class="p">;</span>
+<span class="nx">_e</span><span class="p">[</span><span class="s1">&#39;continue&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nx">core_continue</span><span class="p">;</span>
+<span class="nx">_e</span><span class="p">[</span><span class="s1">&#39;html&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nx">core_html</span><span class="p">;</span>
+<span class="nx">_e</span><span class="p">[</span><span class="s1">&#39;clear_html&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nx">core_clear_html</span><span class="p">;</span>
+<span class="nx">_e</span><span class="p">[</span><span class="s1">&#39;clickable_areas&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nx">core_clickable_areas</span><span class="p">;</span>
+
+</pre></div>             </td>           </tr>                </tbody>     </table>   </div> </body> </html> 

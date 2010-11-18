@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Cacophony Demo</title>
+<meta http-equiv="X-UA-Compatible" content="chrome=1" />
+<script type="text/javascript" src="../src/lib/jquery-1.4.2.min.js"></script>
+<script type="text/javascript" src="../src/lib/cake.min.js"></script>
+<script type="text/javascript" src="../src/cacophony.js"></script>
+<script type="text/javascript" src="js/branching-settings.js"></script>
+<script type="text/javascript" src="../src/effects/core.js"></script>
+<script type="text/javascript" src="../src/lib/contextfree.min.js"></script>
+<script type="text/javascript" src="../src/effects/context.js"></script>
+<script type="text/javascript" src="../src/lib/harmony/brushes/ribbon.js"></script>
+<script type="text/javascript" src="../src/lib/harmony/harmony.js"></script>
+<script type="text/javascript" src="../src/effects/ribbon.js"></script>
+<script type="text/javascript" src="../src/effects/lyrics.js"></script>
+<script type="text/javascript" src="../src/effects/input.js"></script>
+<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
+<script type="text/javascript" src="../src/effects/datafeed.js"></script>
+<script type="text/javascript" src="../src/effects/flicker.js"></script>
+<script type="text/javascript" src="../src/effects/volume.js"></script>
+<script type="text/javascript" src="../src/effects/skyline.js"></script>
+<script type="text/javascript" src="../src/effects/circles.js"></script>
+<script type="text/javascript" src="../src/lib/three.min.js"></script>
+<script type="text/javascript" src="../src/lib/geometry/primitives/plane.js"></script>
+<script type="text/javascript" src="../src/lib/geometry/primitives/cube.js"></script>
+<script type="text/javascript" src="../src/lib/geometry/primitives/sphere.js"></script>
+<script type="text/javascript" src="../src/effects/three.js"></script>
+<script type="text/javascript" src="../src/effects/cube.js"></script>
+<script type="text/javascript" src="js/branching-story.js"></script>
+<link rel="stylesheet" type="text/css" href="../src/cacophony.css" />
+<link rel="stylesheet" type="text/css" href="css/demo-style.css" />
+</head>
+<body>
+<div id="erase-me" style="z-index: 101; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: #1B0101"></div>
+<div id="show-me" style="display: none">
+<script type="text/javascript">
+$(document).ready (function () {
+	$('#erase-me').css ('display', 'none');
+	$('#show-me').css ('display', 'block');
+	cacophony.init ();
+});
+
+cacophony.callback.play = function () {
+	$('#fade').hide ();
+}
+
+cacophony.callback.loading = function (percent) {
+	$('#percent').html (percent + '%');
+}
+
+cacophony.callback.ready = function () {
+	$('#fade-loading').hide ();
+	$('#fade-play').show ();
+}
+
+cacophony.callback.browser_check = function (msg, compat) {
+	$('#browser-check').html (msg);
+	if (! compat) {
+		$('#fade-loading').hide ();
+	}
+}
+
+var about_visible = false;
+
+function fade_in () {
+	$('#fade').fadeOut ('slow', function () {
+		cacophony.play ();
+	});
+	return false;
+}
+
+function about () {
+	if (about_visible) {
+		return about_close ();
+	}
+
+	cacophony.pause ();
+	$('#about-outer').fadeIn ();
+	about_visible = true;
+	return false;
+}
+
+function about_close () {
+	$('#about-outer').fadeOut (function () {
+		about_visible = false;
+		if (! cacophony.ended) {
+			cacophony.play ();
+		}
+	});
+	return false;
+}
+
+$(document).keydown (function (evt) {
+	if (! cacophony.input && evt.keyCode == 65) {
+		about ();
+	}
+});
+
+</script>
+
+<div id="cacophony"></div>
+
+<div id="copyright">
+	&copy; <span id="year">2010</span> <a href="http://www.cacophonyjs.com/">Cacophony</a>.
+	All rights reserved. | <a href="#" onclick="return about ()">About</a>
+</div>
+
+<div id="fade">
+<div id="browser-check"></div>
+<div id="fade-loading"><img src="pix/loading.gif" border="0" /> Loading... <span id="percent">0%</span></div>
+<div id="fade-play"><a href="#" onclick="return fade_in ()" id="fade-play-button">PLAY</a></div>
+</div>
+
+<div id="about-outer">
+<div id="about">
+	<p>This music video started as an experiment in creating visual art through code. The effects you see are being generated on-the-fly using HTML5 and Javascript. For more information, visit:</p>
+	<ul>
+		<li><a href="http://www.cacophonyjs.com/">www.cacophonyjs.com</a></li>
+	</ul>
+	<p>Some of the visual effects rely on other open source projects, including:</p>
+	<ul>
+		<li><a href="http://www.jquery.com/">jQuery</a></li>
+		<li><a href="http://code.google.com/p/cakejs/">Cake.js</a></li>
+		<li><a href="http://code.google.com/p/contextfree/">ContextFree.js</a></li>
+		<li><a href="http://github.com/mrdoob/harmony">Harmony</a></li>
+		<li><a href="http://github.com/mrdoob/three.js">Three.js</a></li>
+	</ul>
+	<hr />
+	<div id="about-close" onclick="return about_close ()">Close</div>
+</div>
+</div>
+
+</div>
+</body>
+</html>

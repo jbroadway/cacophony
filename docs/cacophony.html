@@ -1,0 +1,577 @@
+<!DOCTYPE html>  <html> <head>   <title>cacophony.js</title>   <meta http-equiv="content-type" content="text/html; charset=UTF-8">   <link rel="stylesheet" media="all" href="docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>            <div id="jump_to">         Jump To &hellip;         <div id="jump_wrapper">           <div id="jump_page">                                           <a class="source" href="cacophony.html">                 cacophony.js               </a>                                           <a class="source" href="circles.html">                 circles.js               </a>                                           <a class="source" href="context.html">                 context.js               </a>                                           <a class="source" href="core.html">                 core.js               </a>                                           <a class="source" href="cube.html">                 cube.js               </a>                                           <a class="source" href="datafeed.html">                 datafeed.js               </a>                                           <a class="source" href="flicker.html">                 flicker.js               </a>                                           <a class="source" href="input.html">                 input.js               </a>                                           <a class="source" href="lyrics.html">                 lyrics.js               </a>                                           <a class="source" href="ribbon.html">                 ribbon.js               </a>                                           <a class="source" href="skyline.html">                 skyline.js               </a>                                           <a class="source" href="three.html">                 three.js               </a>                                           <a class="source" href="volume.html">                 volume.js               </a>                                           <a class="source" href="index.html">                 index.js               </a>                                           <a class="source" href="settings.html">                 settings.js               </a>                                           <a class="source" href="story.html">                 story.js               </a>                        </div>         </div>       </div>          <table cellpadding="0" cellspacing="0">       <thead>         <tr>           <th class="docs">             <h1>               cacophony.js             </h1>           </th>           <th class="code">           </th>         </tr>       </thead>       <tbody>                               <tr id="section-1">             <td class="docs">               <div class="octowrap">                 <a class="octothorpe" href="#section-1">#</a>               </div>               <p>A tool for creating and viewing interactive videos, especially
+music videos, using HTML5 and Javascript. Interactive elements
+include visuals/story adapting in response to user input as
+text, mouse movement, drawings, and choices (choose-your-own-
+adventure).</p>
+
+<p>Input from the viewer can affect the subsequent video, and also
+be sent to a server for integration with other web applications
+(social networking, sharing, geotagging), which is possible
+because the video is rendered on-the-fly in the browser, not
+pre-rendered like traditional video. Input can also come from
+external sources (RSS, JSON), so you can integrate external
+data, or previously generated data, back into subsequent
+views of the video.</p>
+
+<p>New effects can be written in Javascript, and several frameworks
+are already integrated into existing effects, including:</p>
+
+<ul>
+<li><a href="http://code.google.com/p/cakejs/">Cake.js</a></li>
+<li><a href="http://code.google.com/p/contextfree/">ContextFree.js</a></li>
+<li><a href="http://mrdoob.com/projects/harmony/">Harmony</a></li>
+<li><a href="http://github.com/mrdoob/three.js/">Three.js</a></li>
+<li><a href="http://jquery.com/">jQuery</a></li>
+</ul>
+
+<p>The basic elements of a Cacophony video are:</p>
+
+<ul>
+<li>An HTML5 Video on the base layer</li>
+<li>A series of HTML5 Canvas layers above that</li>
+<li>A timeline of effects to be triggered to the beat of the song
+(see <code>js/story.js</code>)</li>
+<li>Images to be used by the actions</li>
+<li>EQ data for the song (see <code>eq_data</code> below on generating this data)</li>
+</ul>
+
+<p>The official homepage of Cacophony is <a href="http://www.cacophonyjs.com/">www.cacophonyjs.com</a>.</p>
+
+<p>Copyright 2010, <a href="http://www.johnnybroadway.com/">Johnny Broadway</a>.
+Released under the <a href="http://opensource.org/licenses/gpl-2.0.php">GPL Version 2</a> license.</p>
+
+<h3>Usage</h3>
+
+<p><strong>Step 1:</strong> Include the scripts and stylesheet in your <code>&lt;head&gt;</code>:</p>
+
+<pre><code>&lt;script type="text/javascript" src="js/jquery-1.4.2.min.js"&gt;&lt;/script&gt;
+&lt;script type="text/javascript" src="js/cacophony.min.js"&gt;&lt;/script&gt;
+&lt;script type="text/javascript" src="js/settings.js"&gt;&lt;/script&gt;
+&lt;script type="text/javascript" src="js/story.js"&gt;&lt;/script&gt;
+&lt;link rel="stylesheet" type="text/css" href="css/cacophony.min.css" /&gt;
+</code></pre>
+
+<p><strong>Step 2:</strong> Create an element like this in your page, note the ID must be 'cacophony':</p>
+
+<pre><code>&lt;div id="cacophony"&gt;&lt;/div&gt;
+</code></pre>
+
+<p><strong>Step 3:</strong> Add the following script to your web page:</p>
+
+<pre><code>&lt;script type="text/javascript"&gt;
+$(document).ready (function () {
+    cacophony.init ();
+});
+&lt;/script&gt;
+</code></pre>
+
+<p><strong>Step 4:</strong> Copy the <code>build/settings.js</code> and <code>build/story.js</code> files into your site
+and follow the instructions found in each.</p>
+
+<p>You can also refer to the <code>examples/demo.html</code> file for a complete example, including a
+functioning storyline, and callbacks for integrating the player into your page
+in various ways.</p>
+
+<h3>API Reference</h3>             </td>             <td class="code">               <div class="highlight"><pre></pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="octowrap">                 <a class="octothorpe" href="#section-2">#</a>               </div>               <p>Declare a global cacophony object in a closure, passing it the
+jQuery object.</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="kd">var</span> <span class="nx">cacophony</span> <span class="o">=</span> <span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">$</span><span class="p">)</span> <span class="p">{</span>
+	<span class="kd">var</span> <span class="nx">c</span> <span class="o">=</span> <span class="p">{},</span>
+		<span class="nx">wrapper</span><span class="p">,</span> <span class="nx">wrapper_id</span><span class="p">,</span> <span class="nx">song</span><span class="p">,</span> <span class="nx">video</span><span class="p">,</span> <span class="nx">canvas_id</span><span class="p">,</span> <span class="nx">paper</span><span class="p">,</span> <span class="nx">html</span><span class="p">,</span>
+		<span class="nx">started</span> <span class="o">=</span> <span class="kc">false</span><span class="p">,</span>
+		<span class="nx">width</span> <span class="o">=</span> <span class="mi">854</span><span class="p">,</span>
+		<span class="nx">height</span> <span class="o">=</span> <span class="mi">480</span><span class="p">,</span>
+		<span class="nx">w</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">floor</span> <span class="p">(</span><span class="nx">width</span> <span class="o">/</span> <span class="mi">128</span><span class="p">),</span>
+		<span class="nx">scale</span> <span class="o">=</span> <span class="mi">32</span><span class="p">,</span>
+		<span class="nx">play</span> <span class="o">=</span> <span class="kc">false</span><span class="p">,</span>
+		<span class="nx">time</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+		<span class="nx">bpm</span> <span class="o">=</span> <span class="mi">120</span><span class="p">,</span>
+		<span class="nx">fader</span> <span class="o">=</span> <span class="kc">false</span><span class="p">,</span>
+		<span class="nx">fader_opacity</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span>
+		<span class="nx">beat_length</span> <span class="o">=</span> <span class="mi">500</span><span class="p">,</span>
+		<span class="nx">interval_length</span> <span class="o">=</span> <span class="mi">125</span><span class="p">,</span>
+		<span class="nx">beat</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+		<span class="nx">new_beat</span> <span class="o">=</span> <span class="kc">false</span><span class="p">,</span>
+		<span class="nx">beats</span> <span class="o">=</span> <span class="p">[],</span>
+		<span class="nx">key</span> <span class="o">=</span> <span class="s1">&#39;c&#39;</span><span class="p">,</span>
+		<span class="nx">eq</span><span class="p">,</span> <span class="nx">bg</span><span class="p">,</span> <span class="nx">bg2</span><span class="p">,</span>
+		<span class="nx">start_time</span> <span class="o">=</span> <span class="kc">false</span><span class="p">,</span>
+		<span class="nx">is_playable</span> <span class="o">=</span> <span class="kc">false</span><span class="p">,</span>
+		<span class="nx">percent</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+		<span class="nx">bg_initial_fill</span> <span class="o">=</span> <span class="s1">&#39;rgba(227, 234, 234, 1)&#39;</span><span class="p">,</span>
+		<span class="nx">ipad</span> <span class="o">=</span> <span class="nx">navigator</span><span class="p">.</span><span class="nx">userAgent</span><span class="p">.</span><span class="nx">match</span> <span class="p">(</span><span class="sr">/iPad/i</span><span class="p">),</span>
+		<span class="nx">iphone</span> <span class="o">=</span> <span class="nx">navigator</span><span class="p">.</span><span class="nx">userAgent</span><span class="p">.</span><span class="nx">match</span> <span class="p">(</span><span class="sr">/iPhone|iPod/i</span><span class="p">),</span>
+		<span class="nx">intervals</span> <span class="o">=</span> <span class="p">[],</span>
+		<span class="nx">eq_data</span> <span class="o">=</span> <span class="p">[],</span>
+		<span class="nx">videos</span> <span class="o">=</span> <span class="p">[],</span>
+		<span class="nx">mousemove</span> <span class="o">=</span> <span class="p">[],</span>
+		<span class="nx">codecs</span> <span class="o">=</span> <span class="p">{</span>
+			<span class="nx">mp4</span><span class="o">:</span> <span class="s2">&quot;video/mp4; codecs=&#39;avc1.42E01E, mp4a.40.2&#39;&quot;</span><span class="p">,</span>
+			<span class="nx">webm</span><span class="o">:</span> <span class="s2">&quot;video/webm; codecs=&#39;vp8, vorbis&#39;&quot;</span><span class="p">,</span>
+			<span class="nx">ogv</span><span class="o">:</span> <span class="s2">&quot;video/ogg&quot;</span>
+		<span class="p">};</span></pre></div>             </td>           </tr>                               <tr id="section-3">             <td class="docs">               <div class="octowrap">                 <a class="octothorpe" href="#section-3">#</a>               </div>               <p>The Cake.js canvas object for the first layer.</p>             </td>             <td class="code">               <div class="highlight"><pre>	<span class="nx">c</span><span class="p">.</span><span class="nx">canvas</span><span class="p">;</span></pre></div>             </td>           </tr>                               <tr id="section-4">             <td class="docs">               <div class="octowrap">                 <a class="octothorpe" href="#section-4">#</a>               </div>               <p>The jQuery object for the wrapper div.</p>             </td>             <td class="code">               <div class="highlight"><pre>	<span class="nx">c</span><span class="p">.</span><span class="nx">wrapper</span><span class="p">;</span></pre></div>             </td>           </tr>                               <tr id="section-5">             <td class="docs">               <div class="octowrap">                 <a class="octothorpe" href="#section-5">#</a>               </div>               <p>The ID of the wrapper div (defaults to "cacophony" and some effects
+assume this will be left as-is).</p>             </td>             <td class="code">               <div class="highlight"><pre>	<span class="nx">c</span><span class="p">.</span><span class="nx">id</span><span class="p">;</span></pre></div>             </td>           </tr>                               <tr id="section-6">             <td class="docs">               <div class="octowrap">                 <a class="octothorpe" href="#section-6">#</a>               </div>               <p>Width of the video (use <code>cacophony.setWidthHeight(w, h)</code> to modify).</p>             </td>             <td class="code">               <div class="highlight"><pre>	<span class="nx">c</span><span class="p">.</span><span class="nx">width</span> <span class="o">=</span> <span class="mi">854</span><span class="p">;</span></pre></div>             </td>           </tr>                               <tr id="section-7">             <td class="docs">               <div class="octowrap">                 <a class="octothorpe" href="#section-7">#</a>               </div>               <p>Height of the video (use <code>cacophony.setWidthHeight(w, h)</code> to modify).</p>             </td>             <td class="code">               <div class="highlight"><pre>	<span class="nx">c</span><span class="p">.</span><span class="nx">height</span> <span class="o">=</span> <span class="mi">480</span><span class="p">;</span>
+
+	<span class="nx">c</span><span class="p">.</span><span class="nx">w</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">floor</span> <span class="p">(</span><span class="nx">width</span> <span class="o">/</span> <span class="mi">128</span><span class="p">);</span>
+	<span class="nx">c</span><span class="p">.</span><span class="nx">scale</span> <span class="o">=</span> <span class="mi">32</span><span class="p">;</span>
+	<span class="nx">c</span><span class="p">.</span><span class="nx">bg</span><span class="p">;</span>
+	<span class="nx">c</span><span class="p">.</span><span class="nx">bg2</span><span class="p">;</span></pre></div>             </td>           </tr>                               <tr id="section-8">             <td class="docs">               <div class="octowrap">                 <a class="octothorpe" href="#section-8">#</a>               </div>               <p>The EQ data for the current beat.</p>             </td>             <td class="code">               <div class="highlight"><pre>	<span class="nx">c</span><span class="p">.</span><span class="nx">eq</span><span class="p">;</span></pre></div>             </td>           </tr>                               <tr id="section-9">             <td class="docs">               <div class="octowrap">                 <a class="octothorpe" href="#section-9">#</a>               </div>               <p>Whether the video is currently playing or not.</p>             </td>             <td class="code">               <div class="highlight"><pre>	<span class="nx">c</span><span class="p">.</span><span class="nx">playing</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span></pre></div>             </td>           </tr>                               <tr id="section-10">             <td class="docs">               <div class="octowrap">                 <a class="octothorpe" href="#section-10">#</a>               </div>               <p>Stops reading keyboard input while an effect is accepting input.</p>             </td>             <td class="code">               <div class="highlight"><pre>	<span class="nx">c</span><span class="p">.</span><span class="nx">input</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span></pre></div>             </td>           </tr>                               <tr id="section-11">             <td class="docs">               <div class="octowrap">                 <a class="octothorpe" href="#section-11">#</a>               </div>               <p>The current x position of the mouse, for plugins looking to react
+to mouse movements.</p>             </td>             <td class="code">               <div class="highlight"><pre>	<span class="nx">c</span><span class="p">.</span><span class="nx">mousex</span> <span class="o">=</span> <span class="mi">427</span><span class="p">;</span></pre></div>             </td>           </tr>                               <tr id="section-12">             <td class="docs">               <div class="octowrap">                 <a class="octothorpe" href="#section-12">#</a>               </div>               <p>The current y position of the mouse, for plugins looking to react
+to mouse movements.</p>             </td>             <td class="code">               <div class="highlight"><pre>	<span class="nx">c</span><span class="p">.</span><span class="nx">mousey</span> <span class="o">=</span> <span class="mi">240</span><span class="p">;</span></pre></div>             </td>           </tr>                               <tr id="section-13">             <td class="docs">               <div class="octowrap">                 <a class="octothorpe" href="#section-13">#</a>               </div>               <p>The list of preloaded images, available to effects via:</p>
+
+<pre><code>_i['file.png']
+</code></pre>             </td>             <td class="code">               <div class="highlight"><pre>	<span class="nx">c</span><span class="p">.</span><span class="nx">preloaded_images</span> <span class="o">=</span> <span class="p">{</span>
+		<span class="nx">context</span><span class="o">:</span><span class="kc">null</span><span class="p">,</span>
+		<span class="nx">ribbon</span><span class="o">:</span><span class="kc">null</span>
+	<span class="p">};</span></pre></div>             </td>           </tr>                               <tr id="section-14">             <td class="docs">               <div class="octowrap">                 <a class="octothorpe" href="#section-14">#</a>               </div>               <p>Whether to allow iPad playback. Off by default because many
+interactive elements are too processor intensive for the iPad.</p>             </td>             <td class="code">               <div class="highlight"><pre>	<span class="nx">c</span><span class="p">.</span><span class="nx">enable_ipad</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span></pre></div>             </td>           </tr>                               <tr id="section-15">             <td class="docs">               <div class="octowrap">                 <a class="octothorpe" href="#section-15">#</a>               </div>               <p>Callback functions for certain actions (e.g., play, pause, etc.).
+Register a callback via:</p>
+
+<pre><code>cacophony.callback.loading = function (percent) {
+    // your code here
+}
+</code></pre>             </td>             <td class="code">               <div class="highlight"><pre>	<span class="nx">c</span><span class="p">.</span><span class="nx">callback</span> <span class="o">=</span> <span class="p">{</span>
+		<span class="nx">browser_check</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
+		<span class="nx">loading</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
+		<span class="nx">ready</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
+		<span class="nx">play</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
+		<span class="nx">pause</span><span class="o">:</span> <span class="kc">false</span>
+	<span class="p">};</span></pre></div>             </td>           </tr>                               <tr id="section-16">             <td class="docs">               <div class="octowrap">                 <a class="octothorpe" href="#section-16">#</a>               </div>               <p>This is a list of effects available as actions to a video's story.
+They are simply references to functions. To add new ones, use:</p>
+
+<pre><code>_e['my_effect'] = function (data) {
+    // your code here
+}
+</code></pre>             </td>             <td class="code">               <div class="highlight"><pre>	<span class="nx">c</span><span class="p">.</span><span class="nx">effects</span> <span class="o">=</span> <span class="p">[];</span></pre></div>             </td>           </tr>                               <tr id="section-17">             <td class="docs">               <div class="octowrap">                 <a class="octothorpe" href="#section-17">#</a>               </div>               <p>This is a list of actions to perform on each beat. For example:</p>
+
+<pre><code>_s[3] = [
+    {a:'lyrics', d: {txt: "Show this text", x: 50, y: 50}},
+    {a:'skyline_on'}
+];
+</code></pre>
+
+<p>a is the action, d is the data to pass to it.</p>             </td>             <td class="code">               <div class="highlight"><pre>	<span class="nx">c</span><span class="p">.</span><span class="nx">story</span> <span class="o">=</span> <span class="p">[];</span></pre></div>             </td>           </tr>                               <tr id="section-18">             <td class="docs">               <div class="octowrap">                 <a class="octothorpe" href="#section-18">#</a>               </div>               <p>EQ data for each beat. An array of objects of the form:</p>
+
+<pre><code>{b:0, e:[0.5,0.24,...]}
+</code></pre>
+
+<ul>
+<li><code>b</code> is the beat number</li>
+<li><code>e</code> is an array of 256 numeric values</li>
+</ul>
+
+<p>I originally used the <a href="http://www.schillmania.com/projects/soundmanager2/">SoundManager 2</a> API to retrieve this data
+from Flash, then reduced it to only the data for each down
+beat, since Flash provided way more data than I needed or was
+feasible to include in a Javascript file.</p>             </td>             <td class="code">               <div class="highlight"><pre>	<span class="nx">c</span><span class="p">.</span><span class="nx">eq_data</span> <span class="o">=</span> <span class="p">[];</span></pre></div>             </td>           </tr>                               <tr id="section-19">             <td class="docs">               <div class="octowrap">                 <a class="octothorpe" href="#section-19">#</a>               </div>               <p>A list of data available to effects, fetched prior to the video
+starting to play. Access data from individual feeds via:</p>
+
+<pre><code>cacophony.datafeed[my_url];
+</code></pre>
+
+<p>JSON feeds will be parsed into JSON objects, and XML/RSS/ATOM
+feeds will be parsed into XML documents.</p>             </td>             <td class="code">               <div class="highlight"><pre>	<span class="nx">c</span><span class="p">.</span><span class="nx">datafeed</span> <span class="o">=</span> <span class="p">{};</span></pre></div>             </td>           </tr>                               <tr id="section-20">             <td class="docs">               <div class="octowrap">                 <a class="octothorpe" href="#section-20">#</a>               </div>               <p>Has the video ended.</p>             </td>             <td class="code">               <div class="highlight"><pre>	<span class="nx">c</span><span class="p">.</span><span class="nx">ended</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span></pre></div>             </td>           </tr>                               <tr id="section-21">             <td class="docs">               <div class="octowrap">                 <a class="octothorpe" href="#section-21">#</a>               </div>               <p>Sets the list of videos to play. It's a list so you can
+specify multiple formats.</p>             </td>             <td class="code">               <div class="highlight"><pre>	<span class="nx">c</span><span class="p">.</span><span class="nx">setVideo</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+		<span class="nx">videos</span> <span class="o">=</span> <span class="nx">arguments</span><span class="p">;</span>
+	<span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-22">             <td class="docs">               <div class="octowrap">                 <a class="octothorpe" href="#section-22">#</a>               </div>               <p>Determine the codec to use.</p>             </td>             <td class="code">               <div class="highlight"><pre>	<span class="nx">c</span><span class="p">.</span><span class="nx">codec</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">vid</span><span class="p">)</span> <span class="p">{</span>
+		<span class="k">if</span> <span class="p">(</span><span class="nx">vid</span><span class="p">.</span><span class="nx">match</span> <span class="p">(</span><span class="sr">/\.(mp4|m4v)$/i</span><span class="p">))</span> <span class="p">{</span>
+			<span class="k">return</span> <span class="nx">codecs</span><span class="p">.</span><span class="nx">mp4</span><span class="p">;</span>
+		<span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">vid</span><span class="p">.</span><span class="nx">match</span> <span class="p">(</span><span class="sr">/\.webm$/i</span><span class="p">))</span> <span class="p">{</span>
+			<span class="k">return</span> <span class="nx">codecs</span><span class="p">.</span><span class="nx">webm</span><span class="p">;</span>
+		<span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">vid</span><span class="p">.</span><span class="nx">match</span> <span class="p">(</span><span class="sr">/\.(ogv|ogg|ogm)$/i</span><span class="p">))</span> <span class="p">{</span>
+			<span class="k">return</span> <span class="nx">codecs</span><span class="p">.</span><span class="nx">ogv</span><span class="p">;</span>
+		<span class="p">}</span>
+		<span class="k">return</span> <span class="s1">&#39;&#39;</span><span class="p">;</span>
+	<span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-23">             <td class="docs">               <div class="octowrap">                 <a class="octothorpe" href="#section-23">#</a>               </div>               <p>on is either a specific layer (0 through 4) or an array
+specifying the visibility of each layer, e.g.,
+<code>[1, 1, 0, 0, 0]</code>. If it is a number, it always shows
+that layer. To hide a single layer, use <code>cacophony.hide (n)</code>.</p>             </td>             <td class="code">               <div class="highlight"><pre>	<span class="nx">c</span><span class="p">.</span><span class="nx">visible</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">on</span><span class="p">)</span> <span class="p">{</span>
+		<span class="k">if</span> <span class="p">(</span><span class="nx">$</span><span class="p">.</span><span class="nx">isArray</span> <span class="p">(</span><span class="nx">on</span><span class="p">))</span> <span class="p">{</span>
+			<span class="k">if</span> <span class="p">(</span><span class="o">!</span> <span class="nx">on</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="p">{</span>
+				<span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#cacophony-video&#39;</span><span class="p">).</span><span class="nx">hide</span> <span class="p">();</span>
+			<span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+				<span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#cacophony-video&#39;</span><span class="p">).</span><span class="nx">show</span> <span class="p">();</span>
+			<span class="p">}</span>
+			<span class="k">if</span> <span class="p">(</span><span class="o">!</span> <span class="nx">on</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="p">{</span>
+				<span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#cacophony-canvas1&#39;</span><span class="p">).</span><span class="nx">hide</span> <span class="p">();</span>
+			<span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+				<span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#cacophony-canvas1&#39;</span><span class="p">).</span><span class="nx">show</span> <span class="p">();</span>
+			<span class="p">}</span>
+			<span class="k">if</span> <span class="p">(</span><span class="o">!</span> <span class="nx">on</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span> <span class="p">{</span>
+				<span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#cacophony-canvas2&#39;</span><span class="p">).</span><span class="nx">hide</span> <span class="p">();</span>
+			<span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+				<span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#cacophony-canvas2&#39;</span><span class="p">).</span><span class="nx">show</span> <span class="p">();</span>
+			<span class="p">}</span>
+			<span class="k">if</span> <span class="p">(</span><span class="o">!</span> <span class="nx">on</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span> <span class="p">{</span>
+				<span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#cacophony-canvas3&#39;</span><span class="p">).</span><span class="nx">hide</span> <span class="p">();</span>
+			<span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+				<span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#cacophony-canvas3&#39;</span><span class="p">).</span><span class="nx">show</span> <span class="p">();</span>
+			<span class="p">}</span>
+			<span class="k">if</span> <span class="p">(</span><span class="o">!</span> <span class="nx">on</span><span class="p">[</span><span class="mi">4</span><span class="p">])</span> <span class="p">{</span>
+				<span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#cacophony-canvas4&#39;</span><span class="p">).</span><span class="nx">hide</span> <span class="p">();</span>
+			<span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+				<span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#cacophony-canvas4&#39;</span><span class="p">).</span><span class="nx">show</span> <span class="p">();</span>
+			<span class="p">}</span>
+		<span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+			<span class="k">if</span> <span class="p">(</span><span class="nx">on</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+				<span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#cacophony-video&#39;</span><span class="p">).</span><span class="nx">show</span> <span class="p">();</span>
+			<span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">on</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+				<span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#cacophony-canvas1&#39;</span><span class="p">).</span><span class="nx">show</span> <span class="p">();</span>
+			<span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">on</span> <span class="o">==</span> <span class="mi">2</span><span class="p">)</span> <span class="p">{</span>
+				<span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#cacophony-canvas2&#39;</span><span class="p">).</span><span class="nx">show</span> <span class="p">();</span>
+			<span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">on</span> <span class="o">==</span> <span class="mi">3</span><span class="p">)</span> <span class="p">{</span>
+				<span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#cacophony-canvas3&#39;</span><span class="p">).</span><span class="nx">show</span> <span class="p">();</span>
+			<span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">on</span> <span class="o">==</span> <span class="mi">4</span><span class="p">)</span> <span class="p">{</span>
+				<span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#cacophony-canvas4&#39;</span><span class="p">).</span><span class="nx">show</span> <span class="p">();</span>
+			<span class="p">}</span>
+		<span class="p">}</span>
+	<span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-24">             <td class="docs">               <div class="octowrap">                 <a class="octothorpe" href="#section-24">#</a>               </div>               <p>Hide the specified layer (0 through 4).</p>             </td>             <td class="code">               <div class="highlight"><pre>	<span class="nx">c</span><span class="p">.</span><span class="nx">hide</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">off</span><span class="p">)</span> <span class="p">{</span>
+		<span class="k">if</span> <span class="p">(</span><span class="nx">off</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+			<span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#cacophony-video&#39;</span><span class="p">).</span><span class="nx">hide</span> <span class="p">();</span>
+		<span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">off</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+			<span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#cacophony-canvas1&#39;</span><span class="p">).</span><span class="nx">hide</span> <span class="p">();</span>
+		<span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">off</span> <span class="o">==</span> <span class="mi">2</span><span class="p">)</span> <span class="p">{</span>
+			<span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#cacophony-canvas2&#39;</span><span class="p">).</span><span class="nx">hide</span> <span class="p">();</span>
+		<span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">off</span> <span class="o">==</span> <span class="mi">3</span><span class="p">)</span> <span class="p">{</span>
+			<span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#cacophony-canvas3&#39;</span><span class="p">).</span><span class="nx">hide</span> <span class="p">();</span>
+		<span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">off</span> <span class="o">==</span> <span class="mi">4</span><span class="p">)</span> <span class="p">{</span>
+			<span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#cacophony-canvas4&#39;</span><span class="p">).</span><span class="nx">hide</span> <span class="p">();</span>
+		<span class="p">}</span>
+	<span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-25">             <td class="docs">               <div class="octowrap">                 <a class="octothorpe" href="#section-25">#</a>               </div>               <p>Pause the song.</p>             </td>             <td class="code">               <div class="highlight"><pre>	<span class="nx">c</span><span class="p">.</span><span class="nx">pause</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+		<span class="nx">button</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#cacophony-play&#39;</span><span class="p">).</span><span class="nx">blur</span> <span class="p">();</span>
+
+		<span class="nx">song</span><span class="p">.</span><span class="nx">pause</span> <span class="p">();</span>
+		<span class="nx">c</span><span class="p">.</span><span class="nx">clearIntervals</span> <span class="p">();</span>
+		<span class="nx">play</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+		<span class="nx">c</span><span class="p">.</span><span class="nx">playing</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+		<span class="nx">button</span><span class="p">.</span><span class="nx">html</span> <span class="p">(</span><span class="s1">&#39;&lt;span title=&quot;Play&quot; style=&quot;font-size: 20px&quot;&gt;&amp;#x2023;&lt;&#39;</span> <span class="o">+</span> <span class="s1">&#39;/span&gt;&#39;</span><span class="p">);</span>
+
+		<span class="k">if</span> <span class="p">(</span><span class="nx">c</span><span class="p">.</span><span class="nx">callback</span><span class="p">.</span><span class="nx">pause</span><span class="p">)</span> <span class="p">{</span>
+			<span class="k">return</span> <span class="nx">c</span><span class="p">.</span><span class="nx">callback</span><span class="p">.</span><span class="nx">pause</span> <span class="p">();</span>
+		<span class="p">}</span>
+		<span class="k">return</span> <span class="kc">false</span><span class="p">;</span>
+	<span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-26">             <td class="docs">               <div class="octowrap">                 <a class="octothorpe" href="#section-26">#</a>               </div>               <p>Play the song.</p>             </td>             <td class="code">               <div class="highlight"><pre>	<span class="nx">c</span><span class="p">.</span><span class="nx">play</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">callback</span><span class="p">)</span> <span class="p">{</span>
+		<span class="k">if</span> <span class="p">(</span><span class="o">!</span> <span class="nx">is_playable</span><span class="p">)</span> <span class="p">{</span>
+			<span class="k">return</span> <span class="kc">false</span><span class="p">;</span>
+		<span class="p">}</span>
+
+		<span class="k">if</span> <span class="p">(</span><span class="nx">c</span><span class="p">.</span><span class="nx">ended</span><span class="p">)</span> <span class="p">{</span>
+			<span class="nx">c</span><span class="p">.</span><span class="nx">ended</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+			<span class="nx">beat</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+			<span class="nx">song</span><span class="p">.</span><span class="nx">currentTime</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+		<span class="p">}</span>
+
+		<span class="nx">button</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#cacophony-play&#39;</span><span class="p">).</span><span class="nx">blur</span> <span class="p">();</span>
+		<span class="nx">started</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+
+		<span class="nx">song</span><span class="p">.</span><span class="nx">play</span> <span class="p">();</span>
+		<span class="nx">c</span><span class="p">.</span><span class="nx">setIntervals</span> <span class="p">();</span>
+		<span class="nx">play</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+		<span class="nx">c</span><span class="p">.</span><span class="nx">playing</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+		<span class="nx">button</span><span class="p">.</span><span class="nx">html</span> <span class="p">(</span><span class="s1">&#39;&lt;span title=&quot;Pause&quot;&gt;||&lt;&#39;</span> <span class="o">+</span> <span class="s1">&#39;/span&gt;&#39;</span><span class="p">);</span>
+
+		<span class="k">if</span> <span class="p">(</span><span class="nx">c</span><span class="p">.</span><span class="nx">callback</span><span class="p">.</span><span class="nx">play</span><span class="p">)</span> <span class="p">{</span>
+			<span class="k">return</span> <span class="nx">c</span><span class="p">.</span><span class="nx">callback</span><span class="p">.</span><span class="nx">play</span> <span class="p">();</span>
+		<span class="p">}</span>
+		<span class="k">return</span> <span class="kc">false</span><span class="p">;</span>
+	<span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-27">             <td class="docs">               <div class="octowrap">                 <a class="octothorpe" href="#section-27">#</a>               </div>               <p>Play/pause toggle.</p>             </td>             <td class="code">               <div class="highlight"><pre>	<span class="nx">c</span><span class="p">.</span><span class="nx">playPause</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+		<span class="k">if</span> <span class="p">(</span><span class="nx">play</span><span class="p">)</span> <span class="p">{</span>
+			<span class="k">return</span> <span class="nx">c</span><span class="p">.</span><span class="nx">pause</span> <span class="p">();</span>
+		<span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+			<span class="k">return</span> <span class="nx">c</span><span class="p">.</span><span class="nx">play</span> <span class="p">();</span>
+		<span class="p">}</span>
+	<span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-28">             <td class="docs">               <div class="octowrap">                 <a class="octothorpe" href="#section-28">#</a>               </div>               <p>Check the status of the video as it's loading.</p>             </td>             <td class="code">               <div class="highlight"><pre>	<span class="nx">c</span><span class="p">.</span><span class="nx">loading</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+		<span class="k">if</span> <span class="p">(</span><span class="nx">ipad</span><span class="p">)</span> <span class="p">{</span>
+			<span class="nx">percent</span> <span class="o">+=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">round</span> <span class="p">(</span><span class="nb">Math</span><span class="p">.</span><span class="nx">random</span> <span class="p">()</span> <span class="o">*</span> <span class="mi">5</span> <span class="o">+</span> <span class="mi">1</span><span class="p">);</span>
+			<span class="k">if</span> <span class="p">(</span><span class="nx">percent</span> <span class="o">&gt;=</span> <span class="mi">100</span><span class="p">)</span> <span class="p">{</span>
+				<span class="nx">is_playable</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+				<span class="k">if</span> <span class="p">(</span><span class="nx">c</span><span class="p">.</span><span class="nx">callback</span><span class="p">.</span><span class="nx">ready</span><span class="p">)</span> <span class="p">{</span>
+					<span class="k">return</span> <span class="nx">c</span><span class="p">.</span><span class="nx">callback</span><span class="p">.</span><span class="nx">ready</span> <span class="p">();</span>
+				<span class="p">}</span>
+			<span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+				<span class="k">if</span> <span class="p">(</span><span class="nx">c</span><span class="p">.</span><span class="nx">callback</span><span class="p">.</span><span class="nx">loading</span><span class="p">)</span> <span class="p">{</span>
+					<span class="nx">c</span><span class="p">.</span><span class="nx">callback</span><span class="p">.</span><span class="nx">loading</span> <span class="p">(</span><span class="nx">percent</span><span class="p">);</span>
+				<span class="p">}</span>
+				<span class="nx">setTimeout</span> <span class="p">(</span><span class="nx">c</span><span class="p">.</span><span class="nx">loading</span><span class="p">,</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">round</span> <span class="p">(</span><span class="nb">Math</span><span class="p">.</span><span class="nx">random</span> <span class="p">()</span> <span class="o">*</span> <span class="mi">6</span> <span class="o">+</span> <span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="mi">100</span><span class="p">);</span>
+			<span class="p">}</span>
+			<span class="k">return</span><span class="p">;</span>
+		<span class="p">}</span>
+
+		<span class="k">if</span> <span class="p">(</span><span class="nx">song</span><span class="p">.</span><span class="nx">readyState</span> <span class="o">==</span> <span class="mi">4</span> <span class="o">||</span> <span class="p">(</span><span class="nx">$</span><span class="p">.</span><span class="nx">browser</span><span class="p">.</span><span class="nx">mozilla</span> <span class="o">&amp;&amp;</span> <span class="nx">song</span><span class="p">.</span><span class="nx">readyState</span> <span class="o">&gt;=</span> <span class="mi">2</span><span class="p">)</span> <span class="o">||</span> <span class="p">(</span><span class="nx">$</span><span class="p">.</span><span class="nx">browser</span><span class="p">.</span><span class="nx">msie</span> <span class="o">&amp;&amp;</span> <span class="nx">song</span><span class="p">.</span><span class="nx">readyState</span> <span class="o">&gt;=</span> <span class="mi">3</span><span class="p">))</span> <span class="p">{</span>
+			<span class="nx">is_playable</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+			<span class="k">if</span> <span class="p">(</span><span class="nx">c</span><span class="p">.</span><span class="nx">callback</span><span class="p">.</span><span class="nx">ready</span><span class="p">)</span> <span class="p">{</span>
+				<span class="k">return</span> <span class="nx">c</span><span class="p">.</span><span class="nx">callback</span><span class="p">.</span><span class="nx">ready</span> <span class="p">();</span>
+			<span class="p">}</span>
+		<span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+			<span class="k">try</span> <span class="p">{</span>
+				<span class="nx">percent</span> <span class="o">=</span> <span class="nb">parseInt</span> <span class="p">((</span><span class="nx">song</span><span class="p">.</span><span class="nx">buffered</span><span class="p">.</span><span class="nx">end</span> <span class="p">(</span><span class="nx">song</span><span class="p">.</span><span class="nx">buffered</span><span class="p">.</span><span class="nx">length</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="nx">song</span><span class="p">.</span><span class="nx">duration</span><span class="p">)</span> <span class="o">*</span> <span class="mi">100</span><span class="p">);</span>
+				<span class="k">if</span> <span class="p">(</span><span class="nx">c</span><span class="p">.</span><span class="nx">callback</span><span class="p">.</span><span class="nx">loading</span><span class="p">)</span> <span class="p">{</span>
+					<span class="nx">c</span><span class="p">.</span><span class="nx">callback</span><span class="p">.</span><span class="nx">loading</span> <span class="p">(</span><span class="nx">percent</span><span class="p">);</span>
+				<span class="p">}</span>
+			<span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="nx">ex</span><span class="p">)</span> <span class="p">{</span>
+			<span class="p">}</span>
+			<span class="nx">setTimeout</span> <span class="p">(</span><span class="nx">c</span><span class="p">.</span><span class="nx">loading</span><span class="p">,</span> <span class="mi">250</span><span class="p">);</span>
+		<span class="p">}</span>
+	<span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-29">             <td class="docs">               <div class="octowrap">                 <a class="octothorpe" href="#section-29">#</a>               </div>               <p>Initialize everything.</p>             </td>             <td class="code">               <div class="highlight"><pre>	<span class="nx">c</span><span class="p">.</span><span class="nx">init</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+		<span class="nx">id</span> <span class="o">=</span> <span class="s1">&#39;cacophony&#39;</span><span class="p">;</span>
+		<span class="nx">wrapper</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#cacophony&#39;</span><span class="p">);</span>
+		<span class="nx">wrapper_id</span> <span class="o">=</span> <span class="nx">id</span><span class="p">;</span>
+		<span class="nx">c</span><span class="p">.</span><span class="nx">wrapper</span> <span class="o">=</span> <span class="nx">wrapper</span><span class="p">;</span>
+		<span class="nx">c</span><span class="p">.</span><span class="nx">id</span> <span class="o">=</span> <span class="nx">wrapper_id</span><span class="p">;</span>
+
+		<span class="nx">sources</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">;</span>
+		<span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">videos</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+			<span class="nx">sources</span> <span class="o">+=</span> <span class="s1">&#39;&lt;source src=&quot;&#39;</span> <span class="o">+</span> <span class="nx">videos</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;&quot; type=&quot;&#39;</span> <span class="o">+</span> <span class="nx">c</span><span class="p">.</span><span class="nx">codec</span> <span class="p">(</span><span class="nx">videos</span><span class="p">[</span><span class="nx">i</span><span class="p">])</span> <span class="o">+</span> <span class="s1">&#39;&quot; /&gt;&#39;</span><span class="p">;</span>
+		<span class="p">}</span>
+
+		<span class="nx">wrapper</span><span class="p">.</span><span class="nx">html</span> <span class="p">(</span>
+			<span class="s1">&#39;&lt;div id=&quot;cacophony-duration&quot;&gt;&lt;div id=&quot;cacophony-play&quot; onclick=&quot;return cacophony.playPause (this)&quot;&gt;&lt;span title=&quot;Pause&quot;&gt;||&lt;/span&gt;&lt;/div&gt;&lt;span id=&quot;cacophony-time&quot;&gt;0:00&lt;/span&gt;&lt;/div&gt;&#39;</span> <span class="o">+</span>
+			<span class="s1">&#39;&lt;div id=&quot;cacophony-video-wrapper&quot;&gt;&lt;video id=&quot;cacophony-video&quot; width=&quot;&#39;</span> <span class="o">+</span> <span class="nx">width</span> <span class="o">+</span> <span class="s1">&#39;&quot; height=&quot;&#39;</span> <span class="o">+</span> <span class="nx">height</span> <span class="o">+</span> <span class="s1">&#39;&quot; style=&quot;z-index: 2; margin: 0px; padding: 0px&quot;&gt;&#39;</span> <span class="o">+</span> <span class="nx">sources</span> <span class="o">+</span> <span class="s1">&#39;&lt;/video&gt;&lt;/div&gt;&#39;</span> <span class="o">+</span>
+			<span class="s1">&#39;&lt;div id=&quot;cacophony-canvas1&quot; style=&quot;width:&#39;</span> <span class="o">+</span> <span class="nx">width</span> <span class="o">+</span> <span class="s1">&#39;px; height:&#39;</span> <span class="o">+</span> <span class="nx">height</span> <span class="o">+</span> <span class="s1">&#39;px; z-index: 3; margin: 0px; padding: 0px; margin-top: -&#39;</span> <span class="o">+</span> <span class="p">(</span><span class="nx">height</span> <span class="o">+</span> <span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;px; border: 1px solid transparent&quot;&gt;&lt;/div&gt;&#39;</span> <span class="o">+</span>
+			<span class="s1">&#39;&lt;div id=&quot;cacophony-canvas2&quot; style=&quot;display: none; width:&#39;</span> <span class="o">+</span> <span class="nx">width</span> <span class="o">+</span> <span class="s1">&#39;px; height:&#39;</span> <span class="o">+</span> <span class="nx">height</span> <span class="o">+</span> <span class="s1">&#39;px; z-index: 4; margin: 0px; padding: 0px; margin-top: -&#39;</span> <span class="o">+</span> <span class="p">(</span><span class="nx">height</span> <span class="o">+</span> <span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;px; border: 1px solid transparent&quot;&gt;&lt;/div&gt;&#39;</span> <span class="o">+</span>
+			<span class="s1">&#39;&lt;div id=&quot;cacophony-canvas3&quot; style=&quot;display: none; width:&#39;</span> <span class="o">+</span> <span class="nx">width</span> <span class="o">+</span> <span class="s1">&#39;px; height:&#39;</span> <span class="o">+</span> <span class="nx">height</span> <span class="o">+</span> <span class="s1">&#39;px; z-index: 5; margin: 0px; padding: 0px; margin-top: -&#39;</span> <span class="o">+</span> <span class="p">(</span><span class="nx">height</span> <span class="o">+</span> <span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;px; border: 1px solid transparent&quot;&gt;&lt;/div&gt;&#39;</span> <span class="o">+</span>
+			<span class="s1">&#39;&lt;div id=&quot;cacophony-canvas4&quot; style=&quot;display: none; width:&#39;</span> <span class="o">+</span> <span class="nx">width</span> <span class="o">+</span> <span class="s1">&#39;px; height:&#39;</span> <span class="o">+</span> <span class="nx">height</span> <span class="o">+</span> <span class="s1">&#39;px; z-index: 6; margin: 0px; padding: 0px; margin-top: -&#39;</span> <span class="o">+</span> <span class="p">(</span><span class="nx">height</span> <span class="o">+</span> <span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;px; border: 1px solid transparent&quot;&gt;&lt;/div&gt;&#39;</span>
+		<span class="p">);</span></pre></div>             </td>           </tr>                               <tr id="section-30">             <td class="docs">               <div class="octowrap">                 <a class="octothorpe" href="#section-30">#</a>               </div>               <p>Browser checking.</p>             </td>             <td class="code">               <div class="highlight"><pre>		<span class="kd">var</span> <span class="nx">browser_msg</span> <span class="o">=</span> <span class="s1">&#39;This video is processor intensive. Please shut down other programs and close unnecessary browser tabs to ensure the best viewing experience. Thanks!&#39;</span><span class="p">,</span>
+			<span class="nx">browser_compat</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+
+		<span class="k">if</span> <span class="p">(</span><span class="nx">$</span><span class="p">.</span><span class="nx">browser</span><span class="p">.</span><span class="nx">msie</span> <span class="o">&amp;&amp;</span> <span class="nx">$</span><span class="p">.</span><span class="nx">browser</span><span class="p">.</span><span class="nx">version</span> <span class="o">&lt;</span> <span class="s1">&#39;9.0&#39;</span><span class="p">)</span> <span class="p">{</span>
+			<span class="nx">browser_msg</span> <span class="o">=</span> <span class="s1">&#39;This video requires the Google Chrome Frame browser plugin in order to work in Internet Explorer 6, 7, or 8. Please &lt;a href=&quot;http://google.com/chromeframe&quot; target=&quot;_blank&quot;&gt;install the plugin here&lt;/a&gt;, or use one of the following browsers to view this video:&#39;</span>
+				<span class="o">+</span> <span class="s1">&#39;&lt;ul&gt;&lt;li&gt;&lt;a href=&quot;http://www.google.com/chrome&quot;&gt;Chrome&lt;/a&gt;&lt;/li&gt;&#39;</span>
+				<span class="o">+</span> <span class="s1">&#39;&lt;li&gt;&lt;a href=&quot;http://www.apple.com/safari/&quot;&gt;Safari&lt;/a&gt;&lt;/li&gt;&#39;</span>
+				<span class="o">+</span> <span class="s1">&#39;&lt;li&gt;&lt;a href=&quot;http://www.mozilla.com/firefox/&quot;&gt;Firefox&lt;/a&gt;&lt;/li&gt;&lt;/ul&gt;&#39;</span><span class="p">;</span>
+			<span class="nx">browser_compat</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+		<span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">$</span><span class="p">.</span><span class="nx">browser</span><span class="p">.</span><span class="nx">mozilla</span> <span class="o">&amp;&amp;</span> <span class="nx">$</span><span class="p">.</span><span class="nx">browser</span><span class="p">.</span><span class="nx">version</span> <span class="o">&lt;</span> <span class="s1">&#39;1.9.2&#39;</span><span class="p">)</span> <span class="p">{</span>
+			<span class="nx">browser_msg</span> <span class="o">=</span> <span class="s1">&#39;This video requires a newer version of the Firefox browser in order to work. Please &lt;a href=&quot;http://www.mozilla.com/firefox/&quot; target=&quot;_blank&quot;&gt;install the latest version here&lt;/a&gt;.&#39;</span><span class="p">;</span>
+			<span class="nx">browser_compat</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+		<span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="o">!</span> <span class="nx">c</span><span class="p">.</span><span class="nx">enable_ipad</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="nx">iphone</span> <span class="o">||</span> <span class="nx">ipad</span><span class="p">))</span> <span class="p">{</span>
+			<span class="nx">browser_msg</span> <span class="o">=</span> <span class="s1">&#39;This video requires more processing power than is currently available on the iPad, iPhone, or iPod touch. Please use a computer with one of the following browsers to view this video:&#39;</span>
+				<span class="o">+</span> <span class="s1">&#39;&lt;ul&gt;&lt;li&gt;&lt;a href=&quot;http://www.google.com/chrome&quot;&gt;Chrome&lt;/a&gt;&lt;/li&gt;&#39;</span>
+				<span class="o">+</span> <span class="s1">&#39;&lt;li&gt;&lt;a href=&quot;http://www.apple.com/safari/&quot;&gt;Safari&lt;/a&gt;&lt;/li&gt;&#39;</span>
+				<span class="o">+</span> <span class="s1">&#39;&lt;li&gt;&lt;a href=&quot;http://www.mozilla.com/firefox/&quot;&gt;Firefox&lt;/a&gt;&lt;/li&gt;&lt;/ul&gt;&#39;</span><span class="p">;</span>
+			<span class="nx">browser_compat</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+		<span class="p">}</span>
+		<span class="k">if</span> <span class="p">(</span><span class="nx">c</span><span class="p">.</span><span class="nx">callback</span><span class="p">.</span><span class="nx">browser_check</span><span class="p">)</span> <span class="p">{</span>
+			<span class="nx">c</span><span class="p">.</span><span class="nx">callback</span><span class="p">.</span><span class="nx">browser_check</span> <span class="p">(</span><span class="nx">browser_msg</span><span class="p">,</span> <span class="nx">browser_compat</span><span class="p">);</span>
+		<span class="p">}</span>
+
+		<span class="k">if</span> <span class="p">(</span><span class="o">!</span> <span class="nx">browser_compat</span><span class="p">)</span> <span class="p">{</span>
+			<span class="k">return</span><span class="p">;</span>
+		<span class="p">}</span>
+
+		<span class="nx">song</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#cacophony-video&#39;</span><span class="p">).</span><span class="nx">get</span> <span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+		<span class="nx">song</span><span class="p">.</span><span class="nx">load</span> <span class="p">();</span>
+
+		<span class="nx">paper</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Canvas</span> <span class="p">(</span><span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#cacophony-canvas1&#39;</span><span class="p">).</span><span class="nx">get</span> <span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="nx">width</span><span class="p">,</span> <span class="nx">height</span><span class="p">);</span>
+		<span class="nx">canvas_id</span> <span class="o">=</span> <span class="nx">paper</span><span class="p">.</span><span class="nx">canvas</span><span class="p">.</span><span class="nx">getAttribute</span> <span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">);</span>
+		<span class="nx">c</span><span class="p">.</span><span class="nx">canvas</span> <span class="o">=</span> <span class="nx">paper</span><span class="p">;</span>
+
+		<span class="nx">bg</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Rectangle</span> <span class="p">(</span><span class="nx">width</span><span class="p">,</span> <span class="nx">height</span><span class="p">);</span>
+		<span class="nx">bg</span><span class="p">.</span><span class="nx">x</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+		<span class="nx">bg</span><span class="p">.</span><span class="nx">y</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+		<span class="nx">bg</span><span class="p">.</span><span class="nx">fill</span> <span class="o">=</span> <span class="nx">bg_initial_fill</span><span class="p">;</span>
+		<span class="nx">paper</span><span class="p">.</span><span class="nx">append</span> <span class="p">(</span><span class="nx">bg</span><span class="p">);</span>
+		<span class="nx">c</span><span class="p">.</span><span class="nx">bg</span> <span class="o">=</span> <span class="nx">bg</span><span class="p">;</span>
+
+		<span class="nx">bg2</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Rectangle</span> <span class="p">(</span><span class="nx">width</span><span class="p">,</span> <span class="nx">height</span><span class="p">);</span>
+		<span class="nx">bg2</span><span class="p">.</span><span class="nx">x</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+		<span class="nx">bg2</span><span class="p">.</span><span class="nx">y</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+		<span class="nx">bg2</span><span class="p">.</span><span class="nx">fill</span> <span class="o">=</span> <span class="s1">&#39;rgba(27, 1, 1, 0)&#39;</span><span class="p">;</span>
+		<span class="nx">paper</span><span class="p">.</span><span class="nx">append</span> <span class="p">(</span><span class="nx">bg2</span><span class="p">);</span>
+		<span class="nx">c</span><span class="p">.</span><span class="nx">bg2</span> <span class="o">=</span> <span class="nx">bg2</span><span class="p">;</span>
+
+		<span class="nx">setTimeout</span> <span class="p">(</span><span class="nx">c</span><span class="p">.</span><span class="nx">loading</span><span class="p">,</span> <span class="mi">250</span><span class="p">);</span>
+
+		<span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#cacophony-video&#39;</span><span class="p">).</span><span class="nx">bind</span> <span class="p">(</span><span class="s1">&#39;timeupdate&#39;</span><span class="p">,</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+			<span class="nx">c</span><span class="p">.</span><span class="nx">displayTime</span> <span class="p">();</span>
+		<span class="p">});</span>
+
+		<span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#cacophony-video&#39;</span><span class="p">).</span><span class="nx">bind</span> <span class="p">(</span><span class="s1">&#39;ended&#39;</span><span class="p">,</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+			<span class="nx">c</span><span class="p">.</span><span class="nx">pause</span> <span class="p">();</span>
+			<span class="nx">c</span><span class="p">.</span><span class="nx">ended</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+		<span class="p">});</span></pre></div>             </td>           </tr>                               <tr id="section-31">             <td class="docs">               <div class="octowrap">                 <a class="octothorpe" href="#section-31">#</a>               </div>               <p>Set the main loop in motion.</p>             </td>             <td class="code">               <div class="highlight"><pre>		<span class="nx">setInterval</span> <span class="p">(</span><span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+			<span class="nx">c</span><span class="p">.</span><span class="nx">downBeat</span> <span class="p">(</span><span class="nx">song</span><span class="p">.</span><span class="nx">currentTime</span> <span class="o">*</span> <span class="mi">1000</span><span class="p">);</span>
+		<span class="p">},</span> <span class="p">(</span><span class="nx">beat_length</span> <span class="o">*</span> <span class="mi">1000</span><span class="p">)</span> <span class="o">/</span> <span class="mi">20</span><span class="p">);</span></pre></div>             </td>           </tr>                               <tr id="section-32">             <td class="docs">               <div class="octowrap">                 <a class="octothorpe" href="#section-32">#</a>               </div>               <p>Set keyboard play/pause access.</p>             </td>             <td class="code">               <div class="highlight"><pre>		<span class="nx">$</span><span class="p">(</span><span class="nb">document</span><span class="p">).</span><span class="nx">keydown</span> <span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">evt</span><span class="p">)</span> <span class="p">{</span>
+			<span class="k">if</span> <span class="p">(</span><span class="o">!</span> <span class="nx">c</span><span class="p">.</span><span class="nx">input</span> <span class="o">&amp;&amp;</span> <span class="nx">evt</span><span class="p">.</span><span class="nx">keyCode</span> <span class="o">==</span> <span class="mi">32</span><span class="p">)</span> <span class="p">{</span>
+				<span class="nx">c</span><span class="p">.</span><span class="nx">playPause</span> <span class="p">();</span>
+			<span class="p">}</span>
+		<span class="p">});</span></pre></div>             </td>           </tr>                               <tr id="section-33">             <td class="docs">               <div class="octowrap">                 <a class="octothorpe" href="#section-33">#</a>               </div>               <p>Handle mouse-based effects.</p>             </td>             <td class="code">               <div class="highlight"><pre>		<span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#cacophony&#39;</span><span class="p">).</span><span class="nx">mousemove</span> <span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
+			<span class="nx">cacophony</span><span class="p">.</span><span class="nx">mousex</span> <span class="o">=</span> <span class="nx">e</span><span class="p">.</span><span class="nx">pageX</span> <span class="o">-</span> <span class="k">this</span><span class="p">.</span><span class="nx">offsetLeft</span><span class="p">;</span>
+			<span class="nx">cacophony</span><span class="p">.</span><span class="nx">mousey</span> <span class="o">=</span> <span class="nx">e</span><span class="p">.</span><span class="nx">pageY</span> <span class="o">-</span> <span class="k">this</span><span class="p">.</span><span class="nx">offsetTop</span><span class="p">;</span>
+			<span class="k">if</span> <span class="p">(</span><span class="nx">cacophony</span><span class="p">.</span><span class="nx">playing</span><span class="p">)</span> <span class="p">{</span>
+				<span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">mousemove</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+					<span class="nx">mousemove</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span> <span class="p">();</span>
+				<span class="p">}</span>
+			<span class="p">}</span>
+		<span class="p">});</span>
+	<span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-34">             <td class="docs">               <div class="octowrap">                 <a class="octothorpe" href="#section-34">#</a>               </div>               <p>Register functions to be called on mousemove for your
+effect. Functions should refer to the mouse position via
+<code>cacophony.mousex</code> and <code>cacophony.mousey</code>.</p>             </td>             <td class="code">               <div class="highlight"><pre>	<span class="nx">c</span><span class="p">.</span><span class="nx">mousemove</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">f</span><span class="p">)</span> <span class="p">{</span>
+		<span class="nx">mousemove</span><span class="p">.</span><span class="nx">push</span> <span class="p">(</span><span class="nx">f</span><span class="p">);</span>
+	<span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-35">             <td class="docs">               <div class="octowrap">                 <a class="octothorpe" href="#section-35">#</a>               </div>               <p>Update the clock. Called <code>onTimeUpdate</code> from the <code>&lt;video&gt;</code>.</p>             </td>             <td class="code">               <div class="highlight"><pre>	<span class="nx">c</span><span class="p">.</span><span class="nx">displayTime</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+		<span class="kd">var</span> <span class="nx">ns</span> <span class="o">=</span> <span class="nx">song</span><span class="p">.</span><span class="nx">currentTime</span><span class="p">,</span>
+			<span class="nx">min</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">floor</span> <span class="p">(</span><span class="nx">ns</span> <span class="o">/</span> <span class="mi">60</span><span class="p">),</span>
+			<span class="nx">sec</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">ceil</span> <span class="p">(</span><span class="nx">ns</span> <span class="o">-</span> <span class="p">(</span><span class="nx">min</span> <span class="o">*</span> <span class="mi">60</span><span class="p">)),</span>
+			<span class="nx">new_time</span><span class="p">;</span>
+
+		<span class="k">if</span> <span class="p">(</span><span class="nx">sec</span> <span class="o">==</span> <span class="mi">60</span><span class="p">)</span> <span class="p">{</span>
+			<span class="nx">min</span><span class="o">++</span><span class="p">;</span>
+			<span class="nx">sec</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+		<span class="p">}</span>
+		<span class="nx">new_time</span> <span class="o">=</span> <span class="nx">min</span> <span class="o">+</span> <span class="s1">&#39;:&#39;</span> <span class="o">+</span> <span class="p">(</span><span class="nx">sec</span> <span class="o">&lt;</span> <span class="mi">10</span> <span class="o">?</span> <span class="s1">&#39;0&#39;</span> <span class="o">+</span> <span class="nx">sec</span> <span class="o">:</span> <span class="nx">sec</span><span class="p">);</span>
+		<span class="k">if</span> <span class="p">(</span><span class="nx">new_time</span> <span class="o">!=</span> <span class="nx">time</span><span class="p">)</span> <span class="p">{</span>
+			<span class="nx">time</span> <span class="o">=</span> <span class="nx">new_time</span><span class="p">;</span>
+			<span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#cacophony-time&#39;</span><span class="p">).</span><span class="nx">html</span> <span class="p">(</span><span class="nx">time</span><span class="p">);</span>
+		<span class="p">}</span>
+	<span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-36">             <td class="docs">               <div class="octowrap">                 <a class="octothorpe" href="#section-36">#</a>               </div>               <p>This is the main loop.</p>             </td>             <td class="code">               <div class="highlight"><pre>	<span class="nx">c</span><span class="p">.</span><span class="nx">downBeat</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">s</span><span class="p">)</span> <span class="p">{</span>
+		<span class="k">if</span> <span class="p">(</span><span class="o">!</span> <span class="nx">started</span> <span class="o">||</span> <span class="o">!</span> <span class="nx">play</span><span class="p">)</span> <span class="p">{</span>
+			<span class="k">return</span> <span class="kc">false</span><span class="p">;</span>
+		<span class="p">}</span>
+
+		<span class="k">if</span> <span class="p">(</span><span class="nx">beats</span><span class="p">[</span><span class="nx">beat</span><span class="p">]</span> <span class="o">&amp;&amp;</span> <span class="nx">s</span> <span class="o">&lt;</span> <span class="nx">beats</span><span class="p">[</span><span class="nx">beat</span><span class="p">])</span> <span class="p">{</span>
+			<span class="k">return</span> <span class="kc">false</span><span class="p">;</span>
+		<span class="p">}</span>
+
+		<span class="k">if</span> <span class="p">(</span><span class="nx">c</span><span class="p">.</span><span class="nx">eq_data</span><span class="p">[</span><span class="nx">beat</span><span class="p">])</span> <span class="p">{</span>
+			<span class="nx">bn</span> <span class="o">=</span> <span class="nx">c</span><span class="p">.</span><span class="nx">eq_data</span><span class="p">[</span><span class="nx">beat</span><span class="p">];</span> <span class="c1">// Get the next `eq_data` value.</span>
+			<span class="nx">eq</span> <span class="o">=</span> <span class="nx">bn</span><span class="p">.</span><span class="nx">e</span><span class="p">;</span>
+			<span class="nx">c</span><span class="p">.</span><span class="nx">eq</span> <span class="o">=</span> <span class="nx">eq</span><span class="p">;</span>
+		<span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+			<span class="nx">eq</span> <span class="o">=</span> <span class="p">[];</span>
+			<span class="nx">c</span><span class="p">.</span><span class="nx">eq</span> <span class="o">=</span> <span class="p">[];</span>
+		<span class="p">}</span>
+
+		<span class="k">if</span> <span class="p">(</span><span class="nx">c</span><span class="p">.</span><span class="nx">story</span><span class="p">[</span><span class="nx">beat</span><span class="p">])</span> <span class="p">{</span>
+			<span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">c</span><span class="p">.</span><span class="nx">story</span><span class="p">[</span><span class="nx">beat</span><span class="p">].</span><span class="nx">length</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+				<span class="k">if</span> <span class="p">(</span><span class="nx">c</span><span class="p">.</span><span class="nx">story</span><span class="p">[</span><span class="nx">beat</span><span class="p">][</span><span class="nx">i</span><span class="p">].</span><span class="nx">d</span><span class="p">)</span> <span class="p">{</span>
+					<span class="nx">c</span><span class="p">.</span><span class="nx">effects</span><span class="p">[</span><span class="nx">c</span><span class="p">.</span><span class="nx">story</span><span class="p">[</span><span class="nx">beat</span><span class="p">][</span><span class="nx">i</span><span class="p">].</span><span class="nx">a</span><span class="p">]</span> <span class="p">(</span><span class="nx">c</span><span class="p">.</span><span class="nx">story</span><span class="p">[</span><span class="nx">beat</span><span class="p">][</span><span class="nx">i</span><span class="p">].</span><span class="nx">d</span><span class="p">);</span>
+				<span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+					<span class="nx">c</span><span class="p">.</span><span class="nx">effects</span><span class="p">[</span><span class="nx">c</span><span class="p">.</span><span class="nx">story</span><span class="p">[</span><span class="nx">beat</span><span class="p">][</span><span class="nx">i</span><span class="p">].</span><span class="nx">a</span><span class="p">]</span> <span class="p">();</span>
+				<span class="p">}</span>
+			<span class="p">}</span>
+		<span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-37">             <td class="docs">               <div class="octowrap">                 <a class="octothorpe" href="#section-37">#</a>               </div>               <p>Wait for the effects on this beat to finish before jumping.
+TODO: Find a way to make this sound smooth.</p>             </td>             <td class="code">               <div class="highlight"><pre>		<span class="k">if</span> <span class="p">(</span><span class="nx">new_beat</span> <span class="o">!==</span> <span class="kc">false</span><span class="p">)</span> <span class="p">{</span>
+			<span class="nx">song</span><span class="p">.</span><span class="nx">currentTime</span> <span class="o">=</span> <span class="nx">song</span><span class="p">.</span><span class="nx">currentTime</span> <span class="o">+</span> <span class="p">((</span><span class="nx">new_beat</span> <span class="o">-</span> <span class="nx">beat</span><span class="p">)</span> <span class="o">*</span> <span class="nx">beat_length</span><span class="p">);</span>
+			<span class="nx">beat</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">ceil</span> <span class="p">(</span><span class="nx">new_beat</span><span class="p">);</span>
+			<span class="nx">new_beat</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+			<span class="nx">c</span><span class="p">.</span><span class="nx">downBeat</span> <span class="p">(</span><span class="nx">song</span><span class="p">.</span><span class="nx">currentTime</span><span class="p">);</span>
+			<span class="k">return</span><span class="p">;</span>
+		<span class="p">}</span>
+
+		<span class="nx">beat</span><span class="o">++</span><span class="p">;</span>
+	<span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-38">             <td class="docs">               <div class="octowrap">                 <a class="octothorpe" href="#section-38">#</a>               </div>               <p>Jump to the specified beat of the song. Actually tells <code>c.downBeat()</code>
+to do this after the effects of the current beat are finished.</p>             </td>             <td class="code">               <div class="highlight"><pre>	<span class="nx">c</span><span class="p">.</span><span class="nx">jumpTo</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">b</span><span class="p">)</span> <span class="p">{</span>
+		<span class="k">if</span> <span class="p">(</span><span class="o">!</span> <span class="nx">play</span><span class="p">)</span> <span class="p">{</span>
+			<span class="nx">c</span><span class="p">.</span><span class="nx">play</span> <span class="p">();</span>
+		<span class="p">}</span>
+		<span class="nx">new_beat</span> <span class="o">=</span> <span class="nx">b</span><span class="p">;</span>
+	<span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-39">             <td class="docs">               <div class="octowrap">                 <a class="octothorpe" href="#section-39">#</a>               </div>               <p>Renders the specified html into the canvas (<code>#cacophony-canvas1</code>).
+Top and left are the optional margins. Default values for these are:
+* <code>(cacophony.height * .65 / 2) - 20</code>
+* <code>(cacophony.width * .4 / 2) - 20</code></p>             </td>             <td class="code">               <div class="highlight"><pre>	<span class="nx">c</span><span class="p">.</span><span class="nx">html</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">htm</span><span class="p">,</span> <span class="nx">top</span><span class="p">,</span> <span class="nx">left</span><span class="p">)</span> <span class="p">{</span>
+		<span class="k">if</span> <span class="p">(</span><span class="o">!</span> <span class="nx">htm</span><span class="p">)</span> <span class="p">{</span>
+			<span class="nx">cacophony</span><span class="p">.</span><span class="nx">canvas</span><span class="p">.</span><span class="nx">remove</span> <span class="p">(</span><span class="nx">html</span><span class="p">);</span>
+			<span class="nx">html</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+		<span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+			<span class="kd">var</span> <span class="nx">margin_top</span><span class="p">,</span> <span class="nx">margin_left</span><span class="p">;</span>
+
+			<span class="k">if</span> <span class="p">(</span><span class="nx">html</span><span class="p">)</span> <span class="p">{</span>
+				<span class="nx">cacophony</span><span class="p">.</span><span class="nx">canvas</span><span class="p">.</span><span class="nx">remove</span> <span class="p">(</span><span class="nx">html</span><span class="p">);</span>
+				<span class="nx">html</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+			<span class="p">}</span>
+
+			<span class="nx">margin_top</span> <span class="o">=</span> <span class="p">(</span><span class="nx">top</span> <span class="o">!=</span> <span class="kc">null</span><span class="p">)</span> <span class="o">?</span> <span class="nx">top</span> <span class="o">:</span> <span class="p">(</span><span class="nx">c</span><span class="p">.</span><span class="nx">height</span> <span class="o">-</span> <span class="p">(</span><span class="nx">c</span><span class="p">.</span><span class="nx">height</span> <span class="o">*</span> <span class="p">.</span><span class="mi">35</span><span class="p">))</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">-</span> <span class="mi">20</span><span class="p">;</span>
+			<span class="nx">margin_left</span> <span class="o">=</span> <span class="p">(</span><span class="nx">left</span> <span class="o">!=</span> <span class="kc">null</span><span class="p">)</span> <span class="o">?</span> <span class="nx">left</span> <span class="o">:</span> <span class="nx">margin_left</span> <span class="o">=</span> <span class="p">(</span><span class="nx">c</span><span class="p">.</span><span class="nx">width</span> <span class="o">-</span> <span class="p">(</span><span class="nx">c</span><span class="p">.</span><span class="nx">width</span> <span class="o">*</span> <span class="p">.</span><span class="mi">6</span><span class="p">))</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">-</span> <span class="mi">20</span><span class="p">;</span>
+			
+			<span class="nx">html</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">ElementNode</span> <span class="p">(</span><span class="nx">E</span><span class="p">(</span><span class="s1">&#39;div&#39;</span><span class="p">,</span> <span class="nx">htm</span><span class="p">),</span> <span class="p">{</span>
+				<span class="nx">x</span><span class="o">:</span> <span class="nx">margin_left</span><span class="p">,</span>
+				<span class="nx">y</span><span class="o">:</span> <span class="nx">margin_top</span><span class="p">,</span>
+				<span class="nx">noScaling</span><span class="o">:</span> <span class="kc">true</span>
+			<span class="p">});</span>
+			<span class="nx">html</span><span class="p">.</span><span class="nx">element</span><span class="p">.</span><span class="nx">setAttribute</span> <span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">,</span> <span class="s1">&#39;cacophony-html&#39;</span><span class="p">);</span>
+			<span class="nx">c</span><span class="p">.</span><span class="nx">canvas</span><span class="p">.</span><span class="nx">append</span> <span class="p">(</span><span class="nx">html</span><span class="p">);</span>
+			<span class="k">return</span> <span class="nx">html</span><span class="p">;</span>
+		<span class="p">}</span>
+	<span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-40">             <td class="docs">               <div class="octowrap">                 <a class="octothorpe" href="#section-40">#</a>               </div>               <p>Set the key signature of the music.</p>             </td>             <td class="code">               <div class="highlight"><pre>	<span class="nx">c</span><span class="p">.</span><span class="nx">setKey</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">k</span><span class="p">)</span> <span class="p">{</span>
+		<span class="nx">key</span> <span class="o">=</span> <span class="nx">k</span><span class="p">;</span>
+	<span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-41">             <td class="docs">               <div class="octowrap">                 <a class="octothorpe" href="#section-41">#</a>               </div>               <p>Set the width and height of the player. Default is <code>854x480</code>.</p>             </td>             <td class="code">               <div class="highlight"><pre>	<span class="nx">c</span><span class="p">.</span><span class="nx">setSize</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">wid</span><span class="p">,</span> <span class="nx">h</span><span class="p">)</span> <span class="p">{</span>
+		<span class="nx">width</span> <span class="o">=</span> <span class="nx">wid</span><span class="p">;</span>
+		<span class="nx">height</span> <span class="o">=</span> <span class="nx">h</span><span class="p">;</span>
+		<span class="nx">w</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">floor</span> <span class="p">(</span><span class="nx">width</span> <span class="o">/</span> <span class="mi">128</span><span class="p">);</span>
+		<span class="nx">c</span><span class="p">.</span><span class="nx">width</span> <span class="o">=</span> <span class="nx">width</span><span class="p">;</span>
+		<span class="nx">c</span><span class="p">.</span><span class="nx">height</span> <span class="o">=</span> <span class="nx">height</span><span class="p">;</span>
+		<span class="nx">c</span><span class="p">.</span><span class="nx">w</span> <span class="o">=</span> <span class="nx">w</span><span class="p">;</span>
+	<span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-42">             <td class="docs">               <div class="octowrap">                 <a class="octothorpe" href="#section-42">#</a>               </div>               <p>Set the volume of the audio.</p>             </td>             <td class="code">               <div class="highlight"><pre>	<span class="nx">c</span><span class="p">.</span><span class="nx">setVolume</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">v</span><span class="p">)</span> <span class="p">{</span>
+		<span class="k">if</span> <span class="p">(</span><span class="nx">v</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+			<span class="nx">v</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+		<span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">v</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+			<span class="nx">v</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+		<span class="p">}</span>
+
+		<span class="k">if</span> <span class="p">(</span><span class="nx">v</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+			<span class="nx">song</span><span class="p">.</span><span class="nx">muted</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+		<span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+			<span class="nx">song</span><span class="p">.</span><span class="nx">volume</span> <span class="o">=</span> <span class="nx">v</span><span class="p">;</span>
+			<span class="k">if</span> <span class="p">(</span><span class="nx">song</span><span class="p">.</span><span class="nx">muted</span><span class="p">)</span> <span class="p">{</span>
+				<span class="nx">song</span><span class="p">.</span><span class="nx">muted</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+			<span class="p">}</span>
+		<span class="p">}</span>
+	<span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-43">             <td class="docs">               <div class="octowrap">                 <a class="octothorpe" href="#section-43">#</a>               </div>               <p>Get the volume of the audio.</p>             </td>             <td class="code">               <div class="highlight"><pre>	<span class="nx">c</span><span class="p">.</span><span class="nx">getVolume</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+		<span class="k">return</span> <span class="nx">song</span><span class="p">.</span><span class="nx">volume</span><span class="p">;</span>
+	<span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-44">             <td class="docs">               <div class="octowrap">                 <a class="octothorpe" href="#section-44">#</a>               </div>               <p>Set the beats-per-minute of the music.</p>             </td>             <td class="code">               <div class="highlight"><pre>	<span class="nx">c</span><span class="p">.</span><span class="nx">setBPM</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">bpm</span><span class="p">)</span> <span class="p">{</span>
+		<span class="nx">bpm</span> <span class="o">=</span> <span class="nx">bpm</span><span class="p">;</span>
+		<span class="nx">beat_length</span> <span class="o">=</span> <span class="mi">60</span> <span class="o">/</span> <span class="nx">bpm</span><span class="p">;</span>
+		<span class="nx">interval_length</span> <span class="o">=</span> <span class="nx">beat_length</span> <span class="o">/</span> <span class="mi">4</span><span class="p">;</span>
+		<span class="kd">var</span> <span class="nx">until</span> <span class="o">=</span> <span class="nx">beat_length</span> <span class="o">*</span> <span class="p">(</span><span class="nx">bpm</span> <span class="o">*</span> <span class="mi">60</span> <span class="o">*</span> <span class="mi">8</span><span class="p">);</span>
+		<span class="nx">beats</span> <span class="o">=</span> <span class="p">[];</span>
+		<span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">b</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">b</span> <span class="o">&lt;=</span> <span class="nx">until</span><span class="p">;</span> <span class="nx">b</span> <span class="o">+=</span> <span class="nx">beat_length</span><span class="p">)</span> <span class="p">{</span>
+			<span class="nx">beats</span><span class="p">.</span><span class="nx">push</span> <span class="p">(</span><span class="nx">b</span> <span class="o">*</span> <span class="mi">1000</span><span class="p">);</span>
+		<span class="p">}</span>
+	<span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-45">             <td class="docs">               <div class="octowrap">                 <a class="octothorpe" href="#section-45">#</a>               </div>               <p>Get the beat length/duration in miliseconds.</p>             </td>             <td class="code">               <div class="highlight"><pre>	<span class="nx">c</span><span class="p">.</span><span class="nx">beatLength</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+		<span class="k">return</span> <span class="nx">beat_length</span> <span class="o">*</span> <span class="mi">1000</span><span class="p">;</span>
+	<span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-46">             <td class="docs">               <div class="octowrap">                 <a class="octothorpe" href="#section-46">#</a>               </div>               <p>Preload a list of data feeds for use in the video (JSON, RSS, ATOM, XML).</p>             </td>             <td class="code">               <div class="highlight"><pre>	<span class="nx">c</span><span class="p">.</span><span class="nx">preloadData</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+		<span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">arguments</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+			<span class="nx">$</span><span class="p">.</span><span class="nx">ajax</span> <span class="p">({</span>
+				<span class="nx">url</span><span class="o">:</span> <span class="nx">arguments</span><span class="p">[</span><span class="nx">i</span><span class="p">],</span>
+				<span class="nx">success</span><span class="o">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">data</span><span class="p">)</span> <span class="p">{</span>
+					<span class="nx">c</span><span class="p">.</span><span class="nx">datafeed</span><span class="p">[</span><span class="nx">$</span><span class="p">(</span><span class="k">this</span><span class="p">)[</span><span class="mi">0</span><span class="p">].</span><span class="nx">url</span><span class="p">]</span> <span class="o">=</span> <span class="nx">data</span><span class="p">;</span>
+	</pre></div>             </td>           </tr>                               <tr id="section-47">             <td class="docs">               <div class="octowrap">                 <a class="octothorpe" href="#section-47">#</a>               </div>               <p>Try to preload any images in the data</p>             </td>             <td class="code">               <div class="highlight"><pre>					<span class="k">try</span> <span class="p">{</span></pre></div>             </td>           </tr>                               <tr id="section-48">             <td class="docs">               <div class="octowrap">                 <a class="octothorpe" href="#section-48">#</a>               </div>               <p>Preload media:content tags for XML</p>             </td>             <td class="code">               <div class="highlight"><pre>						<span class="kd">var</span> <span class="nx">images</span> <span class="o">=</span> <span class="nx">data</span><span class="p">.</span><span class="nx">getElementsByTagName</span> <span class="p">(</span><span class="s1">&#39;content&#39;</span><span class="p">);</span>
+						<span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">j</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">j</span> <span class="o">&lt;</span> <span class="nx">images</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">j</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+							<span class="k">if</span> <span class="p">(</span><span class="nx">images</span><span class="p">[</span><span class="nx">j</span><span class="p">].</span><span class="nx">getAttribute</span> <span class="p">(</span><span class="s1">&#39;type&#39;</span><span class="p">).</span><span class="nx">match</span> <span class="p">(</span><span class="sr">/^image\//</span><span class="p">))</span> <span class="p">{</span>
+								<span class="nx">c</span><span class="p">.</span><span class="nx">preloadImages</span> <span class="p">(</span><span class="nx">images</span><span class="p">[</span><span class="nx">j</span><span class="p">].</span><span class="nx">getAttribute</span> <span class="p">(</span><span class="s1">&#39;url&#39;</span><span class="p">));</span>
+							<span class="p">}</span>
+						<span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-49">             <td class="docs">               <div class="octowrap">                 <a class="octothorpe" href="#section-49">#</a>               </div>               <p>Preload img tags for html</p>             </td>             <td class="code">               <div class="highlight"><pre>						<span class="nx">images</span> <span class="o">=</span> <span class="nx">data</span><span class="p">.</span><span class="nx">getElementsByTagName</span> <span class="p">(</span><span class="s1">&#39;img&#39;</span><span class="p">);</span>
+						<span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">j</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">j</span> <span class="o">&lt;</span> <span class="nx">images</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">j</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+							<span class="nx">c</span><span class="p">.</span><span class="nx">preloadImages</span> <span class="p">(</span><span class="nx">images</span><span class="p">[</span><span class="nx">j</span><span class="p">].</span><span class="nx">getAttribute</span> <span class="p">(</span><span class="s1">&#39;src&#39;</span><span class="p">));</span>
+						<span class="p">}</span>
+					<span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="nx">ex</span><span class="p">)</span> <span class="p">{}</span>
+				<span class="p">},</span>
+				<span class="nx">error</span><span class="o">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">xhr</span><span class="p">,</span> <span class="nx">s</span><span class="p">,</span> <span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
+					<span class="cm">/*console.log (s);</span>
+<span class="cm">					console.log (e);*/</span>
+				<span class="p">}</span>
+			<span class="p">});</span>
+		<span class="p">}</span>
+	<span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-50">             <td class="docs">               <div class="octowrap">                 <a class="octothorpe" href="#section-50">#</a>               </div>               <p>Preload a list of images for use in the video.</p>             </td>             <td class="code">               <div class="highlight"><pre>	<span class="nx">c</span><span class="p">.</span><span class="nx">preloadImages</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+		<span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">arguments</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+			<span class="k">if</span> <span class="p">(</span><span class="o">!</span> <span class="nx">c</span><span class="p">.</span><span class="nx">preloaded_images</span><span class="p">[</span><span class="nx">arguments</span><span class="p">[</span><span class="nx">i</span><span class="p">]])</span> <span class="p">{</span>
+				<span class="nx">c</span><span class="p">.</span><span class="nx">preloaded_images</span><span class="p">[</span><span class="nx">arguments</span><span class="p">[</span><span class="nx">i</span><span class="p">]]</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">createElement</span> <span class="p">(</span><span class="s1">&#39;img&#39;</span><span class="p">);</span>
+				<span class="nx">c</span><span class="p">.</span><span class="nx">preloaded_images</span><span class="p">[</span><span class="nx">arguments</span><span class="p">[</span><span class="nx">i</span><span class="p">]].</span><span class="nx">src</span> <span class="o">=</span> <span class="nx">arguments</span><span class="p">[</span><span class="nx">i</span><span class="p">];</span>
+			<span class="p">}</span>
+		<span class="p">}</span>
+	<span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-51">             <td class="docs">               <div class="octowrap">                 <a class="octothorpe" href="#section-51">#</a>               </div>               <p>Register a function to be managed on play/pause.</p>             </td>             <td class="code">               <div class="highlight"><pre>	<span class="nx">c</span><span class="p">.</span><span class="nx">addInterval</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">k</span><span class="p">,</span> <span class="nx">ms</span><span class="p">)</span> <span class="p">{</span>
+		<span class="nx">intervals</span><span class="p">.</span><span class="nx">push</span> <span class="p">({</span><span class="nx">f</span><span class="o">:</span> <span class="nx">k</span><span class="p">,</span> <span class="nx">t</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span> <span class="nx">m</span><span class="o">:</span> <span class="nx">ms</span><span class="p">});</span>
+	<span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-52">             <td class="docs">               <div class="octowrap">                 <a class="octothorpe" href="#section-52">#</a>               </div>               <p>Starts interval-based functions.</p>             </td>             <td class="code">               <div class="highlight"><pre>	<span class="nx">c</span><span class="p">.</span><span class="nx">setIntervals</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+		<span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">intervals</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+			<span class="nx">intervals</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">t</span> <span class="o">=</span> <span class="nx">setInterval</span> <span class="p">(</span><span class="nx">intervals</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">f</span><span class="p">,</span> <span class="nx">intervals</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">m</span><span class="p">);</span>
+		<span class="p">}</span>
+	<span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-53">             <td class="docs">               <div class="octowrap">                 <a class="octothorpe" href="#section-53">#</a>               </div>               <p>Stops interval-based functions.</p>             </td>             <td class="code">               <div class="highlight"><pre>	<span class="nx">c</span><span class="p">.</span><span class="nx">clearIntervals</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+		<span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">intervals</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+			<span class="nx">clearInterval</span> <span class="p">(</span><span class="nx">intervals</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">t</span><span class="p">);</span>
+		<span class="p">}</span>
+	<span class="p">}</span>
+
+	<span class="k">return</span> <span class="nx">c</span><span class="p">;</span>
+<span class="p">}(</span><span class="nx">jQuery</span><span class="p">));</span></pre></div>             </td>           </tr>                               <tr id="section-54">             <td class="docs">               <div class="octowrap">                 <a class="octothorpe" href="#section-54">#</a>               </div>               <p>Create aliases to shorten references in effects and settings.</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="nx">_c</span> <span class="o">=</span> <span class="nx">cacophony</span><span class="p">;</span>
+<span class="nx">_s</span> <span class="o">=</span> <span class="nx">cacophony</span><span class="p">.</span><span class="nx">story</span><span class="p">;</span>
+<span class="nx">_e</span> <span class="o">=</span> <span class="nx">cacophony</span><span class="p">.</span><span class="nx">effects</span><span class="p">;</span>
+<span class="nx">_i</span> <span class="o">=</span> <span class="nx">cacophony</span><span class="p">.</span><span class="nx">preloaded_images</span><span class="p">;</span>
+
+</pre></div>             </td>           </tr>                </tbody>     </table>   </div> </body> </html> 

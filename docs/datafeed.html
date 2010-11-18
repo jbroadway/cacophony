@@ -1,0 +1,137 @@
+<!DOCTYPE html>  <html> <head>   <title>datafeed.js</title>   <meta http-equiv="content-type" content="text/html; charset=UTF-8">   <link rel="stylesheet" media="all" href="docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>            <div id="jump_to">         Jump To &hellip;         <div id="jump_wrapper">           <div id="jump_page">                                           <a class="source" href="cacophony.html">                 cacophony.js               </a>                                           <a class="source" href="circles.html">                 circles.js               </a>                                           <a class="source" href="context.html">                 context.js               </a>                                           <a class="source" href="core.html">                 core.js               </a>                                           <a class="source" href="cube.html">                 cube.js               </a>                                           <a class="source" href="datafeed.html">                 datafeed.js               </a>                                           <a class="source" href="flicker.html">                 flicker.js               </a>                                           <a class="source" href="input.html">                 input.js               </a>                                           <a class="source" href="lyrics.html">                 lyrics.js               </a>                                           <a class="source" href="ribbon.html">                 ribbon.js               </a>                                           <a class="source" href="skyline.html">                 skyline.js               </a>                                           <a class="source" href="three.html">                 three.js               </a>                                           <a class="source" href="volume.html">                 volume.js               </a>                                           <a class="source" href="index.html">                 index.js               </a>                                           <a class="source" href="settings.html">                 settings.js               </a>                                           <a class="source" href="story.html">                 story.js               </a>                        </div>         </div>       </div>          <table cellpadding="0" cellspacing="0">       <thead>         <tr>           <th class="docs">             <h1>               datafeed.js             </h1>           </th>           <th class="code">           </th>         </tr>       </thead>       <tbody>                               <tr id="section-1">             <td class="docs">               <div class="octowrap">                 <a class="octothorpe" href="#section-1">#</a>               </div>               <p>Effects to take a prefetched data feed (JSON, RSS, ATOM, XML)
+and use in your video. In combination with the input effects,
+and a bit of server-side coding, this can yield some interesting
+possibilities.</p>
+
+<p>For all data feeds used by these effects, make sure to include
+them in the <code>cacophony.preloadData ()</code> section of your settings
+file.</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="kd">var</span> <span class="nx">datafeed_map_colours</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;#7E2D95&#39;</span><span class="p">,</span> <span class="s1">&#39;#E65008&#39;</span><span class="p">,</span> <span class="s1">&#39;#5b6c03&#39;</span><span class="p">,</span> <span class="s1">&#39;#9d3e62&#39;</span><span class="p">,</span> <span class="s1">&#39;#278699&#39;</span><span class="p">,</span> <span class="s1">&#39;#cc0101&#39;</span><span class="p">,</span> <span class="s1">&#39;#ffd800&#39;</span><span class="p">],</span>
+	<span class="nx">datafeed_slideshow_duration</span> <span class="o">=</span> <span class="mi">4</span><span class="p">,</span>
+	<span class="nx">datafeed_slideshow_limit</span> <span class="o">=</span> <span class="kc">false</span><span class="p">,</span>
+	<span class="nx">datafeed_slideshow_cur</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+	<span class="nx">datafeed_slideshow_images</span> <span class="o">=</span> <span class="p">[],</span>
+	<span class="nx">datafeed_slideshow_img</span><span class="p">;</span></pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="octowrap">                 <a class="octothorpe" href="#section-2">#</a>               </div>               <p>Display a slideshow based on a specified RSS or ATOM feed.
+TODO: Ken Burns effect, fade between</p>
+
+<p>Usage:</p>
+
+<pre><code>{a:'datafeed_slideshow', d:{url: '/example.rss'}}
+</code></pre>             </td>             <td class="code">               <div class="highlight"><pre><span class="kd">function</span> <span class="nx">datafeed_slideshow</span> <span class="p">(</span><span class="nx">data</span><span class="p">)</span> <span class="p">{</span>
+	<span class="k">if</span> <span class="p">(</span><span class="nx">data</span><span class="p">)</span> <span class="p">{</span>
+		<span class="kd">var</span> <span class="nx">feed</span> <span class="o">=</span> <span class="nx">cacophony</span><span class="p">.</span><span class="nx">datafeed</span><span class="p">[</span><span class="nx">data</span><span class="p">.</span><span class="nx">url</span><span class="p">];</span>
+		<span class="nx">datafeed_slideshow_images</span> <span class="o">=</span> <span class="nx">feed</span><span class="p">.</span><span class="nx">childNodes</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">getElementsByTagName</span> <span class="p">(</span><span class="s1">&#39;content&#39;</span><span class="p">);</span>
+		<span class="nx">datafeed_slideshow_cur</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+		<span class="nx">datafeed_slideshow_limit</span> <span class="o">=</span> <span class="p">(</span><span class="nx">data</span><span class="p">.</span><span class="nx">limit</span><span class="p">)</span> <span class="o">?</span> <span class="nx">data</span><span class="p">.</span><span class="nx">limit</span> <span class="o">:</span> <span class="kc">false</span><span class="p">;</span>
+		<span class="nx">datafeed_slideshow_duration</span> <span class="o">=</span> <span class="p">(</span><span class="nx">data</span><span class="p">.</span><span class="nx">duration</span><span class="p">)</span> <span class="o">?</span> <span class="nx">data</span><span class="p">.</span><span class="nx">duration</span> <span class="o">:</span> <span class="mi">4</span><span class="p">;</span>
+	<span class="p">}</span>
+
+	<span class="k">if</span> <span class="p">(</span><span class="nx">datafeed_slideshow_img</span><span class="p">)</span> <span class="p">{</span>
+		<span class="nx">cacophony</span><span class="p">.</span><span class="nx">canvas</span><span class="p">.</span><span class="nx">remove</span> <span class="p">(</span><span class="nx">datafeed_slideshow_img</span><span class="p">);</span>
+		<span class="nx">datafeed_slideshow_img</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+	<span class="p">}</span>
+
+	<span class="k">if</span> <span class="p">(</span><span class="nx">datafeed_slideshow_limit</span> <span class="o">&amp;&amp;</span> <span class="nx">datafeed_slideshow_limit</span> <span class="o">&lt;=</span> <span class="nx">datafeed_slideshow_cur</span><span class="p">)</span> <span class="p">{</span>
+		<span class="k">return</span><span class="p">;</span>
+	<span class="p">}</span>
+
+	<span class="k">if</span> <span class="p">(</span><span class="nx">datafeed_slideshow_images</span><span class="p">[</span><span class="nx">datafeed_slideshow_cur</span><span class="p">])</span> <span class="p">{</span>
+		<span class="nx">datafeed_slideshow_img</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">ImageNode</span> <span class="p">(</span><span class="nx">_i</span><span class="p">[</span><span class="nx">datafeed_slideshow_images</span><span class="p">[</span><span class="nx">datafeed_slideshow_cur</span><span class="p">].</span><span class="nx">getAttribute</span> <span class="p">(</span><span class="s1">&#39;url&#39;</span><span class="p">)]);</span>
+		<span class="nx">datafeed_slideshow_img</span><span class="p">.</span><span class="nx">x</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+		<span class="nx">datafeed_slideshow_img</span><span class="p">.</span><span class="nx">y</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+		<span class="nx">datafeed_slideshow_img</span><span class="p">.</span><span class="nx">dWidth</span> <span class="o">=</span> <span class="nx">cacophony</span><span class="p">.</span><span class="nx">width</span><span class="p">;</span>
+		<span class="nx">datafeed_slideshow_img</span><span class="p">.</span><span class="nx">dHeight</span> <span class="o">=</span> <span class="nx">cacophony</span><span class="p">.</span><span class="nx">height</span><span class="p">;</span>
+		<span class="nx">cacophony</span><span class="p">.</span><span class="nx">canvas</span><span class="p">.</span><span class="nx">append</span> <span class="p">(</span><span class="nx">datafeed_slideshow_img</span><span class="p">);</span>
+		<span class="nx">datafeed_slideshow_cur</span><span class="o">++</span><span class="p">;</span>
+
+		<span class="nx">setTimeout</span> <span class="p">(</span><span class="nx">datafeed_slideshow</span><span class="p">,</span> <span class="nx">cacophony</span><span class="p">.</span><span class="nx">beatLength</span> <span class="p">()</span> <span class="o">*</span> <span class="nx">datafeed_slideshow_duration</span><span class="p">);</span>
+	<span class="p">}</span>
+<span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-3">             <td class="docs">               <div class="octowrap">                 <a class="octothorpe" href="#section-3">#</a>               </div>               <p>Display a series of headlines based on a specified RSS or ATOM feed.</p>
+
+<p>Usage:</p>
+
+<pre><code>{a:'datafeed_headlines', d:{url: '/example.rss'}}
+</code></pre>             </td>             <td class="code">               <div class="highlight"><pre><span class="kd">function</span> <span class="nx">datafeed_headlines</span> <span class="p">(</span><span class="nx">data</span><span class="p">)</span> <span class="p">{</span>
+	<span class="kd">var</span> <span class="nx">feed</span> <span class="o">=</span> <span class="nx">cacophony</span><span class="p">.</span><span class="nx">datafeed</span><span class="p">[</span><span class="nx">data</span><span class="p">.</span><span class="nx">url</span><span class="p">];</span>
+<span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-4">             <td class="docs">               <div class="octowrap">                 <a class="octothorpe" href="#section-4">#</a>               </div>               <p>Display a series of points on a map based on a JSON feed of the
+following form:</p>
+
+<pre><code>[{lat: 5.432, lng: 5.678},
+ {lat: 1.234, lng: 4:321}]
+</code></pre>
+
+<p>Usage:</p>
+
+<pre><code>{a:'datafeed_map_on', d:{
+    url: '/coordinates.json',
+    zoom: 2,
+    lat: 1.0,
+    lng: 0.0
+}}
+</code></pre>
+
+<p>Also be sure to include the Google Maps API into your <code>&lt;head&gt;</code> as well:</p>
+
+<pre><code>&lt;script type="text/javascript"
+    src="http://maps.google.com/maps/api/js?sensor=false"&gt;&lt;/script&gt;
+</code></pre>             </td>             <td class="code">               <div class="highlight"><pre><span class="kd">function</span> <span class="nx">datafeed_map_on</span> <span class="p">(</span><span class="nx">data</span><span class="p">)</span> <span class="p">{</span>
+	<span class="kd">var</span> <span class="nx">feed</span><span class="p">,</span> <span class="nx">d</span><span class="p">,</span> <span class="nx">zoom</span><span class="p">,</span> <span class="nx">lat</span><span class="p">,</span> <span class="nx">lng</span><span class="p">,</span> <span class="nx">latlng</span><span class="p">,</span> <span class="nx">options</span><span class="p">,</span> <span class="nx">map</span><span class="p">,</span> <span class="nx">c</span><span class="p">,</span> <span class="nx">opts</span><span class="p">,</span> <span class="nx">circle</span><span class="p">;</span>
+	<span class="nx">feed</span> <span class="o">=</span> <span class="nx">cacophony</span><span class="p">.</span><span class="nx">datafeed</span><span class="p">[</span><span class="nx">data</span><span class="p">.</span><span class="nx">url</span><span class="p">];</span>
+
+	<span class="nx">d</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">createElement</span> <span class="p">(</span><span class="s1">&#39;div&#39;</span><span class="p">);</span>
+	<span class="nx">d</span><span class="p">.</span><span class="nx">setAttribute</span> <span class="p">(</span><span class="s1">&#39;style&#39;</span><span class="p">,</span> <span class="s1">&#39;width: &#39;</span> <span class="o">+</span> <span class="p">(</span><span class="nx">cacophony</span><span class="p">.</span><span class="nx">width</span> <span class="o">-</span> <span class="mi">40</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;px; height: &#39;</span> <span class="o">+</span> <span class="p">(</span><span class="nx">cacophony</span><span class="p">.</span><span class="nx">height</span> <span class="o">-</span> <span class="mi">100</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;px&#39;</span><span class="p">);</span>
+
+	<span class="nx">zoom</span> <span class="o">=</span> <span class="p">(</span><span class="nx">data</span><span class="p">.</span><span class="nx">zoom</span><span class="p">)</span> <span class="o">?</span> <span class="nx">data</span><span class="p">.</span><span class="nx">zoom</span> <span class="o">:</span> <span class="mi">2</span><span class="p">;</span>
+	<span class="nx">lat</span> <span class="o">=</span> <span class="p">(</span><span class="nx">data</span><span class="p">.</span><span class="nx">lat</span><span class="p">)</span> <span class="o">?</span> <span class="nx">data</span><span class="p">.</span><span class="nx">lat</span> <span class="o">:</span> <span class="mf">1.0</span><span class="p">;</span>
+	<span class="nx">lng</span> <span class="o">=</span> <span class="p">(</span><span class="nx">data</span><span class="p">.</span><span class="nx">lng</span><span class="p">)</span> <span class="o">?</span> <span class="nx">data</span><span class="p">.</span><span class="nx">lng</span> <span class="o">:</span> <span class="mf">0.0</span><span class="p">;</span>
+
+	<span class="nx">latlng</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">google</span><span class="p">.</span><span class="nx">maps</span><span class="p">.</span><span class="nx">LatLng</span> <span class="p">(</span><span class="nx">lat</span><span class="p">,</span> <span class="nx">lng</span><span class="p">);</span>
+	<span class="nx">options</span> <span class="o">=</span> <span class="p">{</span>
+		<span class="nx">zoom</span><span class="o">:</span> <span class="nx">zoom</span><span class="p">,</span>
+		<span class="nx">center</span><span class="o">:</span> <span class="nx">latlng</span><span class="p">,</span>
+		<span class="nx">mapTypeId</span><span class="o">:</span> <span class="nx">google</span><span class="p">.</span><span class="nx">maps</span><span class="p">.</span><span class="nx">MapTypeId</span><span class="p">.</span><span class="nx">TERRAIN</span><span class="p">,</span>
+		<span class="nx">mapTypeControl</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
+		<span class="nx">backgroundColor</span><span class="o">:</span> <span class="s1">&#39;transparent&#39;</span><span class="p">,</span>
+		<span class="nx">draggable</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
+		<span class="nx">scrollwheel</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
+		<span class="nx">scaleControl</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
+		<span class="nx">navigationControl</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
+		<span class="nx">streetViewControl</span><span class="o">:</span> <span class="kc">false</span>
+	<span class="p">};</span>
+	<span class="nx">map</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">google</span><span class="p">.</span><span class="nx">maps</span><span class="p">.</span><span class="nx">Map</span> <span class="p">(</span><span class="nx">d</span><span class="p">,</span> <span class="nx">options</span><span class="p">);</span>
+
+	<span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">feed</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+		<span class="nx">c</span> <span class="o">=</span> <span class="nx">datafeed_map_colour</span> <span class="p">();</span>
+		<span class="nx">opts</span> <span class="o">=</span> <span class="p">{</span>
+			<span class="nx">center</span><span class="o">:</span> <span class="k">new</span> <span class="nx">google</span><span class="p">.</span><span class="nx">maps</span><span class="p">.</span><span class="nx">LatLng</span> <span class="p">(</span><span class="nx">feed</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">lat</span><span class="p">,</span> <span class="nx">feed</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">lng</span><span class="p">),</span>
+			<span class="nx">fillColor</span><span class="o">:</span> <span class="nx">c</span><span class="p">,</span>
+			<span class="nx">fillOpacity</span><span class="o">:</span> <span class="mi">1</span><span class="p">,</span>
+			<span class="nx">clickable</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
+			<span class="nx">map</span><span class="o">:</span> <span class="nx">map</span><span class="p">,</span>
+			<span class="nx">radius</span><span class="o">:</span> <span class="nx">feed</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">count</span> <span class="o">*</span> <span class="mi">10000</span><span class="p">,</span> <span class="c1">// 10km per count</span>
+			<span class="nx">strokeColor</span><span class="o">:</span> <span class="nx">c</span><span class="p">,</span>
+			<span class="nx">strokeOpacity</span><span class="o">:</span> <span class="mi">1</span><span class="p">,</span>
+			<span class="nx">strokeWeight</span><span class="o">:</span> <span class="mi">1</span><span class="p">,</span>
+			<span class="nx">zIndex</span><span class="o">:</span> <span class="mi">100</span>
+		<span class="p">};</span>
+		<span class="nx">circle</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">google</span><span class="p">.</span><span class="nx">maps</span><span class="p">.</span><span class="nx">Circle</span> <span class="p">(</span><span class="nx">opts</span><span class="p">);</span>
+		<span class="nx">circle</span><span class="p">.</span><span class="nx">setMap</span> <span class="p">(</span><span class="nx">map</span><span class="p">);</span>
+	<span class="p">}</span>
+
+	<span class="nx">cacophony</span><span class="p">.</span><span class="nx">html</span> <span class="p">(</span><span class="nx">d</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">20</span><span class="p">);</span>
+<span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-5">             <td class="docs">               <div class="octowrap">                 <a class="octothorpe" href="#section-5">#</a>               </div>               <p>Hide the map.</p>
+
+<p>Usage:</p>
+
+<pre><code> {a:'datafeed_map_off'}
+</code></pre>             </td>             <td class="code">               <div class="highlight"><pre><span class="kd">function</span> <span class="nx">datafeed_map_off</span> <span class="p">()</span> <span class="p">{</span>
+	<span class="nx">cacophony</span><span class="p">.</span><span class="nx">html</span> <span class="p">();</span>
+<span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-6">             <td class="docs">               <div class="octowrap">                 <a class="octothorpe" href="#section-6">#</a>               </div>               <p>Get a random colour for the map circles</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="kd">function</span> <span class="nx">datafeed_map_colour</span> <span class="p">()</span> <span class="p">{</span>
+	<span class="k">return</span> <span class="nx">datafeed_map_colours</span><span class="p">[</span><span class="nb">Math</span><span class="p">.</span><span class="nx">floor</span> <span class="p">(</span><span class="nb">Math</span><span class="p">.</span><span class="nx">random</span> <span class="p">()</span> <span class="o">*</span> <span class="nx">datafeed_map_colours</span><span class="p">.</span><span class="nx">length</span><span class="p">)];</span>
+<span class="p">}</span>
+
+<span class="nx">_e</span><span class="p">[</span><span class="s1">&#39;datafeed_slideshow&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nx">datafeed_slideshow</span><span class="p">;</span>
+<span class="nx">_e</span><span class="p">[</span><span class="s1">&#39;datafeed_headlines&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nx">datafeed_headlines</span><span class="p">;</span>
+<span class="nx">_e</span><span class="p">[</span><span class="s1">&#39;datafeed_map_on&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nx">datafeed_map_on</span><span class="p">;</span>
+<span class="nx">_e</span><span class="p">[</span><span class="s1">&#39;datafeed_map_off&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nx">datafeed_map_off</span><span class="p">;</span>
+
+</pre></div>             </td>           </tr>                </tbody>     </table>   </div> </body> </html> 

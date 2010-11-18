@@ -1,0 +1,146 @@
+<!DOCTYPE html>  <html> <head>   <title>input.js</title>   <meta http-equiv="content-type" content="text/html; charset=UTF-8">   <link rel="stylesheet" media="all" href="docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>            <div id="jump_to">         Jump To &hellip;         <div id="jump_wrapper">           <div id="jump_page">                                           <a class="source" href="cacophony.html">                 cacophony.js               </a>                                           <a class="source" href="circles.html">                 circles.js               </a>                                           <a class="source" href="context.html">                 context.js               </a>                                           <a class="source" href="core.html">                 core.js               </a>                                           <a class="source" href="cube.html">                 cube.js               </a>                                           <a class="source" href="datafeed.html">                 datafeed.js               </a>                                           <a class="source" href="flicker.html">                 flicker.js               </a>                                           <a class="source" href="input.html">                 input.js               </a>                                           <a class="source" href="lyrics.html">                 lyrics.js               </a>                                           <a class="source" href="ribbon.html">                 ribbon.js               </a>                                           <a class="source" href="skyline.html">                 skyline.js               </a>                                           <a class="source" href="three.html">                 three.js               </a>                                           <a class="source" href="volume.html">                 volume.js               </a>                                           <a class="source" href="index.html">                 index.js               </a>                                           <a class="source" href="settings.html">                 settings.js               </a>                                           <a class="source" href="story.html">                 story.js               </a>                        </div>         </div>       </div>          <table cellpadding="0" cellspacing="0">       <thead>         <tr>           <th class="docs">             <h1>               input.js             </h1>           </th>           <th class="code">           </th>         </tr>       </thead>       <tbody>                               <tr id="section-1">             <td class="docs">               <div class="octowrap">                 <a class="octothorpe" href="#section-1">#</a>               </div>               <p>Effects to request viewer input.</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="kd">var</span> <span class="nx">input_thanks</span><span class="p">,</span>
+	<span class="nx">input_save_to</span><span class="p">,</span>
+	<span class="nx">input_jump_to</span><span class="p">,</span>
+	<span class="nx">input_options</span> <span class="o">=</span> <span class="p">[],</span>
+	<span class="nx">input_value</span> <span class="o">=</span> <span class="s1">&#39;Default&#39;</span><span class="p">,</span>
+	<span class="nx">input_choice</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span></pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="octowrap">                 <a class="octothorpe" href="#section-2">#</a>               </div>               <p>Request viewer input as a single-line text box. The <code>jump_to</code>
+option will optionally call <code>cacophony.jumpTo()</code> after the
+form has been submitted, allowing you to create a loop while
+the form is being shown that is then broken out of afterwards.
+The <code>save_to</code> option will send the choice to the URL specified,
+accessible via <code>$_POST['input']</code>. The value is also accessible
+to subsequent effects via the global input_value variable.</p>
+
+<p>Usage:</p>
+
+<pre><code>{a:'input_text', d:{
+    msg: 'Please enter your name',
+    save_to: '/save_input.php',
+    jump_to: 10
+}}
+
+{a:'input_text', d:{
+    msg: 'Please enter your city',
+    save_to: '/save_input.php',
+    jump_to: 10,
+    autocomplete: list_of_cities
+}}
+</code></pre>             </td>             <td class="code">               <div class="highlight"><pre><span class="kd">function</span> <span class="nx">input_text</span> <span class="p">(</span><span class="nx">data</span><span class="p">)</span> <span class="p">{</span>
+	<span class="nx">cacophony</span><span class="p">.</span><span class="nx">input</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+	<span class="nx">input_thanks</span> <span class="o">=</span> <span class="nx">data</span><span class="p">.</span><span class="nx">thanks</span><span class="p">;</span>
+	<span class="nx">input_save_to</span> <span class="o">=</span> <span class="nx">data</span><span class="p">.</span><span class="nx">save_to</span><span class="p">;</span>
+	<span class="nx">input_jump_to</span> <span class="o">=</span> <span class="nx">data</span><span class="p">.</span><span class="nx">jump_to</span><span class="p">;</span>
+	<span class="k">if</span> <span class="p">(</span><span class="o">!</span> <span class="nx">data</span><span class="p">.</span><span class="nx">value</span><span class="p">)</span> <span class="p">{</span>
+		<span class="nx">data</span><span class="p">.</span><span class="nx">value</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">;</span>
+	<span class="p">}</span>
+
+	<span class="nx">cacophony</span><span class="p">.</span><span class="nx">html</span> <span class="p">(</span>
+		<span class="s1">&#39;&lt;div style=&quot;width: &#39;</span> <span class="o">+</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">round</span> <span class="p">(</span><span class="nx">cacophony</span><span class="p">.</span><span class="nx">width</span> <span class="o">*</span> <span class="p">.</span><span class="mi">6</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;px; height: &#39;</span> <span class="o">+</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">round</span> <span class="p">(</span><span class="nx">cacophony</span><span class="p">.</span><span class="nx">height</span> <span class="o">*</span> <span class="p">.</span><span class="mi">35</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;px; background-color: rgba(255, 255, 255, .7); padding: 20px; text-align: left; border-radius: 10px&quot;&gt;&#39;</span> <span class="o">+</span>
+		<span class="s1">&#39;&lt;form onsubmit=&quot;return input_save (this)&quot; style=&quot;display: inline&quot;&gt;&#39;</span> <span class="o">+</span>
+		<span class="s1">&#39;&lt;p&gt;&#39;</span> <span class="o">+</span> <span class="nx">data</span><span class="p">.</span><span class="nx">msg</span> <span class="o">+</span> <span class="s1">&#39;&lt;/p&gt;&#39;</span> <span class="o">+</span>
+		<span class="s1">&#39;&lt;p&gt;&lt;input type=&quot;text&quot; id=&quot;input-field&quot; name=&quot;input-field&quot; value=&quot;&#39;</span> <span class="o">+</span> <span class="nx">data</span><span class="p">.</span><span class="nx">value</span> <span class="o">+</span> <span class="s1">&#39;&quot; style=&quot;border: 1px solid #666; width: 70%; height: 20px&quot; /&gt;&#39;</span> <span class="o">+</span>
+		<span class="s1">&#39;&amp;nbsp;&lt;input type=&quot;submit&quot; value=&quot;Submit&quot; /&gt;&amp;nbsp;&lt;a href=&quot;#&quot; onclick=&quot;return input_cancel ()&quot;&gt;Cancel&lt;/a&gt;&lt;/p&gt;&#39;</span> <span class="o">+</span>
+		<span class="s1">&#39;&lt;/form&gt;&lt;/div&gt;&#39;</span><span class="p">);</span>
+<span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-3">             <td class="docs">               <div class="octowrap">                 <a class="octothorpe" href="#section-3">#</a>               </div>               <p>Request viewer input as a multiline text box. The <code>jump_to</code>
+option will optionally call <code>cacophony.jumpTo()</code> after the
+form has been submitted, allowing you to create a loop while
+the form is being shown that is then broken out of afterwards.
+The <code>save_to</code> option will send the choice to the URL specified,
+accessible via <code>$_POST['input']</code>. The value is also accessible
+to subsequent effects via the global input_value variable.</p>
+
+<p>Usage:</p>
+
+<pre><code>{a:'input_textarea', d:{
+    msg: 'Tell me a story',
+    save_to: '/save_input.php',
+    jump_to: 10
+}}
+</code></pre>             </td>             <td class="code">               <div class="highlight"><pre><span class="kd">function</span> <span class="nx">input_textarea</span> <span class="p">(</span><span class="nx">data</span><span class="p">)</span> <span class="p">{</span>
+	<span class="nx">cacophony</span><span class="p">.</span><span class="nx">input</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+	<span class="nx">input_thanks</span> <span class="o">=</span> <span class="nx">data</span><span class="p">.</span><span class="nx">thanks</span><span class="p">;</span>
+	<span class="nx">input_save_to</span> <span class="o">=</span> <span class="nx">data</span><span class="p">.</span><span class="nx">save_to</span><span class="p">;</span>
+	<span class="nx">input_jump_to</span> <span class="o">=</span> <span class="nx">data</span><span class="p">.</span><span class="nx">jump_to</span><span class="p">;</span>
+	<span class="k">if</span> <span class="p">(</span><span class="o">!</span> <span class="nx">data</span><span class="p">.</span><span class="nx">value</span><span class="p">)</span> <span class="p">{</span>
+		<span class="nx">data</span><span class="p">.</span><span class="nx">value</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">;</span>
+	<span class="p">}</span>
+
+	<span class="nx">cacophony</span><span class="p">.</span><span class="nx">html</span> <span class="p">(</span>
+		<span class="s1">&#39;&lt;div style=&quot;width: &#39;</span> <span class="o">+</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">round</span> <span class="p">(</span><span class="nx">cacophony</span><span class="p">.</span><span class="nx">width</span> <span class="o">*</span> <span class="p">.</span><span class="mi">6</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;px; height: &#39;</span> <span class="o">+</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">round</span> <span class="p">(</span><span class="nx">cacophony</span><span class="p">.</span><span class="nx">height</span> <span class="o">*</span> <span class="p">.</span><span class="mi">35</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;px; background-color: rgba(255, 255, 255, .7); padding: 20px; text-align: left; border-radius: 10px&quot;&gt;&#39;</span> <span class="o">+</span>
+		<span class="s1">&#39;&lt;form onsubmit=&quot;return input_save (this)&quot; style=&quot;display: inline&quot;&gt;&#39;</span> <span class="o">+</span>
+		<span class="s1">&#39;&lt;p&gt;&#39;</span> <span class="o">+</span> <span class="nx">data</span><span class="p">.</span><span class="nx">msg</span> <span class="o">+</span> <span class="s1">&#39;&lt;/p&gt;&#39;</span> <span class="o">+</span>
+		<span class="s1">&#39;&lt;p&gt;&lt;textarea id=&quot;input-field&quot; name=&quot;input-field&quot; style=&quot;border: 1px solid #666; width: 100%; height: 60px&quot;&gt;&#39;</span> <span class="o">+</span> <span class="nx">data</span><span class="p">.</span><span class="nx">value</span> <span class="o">+</span> <span class="s1">&#39;&lt;/textarea&gt;&lt;/p&gt;&#39;</span> <span class="o">+</span>
+		<span class="s1">&#39;&lt;p&gt;&lt;input type=&quot;submit&quot; value=&quot;Submit&quot; /&gt;&amp;nbsp;&lt;a href=&quot;#&quot; onclick=&quot;return input_cancel ()&quot;&gt;Cancel&lt;/a&gt;&lt;/p&gt;&#39;</span> <span class="o">+</span>
+		<span class="s1">&#39;&lt;/form&gt;&lt;/div&gt;&#39;</span><span class="p">);</span>
+<span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-4">             <td class="docs">               <div class="octowrap">                 <a class="octothorpe" href="#section-4">#</a>               </div>               <p>Request viewer input as a set of choices, each of which specify
+a beat number to jump to via <code>cacophony.jumpTo()</code> once clicked.
+This allows for branching videos in the style of a choose-your-
+own-adventure story. The <code>save_to</code> option will send the choice
+to the URL specified, accessible via <code>$_POST['choice']</code>. The
+value is also accessible to subsequent effects via the global
+input_choice variable.</p>
+
+<p>Usage:</p>
+
+<pre><code>{a:'input_branching', d:{
+    msg: 'What would you do?',
+    options: [
+        {choice: "Go down the dark staircase", jump_to: 10}
+        {choice: "Hide in the attic", jump_to: 20}
+        {choice: "Call the Ghostbusters", jump_to: 30}
+    ],
+    save_to: '/save_input.php'
+}}
+</code></pre>             </td>             <td class="code">               <div class="highlight"><pre><span class="kd">function</span> <span class="nx">input_branching</span> <span class="p">(</span><span class="nx">data</span><span class="p">)</span> <span class="p">{</span>
+	<span class="nx">input_options</span> <span class="o">=</span> <span class="nx">data</span><span class="p">.</span><span class="nx">options</span><span class="p">;</span>
+	<span class="nx">input_save_to</span> <span class="o">=</span> <span class="nx">data</span><span class="p">.</span><span class="nx">save_to</span><span class="p">;</span>
+
+	<span class="nx">cacophony</span><span class="p">.</span><span class="nx">html</span> <span class="p">(</span><span class="nx">data</span><span class="p">.</span><span class="nx">msg</span><span class="p">);</span>
+	<span class="kd">var</span> <span class="nx">opts</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">;</span>
+
+	<span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">input_options</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+		<span class="nx">opts</span> <span class="o">+=</span> <span class="s1">&#39;&lt;p&gt;&lt;a href=&quot;#&quot; onclick=&quot;return input_choose (&#39;</span> <span class="o">+</span> <span class="nx">i</span> <span class="o">+</span> <span class="s1">&#39;)&quot;&gt;&#39;</span> <span class="o">+</span> <span class="nx">input_options</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">choice</span> <span class="o">+</span> <span class="s1">&#39;&lt;/a&gt;&lt;/p&gt;&#39;</span><span class="p">;</span>
+	<span class="p">}</span>
+
+	<span class="nx">cacophony</span><span class="p">.</span><span class="nx">html</span> <span class="p">(</span>
+		<span class="s1">&#39;&lt;div style=&quot;width: &#39;</span> <span class="o">+</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">round</span> <span class="p">(</span><span class="nx">cacophony</span><span class="p">.</span><span class="nx">width</span> <span class="o">*</span> <span class="p">.</span><span class="mi">6</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;px; height: &#39;</span> <span class="o">+</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">round</span> <span class="p">(</span><span class="nx">cacophony</span><span class="p">.</span><span class="nx">height</span> <span class="o">*</span> <span class="p">.</span><span class="mi">35</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;px; background-color: rgba(255, 255, 255, .7); padding: 20px; text-align: left; border-radius: 10px&quot;&gt;&#39;</span> <span class="o">+</span>
+		<span class="s1">&#39;&lt;p&gt;&#39;</span> <span class="o">+</span> <span class="nx">data</span><span class="p">.</span><span class="nx">msg</span> <span class="o">+</span> <span class="s1">&#39;&lt;/p&gt;&#39;</span> <span class="o">+</span>
+		<span class="nx">opts</span> <span class="o">+</span>
+		<span class="s1">&#39;&lt;/div&gt;&#39;</span><span class="p">);</span>
+<span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-5">             <td class="docs">               <div class="octowrap">                 <a class="octothorpe" href="#section-5">#</a>               </div>               <p>Handles the input for <code>input_text</code> and <code>input_textarea</code>.</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="kd">function</span> <span class="nx">input_save</span> <span class="p">()</span> <span class="p">{</span>
+	<span class="nx">cacophony</span><span class="p">.</span><span class="nx">input</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+	<span class="nx">input_value</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#input-field&#39;</span><span class="p">).</span><span class="nx">get</span> <span class="p">(</span><span class="mi">0</span><span class="p">).</span><span class="nx">value</span><span class="p">;</span>
+	<span class="nx">$</span><span class="p">.</span><span class="nx">post</span> <span class="p">(</span><span class="nx">input_save_to</span><span class="p">,</span> <span class="p">{</span> <span class="nx">input</span><span class="o">:</span> <span class="nx">input_value</span> <span class="p">});</span>
+	<span class="nx">cacophony</span><span class="p">.</span><span class="nx">html</span> <span class="p">(</span>
+		<span class="s1">&#39;&lt;div style=&quot;width: &#39;</span> <span class="o">+</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">round</span> <span class="p">(</span><span class="nx">cacophony</span><span class="p">.</span><span class="nx">width</span> <span class="o">*</span> <span class="p">.</span><span class="mi">6</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;px; height: &#39;</span> <span class="o">+</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">round</span> <span class="p">(</span><span class="nx">cacophony</span><span class="p">.</span><span class="nx">height</span> <span class="o">*</span> <span class="p">.</span><span class="mi">35</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;px; background-color: rgba(255, 255, 255, .7); padding: 20px; text-align: left; border-radius: 10px&quot;&gt;&#39;</span> <span class="o">+</span>
+		<span class="s1">&#39;&lt;p style=&quot;width: 100%&quot;&gt;&#39;</span> <span class="o">+</span> <span class="nx">input_thanks</span> <span class="o">+</span> <span class="s1">&#39;&lt;/p&gt;&#39;</span> <span class="o">+</span>
+		<span class="s1">&#39;&lt;/div&gt;&#39;</span><span class="p">);</span>
+	<span class="nx">setTimeout</span> <span class="p">(</span><span class="s1">&#39;cacophony.html ();&#39;</span><span class="p">,</span> <span class="mi">3000</span><span class="p">);</span>
+	<span class="k">if</span> <span class="p">(</span><span class="nx">input_jump_to</span><span class="p">)</span> <span class="p">{</span>
+		<span class="nx">cacophony</span><span class="p">.</span><span class="nx">jumpTo</span> <span class="p">(</span><span class="nx">input_jump_to</span><span class="p">);</span>
+		<span class="nx">input_jump_to</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+	<span class="p">}</span>
+	<span class="k">return</span> <span class="kc">false</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kd">function</span> <span class="nx">input_cancel</span> <span class="p">()</span> <span class="p">{</span>
+	<span class="nx">cacophony</span><span class="p">.</span><span class="nx">input</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+	<span class="nx">input_value</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+	<span class="nx">cacophony</span><span class="p">.</span><span class="nx">html</span> <span class="p">();</span>
+	<span class="k">if</span> <span class="p">(</span><span class="nx">input_jump_to</span><span class="p">)</span> <span class="p">{</span>
+		<span class="nx">cacophony</span><span class="p">.</span><span class="nx">jumpTo</span> <span class="p">(</span><span class="nx">input_jump_to</span><span class="p">);</span>
+		<span class="nx">input_jump_to</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+	<span class="p">}</span>
+	<span class="k">return</span> <span class="kc">false</span><span class="p">;</span>
+<span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-6">             <td class="docs">               <div class="octowrap">                 <a class="octothorpe" href="#section-6">#</a>               </div>               <p>Handles the choice selection for <code>input_branching</code>.</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="kd">function</span> <span class="nx">input_choose</span> <span class="p">(</span><span class="nx">n</span><span class="p">)</span> <span class="p">{</span>
+	<span class="nx">input_choice</span> <span class="o">=</span> <span class="nx">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span>
+	<span class="k">if</span> <span class="p">(</span><span class="nx">input_save_to</span><span class="p">)</span> <span class="p">{</span>
+		<span class="nx">$</span><span class="p">.</span><span class="nx">post</span> <span class="p">(</span><span class="nx">input_save_to</span><span class="p">,</span> <span class="p">{</span> <span class="nx">choice</span><span class="o">:</span> <span class="nx">input_choice</span> <span class="p">});</span>
+	<span class="p">}</span>
+	<span class="nx">cacophony</span><span class="p">.</span><span class="nx">html</span> <span class="p">();</span>
+	<span class="nx">cacophony</span><span class="p">.</span><span class="nx">jumpTo</span> <span class="p">(</span><span class="nx">input_options</span><span class="p">[</span><span class="nx">n</span><span class="p">].</span><span class="nx">jump_to</span><span class="p">);</span>
+<span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-7">             <td class="docs">               <div class="octowrap">                 <a class="octothorpe" href="#section-7">#</a>               </div>               <p>Register all effects.</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="nx">_e</span><span class="p">[</span><span class="s1">&#39;input_text&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nx">input_text</span><span class="p">;</span>
+<span class="nx">_e</span><span class="p">[</span><span class="s1">&#39;input_textarea&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nx">input_textarea</span><span class="p">;</span>
+<span class="nx">_e</span><span class="p">[</span><span class="s1">&#39;input_branching&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nx">input_branching</span><span class="p">;</span>
+
+</pre></div>             </td>           </tr>                </tbody>     </table>   </div> </body> </html> 

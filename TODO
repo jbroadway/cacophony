@@ -1,0 +1,27 @@
+Core
+* Loading done when all elements preloaded
+* Cake.js always takes top-most layer
+* cacophony.setTimeout() for timeout management like intervals
+* Configurable preload percent before playable
+* More examples
+
+Compatiblity
+* Firefox 4 vs 3.6 readyState
+
+Input
+* Autocomplete
+
+Data
+* Slideshow improvements
+* Implement headlines effect
+
+Flicker
+* Sequences should pause - use Cacophony interval management
+* Panels show/hide in sequence
+
+Skyline
+* First bar glitch
+* Faded layers gone?
+
+Ads
+* Implement overlay ads effect
