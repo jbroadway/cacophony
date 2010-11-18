@@ -101,20 +101,22 @@ function flicker_parallax (data) {
 // Handle parallax updating on timer or mousemove.
 function flicker_parallax_update (m) {
 	if (m !== true) {
-		for (var i = 0; i < flicker_layers.length; i++) {
-			if (flicker_auto_direction == 'right') {
-				var newx = flicker_layers[i].x + (((i + 1) * 2) / 2);
-				if (newx < flicker_layers[i].maxx) {
-					flicker_layers[i].x = newx;
-				}
-			} else {
-				var newx = flicker_layers[i].x - (((i + 1) * 2) / 2);
-				if (newx > flicker_layers[i].minx) {
-					flicker_layers[i].x = newx;
+		if (flicker_layers.length > 0) {
+			for (var i = 0; i < flicker_layers.length; i++) {
+				if (flicker_auto_direction == 'right') {
+					var newx = flicker_layers[i].x + (((i + 1) * 2) / 2);
+					if (newx < flicker_layers[i].maxx) {
+						flicker_layers[i].x = newx;
+					}
+				} else {
+					var newx = flicker_layers[i].x - (((i + 1) * 2) / 2);
+					if (newx > flicker_layers[i].minx) {
+						flicker_layers[i].x = newx;
+					}
 				}
 			}
+			setTimeout (flicker_parallax_update, 65);
 		}
-		setTimeout (flicker_parallax_update, 65);
 		return;
 	}
 
