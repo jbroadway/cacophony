@@ -49,8 +49,7 @@ function ribbon_on (data) {
 //
 //     {a:'flicker', d:{img: 'ribbon', duration: 1}}
 function ribbon_off () {
-	flatten();
-	ribbon_img = flattenCanvas.toDataURL('image/png');
+	ribbon_img = canvas.toDataURL('image/png');
 	_i['ribbon'] = document.createElement ('img');
 	_i['ribbon'].src = ribbon_img;
 
