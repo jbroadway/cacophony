@@ -3,7 +3,8 @@
 	<span class="nx">input_jump_to</span><span class="p">,</span>
 	<span class="nx">input_options</span> <span class="o">=</span> <span class="p">[],</span>
 	<span class="nx">input_value</span> <span class="o">=</span> <span class="s1">&#39;Default&#39;</span><span class="p">,</span>
-	<span class="nx">input_choice</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span></pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="octowrap">                 <a class="octothorpe" href="#section-2">#</a>               </div>               <p>Request viewer input as a single-line text box. The <code>jump_to</code>
+	<span class="nx">input_choice</span> <span class="o">=</span> <span class="kc">false</span><span class="p">,</span>
+	<span class="nx">input_autocomplete</span><span class="p">;</span></pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="octowrap">                 <a class="octothorpe" href="#section-2">#</a>               </div>               <p>Request viewer input as a single-line text box. The <code>jump_to</code>
 option will optionally call <code>cacophony.jumpTo()</code> after the
 form has been submitted, allowing you to create a loop while
 the form is being shown that is then broken out of afterwards.
@@ -15,11 +16,20 @@ to subsequent effects via the global input_value variable.</p>
 
 <pre><code>{a:'input_text', d:{
     msg: 'Please enter your name',
+    thanks: 'Thanks for your input',
+    value: 'Initial value',
     save_to: '/save_input.php',
     jump_to: 10
 }}
+</code></pre>
 
-{a:'input_text', d:{
+<p>Auto-complete is also possible, but you must include your own
+copy of jQuery UI. This way, Cacophony avoids conflicts with
+existing sites should we provide our own.</p>
+
+<p>Usage:</p>
+
+<pre><code>{a:'input_text', d:{
     msg: 'Please enter your city',
     save_to: '/save_input.php',
     jump_to: 10,
@@ -34,11 +44,18 @@ to subsequent effects via the global input_value variable.</p>
 		<span class="nx">data</span><span class="p">.</span><span class="nx">value</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">;</span>
 	<span class="p">}</span>
 
+	<span class="k">if</span> <span class="p">(</span><span class="nx">data</span><span class="p">.</span><span class="nx">autocomplete</span><span class="p">)</span> <span class="p">{</span>
+		<span class="nx">input_autocomplete</span> <span class="o">=</span> <span class="nx">data</span><span class="p">.</span><span class="nx">autocomplete</span><span class="p">;</span>
+		<span class="nx">autocomplete</span> <span class="o">=</span> <span class="s1">&#39;onfocus=&quot;$(this).autocomplete ({source: input_autocomplete})&quot;&#39;</span><span class="p">;</span>
+	<span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+		<span class="nx">autocomplete</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">;</span>
+	<span class="p">}</span>
+
 	<span class="nx">cacophony</span><span class="p">.</span><span class="nx">html</span> <span class="p">(</span>
 		<span class="s1">&#39;&lt;div style=&quot;width: &#39;</span> <span class="o">+</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">round</span> <span class="p">(</span><span class="nx">cacophony</span><span class="p">.</span><span class="nx">width</span> <span class="o">*</span> <span class="p">.</span><span class="mi">6</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;px; height: &#39;</span> <span class="o">+</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">round</span> <span class="p">(</span><span class="nx">cacophony</span><span class="p">.</span><span class="nx">height</span> <span class="o">*</span> <span class="p">.</span><span class="mi">35</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;px; background-color: rgba(255, 255, 255, .7); padding: 20px; text-align: left; border-radius: 10px&quot;&gt;&#39;</span> <span class="o">+</span>
 		<span class="s1">&#39;&lt;form onsubmit=&quot;return input_save (this)&quot; style=&quot;display: inline&quot;&gt;&#39;</span> <span class="o">+</span>
 		<span class="s1">&#39;&lt;p&gt;&#39;</span> <span class="o">+</span> <span class="nx">data</span><span class="p">.</span><span class="nx">msg</span> <span class="o">+</span> <span class="s1">&#39;&lt;/p&gt;&#39;</span> <span class="o">+</span>
-		<span class="s1">&#39;&lt;p&gt;&lt;input type=&quot;text&quot; id=&quot;input-field&quot; name=&quot;input-field&quot; value=&quot;&#39;</span> <span class="o">+</span> <span class="nx">data</span><span class="p">.</span><span class="nx">value</span> <span class="o">+</span> <span class="s1">&#39;&quot; style=&quot;border: 1px solid #666; width: 70%; height: 20px&quot; /&gt;&#39;</span> <span class="o">+</span>
+		<span class="s1">&#39;&lt;p&gt;&lt;input type=&quot;text&quot; id=&quot;input-field&quot; name=&quot;input-field&quot; value=&quot;&#39;</span> <span class="o">+</span> <span class="nx">data</span><span class="p">.</span><span class="nx">value</span> <span class="o">+</span> <span class="s1">&#39;&quot; &#39;</span> <span class="o">+</span> <span class="nx">autocomplete</span> <span class="o">+</span> <span class="s1">&#39; style=&quot;border: 1px solid #666; width: 70%; height: 20px&quot; /&gt;&#39;</span> <span class="o">+</span>
 		<span class="s1">&#39;&amp;nbsp;&lt;input type=&quot;submit&quot; value=&quot;Submit&quot; /&gt;&amp;nbsp;&lt;a href=&quot;#&quot; onclick=&quot;return input_cancel ()&quot;&gt;Cancel&lt;/a&gt;&lt;/p&gt;&#39;</span> <span class="o">+</span>
 		<span class="s1">&#39;&lt;/form&gt;&lt;/div&gt;&#39;</span><span class="p">);</span>
 <span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-3">             <td class="docs">               <div class="octowrap">                 <a class="octothorpe" href="#section-3">#</a>               </div>               <p>Request viewer input as a multiline text box. The <code>jump_to</code>

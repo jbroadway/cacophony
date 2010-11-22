@@ -5,7 +5,8 @@ var input_thanks,
 	input_jump_to,
 	input_options = [],
 	input_value = 'Default',
-	input_choice = false;
+	input_choice = false,
+	input_autocomplete;
 
 // Request viewer input as a single-line text box. The `jump_to`
 // option will optionally call `cacophony.jumpTo()` after the
@@ -19,9 +20,17 @@ var input_thanks,
 //
 //     {a:'input_text', d:{
 //         msg: 'Please enter your name',
+//         thanks: 'Thanks for your input',
+//         value: 'Initial value',
 //         save_to: '/save_input.php',
 //         jump_to: 10
 //     }}
+//
+// Auto-complete is also possible, but you must include your own
+// copy of jQuery UI. This way, Cacophony avoids conflicts with
+// existing sites should we provide our own.
+//
+// Usage:
 //
 //     {a:'input_text', d:{
 //         msg: 'Please enter your city',
@@ -38,11 +47,18 @@ function input_text (data) {
 		data.value = '';
 	}
 
+	if (data.autocomplete) {
+		input_autocomplete = data.autocomplete;
+		autocomplete = 'onfocus="$(this).autocomplete ({source: input_autocomplete})"';
+	} else {
+		autocomplete = '';
+	}
+
 	cacophony.html (
 		'<div style="width: ' + Math.round (cacophony.width * .6) + 'px; height: ' + Math.round (cacophony.height * .35) + 'px; background-color: rgba(255, 255, 255, .7); padding: 20px; text-align: left; border-radius: 10px">' +
 		'<form onsubmit="return input_save (this)" style="display: inline">' +
 		'<p>' + data.msg + '</p>' +
-		'<p><input type="text" id="input-field" name="input-field" value="' + data.value + '" style="border: 1px solid #666; width: 70%; height: 20px" />' +
+		'<p><input type="text" id="input-field" name="input-field" value="' + data.value + '" ' + autocomplete + ' style="border: 1px solid #666; width: 70%; height: 20px" />' +
 		'&nbsp;<input type="submit" value="Submit" />&nbsp;<a href="#" onclick="return input_cancel ()">Cancel</a></p>' +
 		'</form></div>');
 }
