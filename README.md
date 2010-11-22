@@ -66,3 +66,22 @@ and follow the instructions found in each.
 You can also refer to the `examples/demo.html` file for a complete example, including a
 functioning storyline, and callbacks for integrating the player into your page
 in various ways.
+
+### API Documentation
+
+* [Cacophony](docs/cacophony.html)
+* [Settings](docs/settings.html)
+* [Story](docs/story.html)
+* Built-in effects:
+  * [Core](docs/core.html)
+  * [Circles](docs/circles.html)
+  * [Context](docs/context.html)
+  * [Cube](docs/cube.html)
+  * [Datafeed](docs/datafeed.html)
+  * [Flicker](docs/flicker.html)
+  * [Input](docs/input.html)
+  * [Lyrics](docs/lyrics.html)
+  * [Ribbon](docs/ribbon.html)
+  * [Skyline](docs/skyline.html)
+  * [Three](docs/three.html)
+  * [Volume](docs/volume.html)
