@@ -687,19 +687,20 @@ var cacophony = (function ($) {
 		}
 	}
 
-	// Register a function to be managed on play/pause.
+	// Register a function to be managed on play/pause. To be used in
+	// place of `setInterval()`.
 	c.addInterval = function (k, ms) {
 		intervals.push ({f: k, t: false, m: ms});
 	}
 
-	// Starts interval-based functions.
+	// Starts interval-based functions on play.
 	c.setIntervals = function () {
 		for (var i = 0; i < intervals.length; i++) {
 			intervals[i].t = setInterval (intervals[i].f, intervals[i].m);
 		}
 	}
 
-	// Stops interval-based functions.
+	// Stops interval-based functions on pause.
 	c.clearIntervals = function () {
 		for (var i = 0; i < intervals.length; i++) {
 			clearInterval (intervals[i].t);
