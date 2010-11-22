@@ -67,21 +67,33 @@ You can also refer to the `examples/demo.html` file for a complete example, incl
 functioning storyline, and callbacks for integrating the player into your page
 in various ways.
 
+### Examples
+
+* [Basic demo](http://www.cacophonyjs.com/examples/demo.html)
+* [Branching/looping video](http://www.cacophonyjs.com/examples/branching.html)
+* [Embedded advertising](http://www.cacophonyjs.com/examples/advertising.html)
+* [Embedded ContextFree.js](http://www.cacophonyjs.com/examples/context.html)
+* [Embedded Harmony ribbon pen](http://www.cacophonyjs.com/examples/ribbon.html)
+* [Embedded Three.js](http://www.cacophonyjs.com/examples/three.html)
+* [Input with autocomplete](http://www.cacophonyjs.com/examples/autocomplete.html)
+* [Parallax effect](http://www.cacophonyjs.com/examples/parallax.html)
+* [Slideshow from Flickr](http://www.cacophonyjs.com/examples/datafeed.html)
+
 ### API Documentation
 
-* [Cacophony](docs/cacophony.html)
-* [Settings](docs/settings.html)
-* [Story](docs/story.html)
+* [Cacophony](http://www.cacophonyjs.com/docs/cacophony.html)
+* [Settings](http://www.cacophonyjs.com/docs/settings.html)
+* [Story](http://www.cacophonyjs.com/docs/story.html)
 * Built-in effects:
-  * [Core](docs/core.html)
-  * [Circles](docs/circles.html)
-  * [Context](docs/context.html)
-  * [Cube](docs/cube.html)
-  * [Datafeed](docs/datafeed.html)
-  * [Flicker](docs/flicker.html)
-  * [Input](docs/input.html)
-  * [Lyrics](docs/lyrics.html)
-  * [Ribbon](docs/ribbon.html)
-  * [Skyline](docs/skyline.html)
-  * [Three](docs/three.html)
-  * [Volume](docs/volume.html)
+  * [Core](http://www.cacophonyjs.com/docs/core.html)
+  * [Circles](http://www.cacophonyjs.com/docs/circles.html)
+  * [Context](http://www.cacophonyjs.com/docs/context.html)
+  * [Cube](http://www.cacophonyjs.com/docs/cube.html)
+  * [Datafeed](http://www.cacophonyjs.com/docs/datafeed.html)
+  * [Flicker](http://www.cacophonyjs.com/docs/flicker.html)
+  * [Input](http://www.cacophonyjs.com/docs/input.html)
+  * [Lyrics](http://www.cacophonyjs.com/docs/lyrics.html)
+  * [Ribbon](http://www.cacophonyjs.com/docs/ribbon.html)
+  * [Skyline](http://www.cacophonyjs.com/docs/skyline.html)
+  * [Three](http://www.cacophonyjs.com/docs/three.html)
+  * [Volume](http://www.cacophonyjs.com/docs/volume.html)
