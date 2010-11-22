@@ -4,6 +4,7 @@
 var flicker_img,
 	panel1, panel2, panel3, panel4,
 	panel_timeout = false,
+	panel_dur = 100,
 	seq = [],
 	seq_img = false,
 	seq_dur = 100,
@@ -18,6 +19,12 @@ var flicker_img,
 //
 //     {a:'flicker', d:{img: 'pix/image.png', duration: 1}}
 function flicker (data) {
+	var dur = (data.duration) ? cacophony.beatLength () * data.duration : cacophony.beatLength () * .375;
+	if (! cacophony.playing) {
+		setTimeout (flicker, dur);
+		return;
+	}
+
 	if (flicker_img) {
 		cacophony.canvas.remove (flicker_img);
 		flicker_img = false;
@@ -35,7 +42,6 @@ function flicker (data) {
 	flicker_img.dHeight = cacophony.height;
 	cacophony.canvas.append (flicker_img);
 
-	var dur = (data.duration) ? cacophony.beatLength () * data.duration : cacophony.beatLength () * .375;
 	setTimeout (flicker, dur);
 }
 
@@ -101,6 +107,10 @@ function flicker_parallax (data) {
 // Handle parallax updating on timer or mousemove.
 function flicker_parallax_update (m) {
 	if (m !== true) {
+		if (! cacophony.playing) {
+			setTimeout (flicker_parallax_update, 65);
+			return;
+		}
 		if (flicker_layers.length > 0) {
 			for (var i = 0; i < flicker_layers.length; i++) {
 				if (flicker_auto_direction == 'right') {
@@ -194,12 +204,17 @@ function flicker_panels (data) {
 	panel4.dHeight = cacophony.height / 2;
 	cacophony.canvas.append (panel4);
 
-	var dur = (data.duration) ? cacophony.beatLength () * data.duration : cacophony.beatLength () * .375;
-	panel_timeout = setTimeout (four_panel_clear, dur);
+	panel_dur = (data.duration) ? cacophony.beatLength () * data.duration : cacophony.beatLength () * .375;
+	panel_timeout = setTimeout (four_panel_clear, panel_dur);
 }
 
 // Clear panels.
 function four_panel_clear () {
+	if (! cacophony.playing) {
+		panel_timeout = setTimeout (four_panel_clear, panel_dur);
+		return;
+	}
+
 	if (panel1) {
 		cacophony.canvas.remove (panel1);
 		cacophony.canvas.remove (panel2);
@@ -225,6 +240,11 @@ function flicker_sequence (data) {
 	if (data) {
 		seq_dur = (data.duration) ? cacophony.beatLength () * data.duration : cacophony.beatLength () * .375;
 		seq = data.images;
+	}
+
+	if (! cacophony.playing) {
+		setTimeout ('flicker_sequence ();', seq_dur);
+		return;
 	}
 
 	if (seq_img) {

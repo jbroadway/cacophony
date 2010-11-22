@@ -22,6 +22,12 @@ function bg_fade_to (data, alpha) {
 	if (! alpha) {
 		alpha = 0.1;
 	}
+
+	if (! cacophony.playing) {
+		setTimeout ('bg_fade_to ({colour: "' + data.colour + '"}, ' + alpha + ')', cacophony.beatLength () / 12);
+		return;
+	}
+
 	cacophony.bg2.fill = data.colour.replace ('%d', alpha);
 	if (alpha >= 0.98) {
 		cacophony.bg.fill = data.colour.replace ('%d', 1);
@@ -42,6 +48,11 @@ function bg_fade_in (op) {
 		op = 10;
 	} else {
 		op -= 1;
+	}
+
+	if (! cacophony.playing) {
+		setTimeout ('bg_fade_in (' + op + ');', 53);
+		return;
 	}
 
 	if (! f) {
@@ -72,6 +83,12 @@ function bg_fade_out (op) {
 	if (! op) {
 		op = 0;
 	}
+
+	if (! cacophony.playing) {
+		setTimeout ('bg_fade_out (' + op + ');', 53);
+		return;
+	}
+
 	op += 0.8;
 
 	if (! f) {

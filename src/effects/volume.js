@@ -26,6 +26,11 @@ function volume_fade (data) {
 		volume_fade_amt = (cacophony.getVolume () - data.to) / 10;
 	}
 
+	if (! cacophony.playing) {
+		setTimeout (volume_fade, volume_fade_dur / 10);
+		return;
+	}
+
 	cacophony.setVolume (cacophony.getVolume () - volume_fade_amt);
 	if (Math.round (cacophony.getVolume () * 100) != (volume_fade_to * 100)) {
 		setTimeout (volume_fade, volume_fade_dur / 10);

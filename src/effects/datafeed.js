@@ -29,6 +29,11 @@ function datafeed_slideshow (data) {
 		datafeed_slideshow_duration = (data.duration) ? data.duration : 4;
 	}
 
+	if (! cacophony.playing) {
+		setTimeout (datafeed_slideshow, cacophony.beatLength () * datafeed_slideshow_duration);
+		return;
+	}
+
 	if (datafeed_slideshow_img) {
 		cacophony.canvas.remove (datafeed_slideshow_img);
 		datafeed_slideshow_img = false;
