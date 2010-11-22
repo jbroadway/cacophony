@@ -20,6 +20,11 @@ of beats.</p>
 		<span class="nx">volume_fade_amt</span> <span class="o">=</span> <span class="p">(</span><span class="nx">cacophony</span><span class="p">.</span><span class="nx">getVolume</span> <span class="p">()</span> <span class="o">-</span> <span class="nx">data</span><span class="p">.</span><span class="nx">to</span><span class="p">)</span> <span class="o">/</span> <span class="mi">10</span><span class="p">;</span>
 	<span class="p">}</span>
 
+	<span class="k">if</span> <span class="p">(</span><span class="o">!</span> <span class="nx">cacophony</span><span class="p">.</span><span class="nx">playing</span><span class="p">)</span> <span class="p">{</span>
+		<span class="nx">setTimeout</span> <span class="p">(</span><span class="nx">volume_fade</span><span class="p">,</span> <span class="nx">volume_fade_dur</span> <span class="o">/</span> <span class="mi">10</span><span class="p">);</span>
+		<span class="k">return</span><span class="p">;</span>
+	<span class="p">}</span>
+
 	<span class="nx">cacophony</span><span class="p">.</span><span class="nx">setVolume</span> <span class="p">(</span><span class="nx">cacophony</span><span class="p">.</span><span class="nx">getVolume</span> <span class="p">()</span> <span class="o">-</span> <span class="nx">volume_fade_amt</span><span class="p">);</span>
 	<span class="k">if</span> <span class="p">(</span><span class="nb">Math</span><span class="p">.</span><span class="nx">round</span> <span class="p">(</span><span class="nx">cacophony</span><span class="p">.</span><span class="nx">getVolume</span> <span class="p">()</span> <span class="o">*</span> <span class="mi">100</span><span class="p">)</span> <span class="o">!=</span> <span class="p">(</span><span class="nx">volume_fade_to</span> <span class="o">*</span> <span class="mi">100</span><span class="p">))</span> <span class="p">{</span>
 		<span class="nx">setTimeout</span> <span class="p">(</span><span class="nx">volume_fade</span><span class="p">,</span> <span class="nx">volume_fade_dur</span> <span class="o">/</span> <span class="mi">10</span><span class="p">);</span>

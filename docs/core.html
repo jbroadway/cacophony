@@ -18,6 +18,12 @@ Colour must be specified as <code>rgba()</code> with <code>%d</code> for the alp
 	<span class="k">if</span> <span class="p">(</span><span class="o">!</span> <span class="nx">alpha</span><span class="p">)</span> <span class="p">{</span>
 		<span class="nx">alpha</span> <span class="o">=</span> <span class="mf">0.1</span><span class="p">;</span>
 	<span class="p">}</span>
+
+	<span class="k">if</span> <span class="p">(</span><span class="o">!</span> <span class="nx">cacophony</span><span class="p">.</span><span class="nx">playing</span><span class="p">)</span> <span class="p">{</span>
+		<span class="nx">setTimeout</span> <span class="p">(</span><span class="s1">&#39;bg_fade_to ({colour: &quot;&#39;</span> <span class="o">+</span> <span class="nx">data</span><span class="p">.</span><span class="nx">colour</span> <span class="o">+</span> <span class="s1">&#39;&quot;}, &#39;</span> <span class="o">+</span> <span class="nx">alpha</span> <span class="o">+</span> <span class="s1">&#39;)&#39;</span><span class="p">,</span> <span class="nx">cacophony</span><span class="p">.</span><span class="nx">beatLength</span> <span class="p">()</span> <span class="o">/</span> <span class="mi">12</span><span class="p">);</span>
+		<span class="k">return</span><span class="p">;</span>
+	<span class="p">}</span>
+
 	<span class="nx">cacophony</span><span class="p">.</span><span class="nx">bg2</span><span class="p">.</span><span class="nx">fill</span> <span class="o">=</span> <span class="nx">data</span><span class="p">.</span><span class="nx">colour</span><span class="p">.</span><span class="nx">replace</span> <span class="p">(</span><span class="s1">&#39;%d&#39;</span><span class="p">,</span> <span class="nx">alpha</span><span class="p">);</span>
 	<span class="k">if</span> <span class="p">(</span><span class="nx">alpha</span> <span class="o">&gt;=</span> <span class="mf">0.98</span><span class="p">)</span> <span class="p">{</span>
 		<span class="nx">cacophony</span><span class="p">.</span><span class="nx">bg</span><span class="p">.</span><span class="nx">fill</span> <span class="o">=</span> <span class="nx">data</span><span class="p">.</span><span class="nx">colour</span><span class="p">.</span><span class="nx">replace</span> <span class="p">(</span><span class="s1">&#39;%d&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
@@ -36,6 +42,11 @@ of the bottom canvas set to alpha 0.</p>
 		<span class="nx">op</span> <span class="o">=</span> <span class="mi">10</span><span class="p">;</span>
 	<span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
 		<span class="nx">op</span> <span class="o">-=</span> <span class="mi">1</span><span class="p">;</span>
+	<span class="p">}</span>
+
+	<span class="k">if</span> <span class="p">(</span><span class="o">!</span> <span class="nx">cacophony</span><span class="p">.</span><span class="nx">playing</span><span class="p">)</span> <span class="p">{</span>
+		<span class="nx">setTimeout</span> <span class="p">(</span><span class="s1">&#39;bg_fade_in (&#39;</span> <span class="o">+</span> <span class="nx">op</span> <span class="o">+</span> <span class="s1">&#39;);&#39;</span><span class="p">,</span> <span class="mi">53</span><span class="p">);</span>
+		<span class="k">return</span><span class="p">;</span>
 	<span class="p">}</span>
 
 	<span class="k">if</span> <span class="p">(</span><span class="o">!</span> <span class="nx">f</span><span class="p">)</span> <span class="p">{</span>
@@ -64,6 +75,12 @@ of the bottom canvas set to alpha 0.</p>
 	<span class="k">if</span> <span class="p">(</span><span class="o">!</span> <span class="nx">op</span><span class="p">)</span> <span class="p">{</span>
 		<span class="nx">op</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
 	<span class="p">}</span>
+
+	<span class="k">if</span> <span class="p">(</span><span class="o">!</span> <span class="nx">cacophony</span><span class="p">.</span><span class="nx">playing</span><span class="p">)</span> <span class="p">{</span>
+		<span class="nx">setTimeout</span> <span class="p">(</span><span class="s1">&#39;bg_fade_out (&#39;</span> <span class="o">+</span> <span class="nx">op</span> <span class="o">+</span> <span class="s1">&#39;);&#39;</span><span class="p">,</span> <span class="mi">53</span><span class="p">);</span>
+		<span class="k">return</span><span class="p">;</span>
+	<span class="p">}</span>
+
 	<span class="nx">op</span> <span class="o">+=</span> <span class="mf">0.8</span><span class="p">;</span>
 
 	<span class="k">if</span> <span class="p">(</span><span class="o">!</span> <span class="nx">f</span><span class="p">)</span> <span class="p">{</span>

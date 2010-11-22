@@ -2,6 +2,7 @@
 of images, and images in a parallax effect.</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="kd">var</span> <span class="nx">flicker_img</span><span class="p">,</span>
 	<span class="nx">panel1</span><span class="p">,</span> <span class="nx">panel2</span><span class="p">,</span> <span class="nx">panel3</span><span class="p">,</span> <span class="nx">panel4</span><span class="p">,</span>
 	<span class="nx">panel_timeout</span> <span class="o">=</span> <span class="kc">false</span><span class="p">,</span>
+	<span class="nx">panel_dur</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span>
 	<span class="nx">seq</span> <span class="o">=</span> <span class="p">[],</span>
 	<span class="nx">seq_img</span> <span class="o">=</span> <span class="kc">false</span><span class="p">,</span>
 	<span class="nx">seq_dur</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span>
@@ -14,6 +15,12 @@ of images, and images in a parallax effect.</p>             </td>             <t
 
 <pre><code>{a:'flicker', d:{img: 'pix/image.png', duration: 1}}
 </code></pre>             </td>             <td class="code">               <div class="highlight"><pre><span class="kd">function</span> <span class="nx">flicker</span> <span class="p">(</span><span class="nx">data</span><span class="p">)</span> <span class="p">{</span>
+	<span class="kd">var</span> <span class="nx">dur</span> <span class="o">=</span> <span class="p">(</span><span class="nx">data</span><span class="p">.</span><span class="nx">duration</span><span class="p">)</span> <span class="o">?</span> <span class="nx">cacophony</span><span class="p">.</span><span class="nx">beatLength</span> <span class="p">()</span> <span class="o">*</span> <span class="nx">data</span><span class="p">.</span><span class="nx">duration</span> <span class="o">:</span> <span class="nx">cacophony</span><span class="p">.</span><span class="nx">beatLength</span> <span class="p">()</span> <span class="o">*</span> <span class="p">.</span><span class="mi">375</span><span class="p">;</span>
+	<span class="k">if</span> <span class="p">(</span><span class="o">!</span> <span class="nx">cacophony</span><span class="p">.</span><span class="nx">playing</span><span class="p">)</span> <span class="p">{</span>
+		<span class="nx">setTimeout</span> <span class="p">(</span><span class="nx">flicker</span><span class="p">,</span> <span class="nx">dur</span><span class="p">);</span>
+		<span class="k">return</span><span class="p">;</span>
+	<span class="p">}</span>
+
 	<span class="k">if</span> <span class="p">(</span><span class="nx">flicker_img</span><span class="p">)</span> <span class="p">{</span>
 		<span class="nx">cacophony</span><span class="p">.</span><span class="nx">canvas</span><span class="p">.</span><span class="nx">remove</span> <span class="p">(</span><span class="nx">flicker_img</span><span class="p">);</span>
 		<span class="nx">flicker_img</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
@@ -31,7 +38,6 @@ of images, and images in a parallax effect.</p>             </td>             <t
 	<span class="nx">flicker_img</span><span class="p">.</span><span class="nx">dHeight</span> <span class="o">=</span> <span class="nx">cacophony</span><span class="p">.</span><span class="nx">height</span><span class="p">;</span>
 	<span class="nx">cacophony</span><span class="p">.</span><span class="nx">canvas</span><span class="p">.</span><span class="nx">append</span> <span class="p">(</span><span class="nx">flicker_img</span><span class="p">);</span>
 
-	<span class="kd">var</span> <span class="nx">dur</span> <span class="o">=</span> <span class="p">(</span><span class="nx">data</span><span class="p">.</span><span class="nx">duration</span><span class="p">)</span> <span class="o">?</span> <span class="nx">cacophony</span><span class="p">.</span><span class="nx">beatLength</span> <span class="p">()</span> <span class="o">*</span> <span class="nx">data</span><span class="p">.</span><span class="nx">duration</span> <span class="o">:</span> <span class="nx">cacophony</span><span class="p">.</span><span class="nx">beatLength</span> <span class="p">()</span> <span class="o">*</span> <span class="p">.</span><span class="mi">375</span><span class="p">;</span>
 	<span class="nx">setTimeout</span> <span class="p">(</span><span class="nx">flicker</span><span class="p">,</span> <span class="nx">dur</span><span class="p">);</span>
 <span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-3">             <td class="docs">               <div class="octowrap">                 <a class="octothorpe" href="#section-3">#</a>               </div>               <p>Flicker a set of images in multiple layers (specified from back to front)
 on the screen using a parallax effect. Can move automatically to the left
@@ -92,20 +98,26 @@ or right by specifying <code>auto:true</code> and an optional direction (default
 	<span class="p">}</span>
 <span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-4">             <td class="docs">               <div class="octowrap">                 <a class="octothorpe" href="#section-4">#</a>               </div>               <p>Handle parallax updating on timer or mousemove.</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="kd">function</span> <span class="nx">flicker_parallax_update</span> <span class="p">(</span><span class="nx">m</span><span class="p">)</span> <span class="p">{</span>
 	<span class="k">if</span> <span class="p">(</span><span class="nx">m</span> <span class="o">!==</span> <span class="kc">true</span><span class="p">)</span> <span class="p">{</span>
-		<span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">flicker_layers</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
-			<span class="k">if</span> <span class="p">(</span><span class="nx">flicker_auto_direction</span> <span class="o">==</span> <span class="s1">&#39;right&#39;</span><span class="p">)</span> <span class="p">{</span>
-				<span class="kd">var</span> <span class="nx">newx</span> <span class="o">=</span> <span class="nx">flicker_layers</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">x</span> <span class="o">+</span> <span class="p">(((</span><span class="nx">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="mi">2</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">);</span>
-				<span class="k">if</span> <span class="p">(</span><span class="nx">newx</span> <span class="o">&lt;</span> <span class="nx">flicker_layers</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">maxx</span><span class="p">)</span> <span class="p">{</span>
-					<span class="nx">flicker_layers</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">x</span> <span class="o">=</span> <span class="nx">newx</span><span class="p">;</span>
-				<span class="p">}</span>
-			<span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-				<span class="kd">var</span> <span class="nx">newx</span> <span class="o">=</span> <span class="nx">flicker_layers</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">x</span> <span class="o">-</span> <span class="p">(((</span><span class="nx">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="mi">2</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">);</span>
-				<span class="k">if</span> <span class="p">(</span><span class="nx">newx</span> <span class="o">&gt;</span> <span class="nx">flicker_layers</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">minx</span><span class="p">)</span> <span class="p">{</span>
-					<span class="nx">flicker_layers</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">x</span> <span class="o">=</span> <span class="nx">newx</span><span class="p">;</span>
+		<span class="k">if</span> <span class="p">(</span><span class="o">!</span> <span class="nx">cacophony</span><span class="p">.</span><span class="nx">playing</span><span class="p">)</span> <span class="p">{</span>
+			<span class="nx">setTimeout</span> <span class="p">(</span><span class="nx">flicker_parallax_update</span><span class="p">,</span> <span class="mi">65</span><span class="p">);</span>
+			<span class="k">return</span><span class="p">;</span>
+		<span class="p">}</span>
+		<span class="k">if</span> <span class="p">(</span><span class="nx">flicker_layers</span><span class="p">.</span><span class="nx">length</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+			<span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">flicker_layers</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+				<span class="k">if</span> <span class="p">(</span><span class="nx">flicker_auto_direction</span> <span class="o">==</span> <span class="s1">&#39;right&#39;</span><span class="p">)</span> <span class="p">{</span>
+					<span class="kd">var</span> <span class="nx">newx</span> <span class="o">=</span> <span class="nx">flicker_layers</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">x</span> <span class="o">+</span> <span class="p">(((</span><span class="nx">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="mi">2</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">);</span>
+					<span class="k">if</span> <span class="p">(</span><span class="nx">newx</span> <span class="o">&lt;</span> <span class="nx">flicker_layers</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">maxx</span><span class="p">)</span> <span class="p">{</span>
+						<span class="nx">flicker_layers</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">x</span> <span class="o">=</span> <span class="nx">newx</span><span class="p">;</span>
+					<span class="p">}</span>
+				<span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+					<span class="kd">var</span> <span class="nx">newx</span> <span class="o">=</span> <span class="nx">flicker_layers</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">x</span> <span class="o">-</span> <span class="p">(((</span><span class="nx">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="mi">2</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">);</span>
+					<span class="k">if</span> <span class="p">(</span><span class="nx">newx</span> <span class="o">&gt;</span> <span class="nx">flicker_layers</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">minx</span><span class="p">)</span> <span class="p">{</span>
+						<span class="nx">flicker_layers</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">x</span> <span class="o">=</span> <span class="nx">newx</span><span class="p">;</span>
+					<span class="p">}</span>
 				<span class="p">}</span>
 			<span class="p">}</span>
+			<span class="nx">setTimeout</span> <span class="p">(</span><span class="nx">flicker_parallax_update</span><span class="p">,</span> <span class="mi">65</span><span class="p">);</span>
 		<span class="p">}</span>
-		<span class="nx">setTimeout</span> <span class="p">(</span><span class="nx">flicker_parallax_update</span><span class="p">,</span> <span class="mi">65</span><span class="p">);</span>
 		<span class="k">return</span><span class="p">;</span>
 	<span class="p">}</span>
 
@@ -178,9 +190,14 @@ top-left, top-right, bottom-right, bottom-left).</p>
 	<span class="nx">panel4</span><span class="p">.</span><span class="nx">dHeight</span> <span class="o">=</span> <span class="nx">cacophony</span><span class="p">.</span><span class="nx">height</span> <span class="o">/</span> <span class="mi">2</span><span class="p">;</span>
 	<span class="nx">cacophony</span><span class="p">.</span><span class="nx">canvas</span><span class="p">.</span><span class="nx">append</span> <span class="p">(</span><span class="nx">panel4</span><span class="p">);</span>
 
-	<span class="kd">var</span> <span class="nx">dur</span> <span class="o">=</span> <span class="p">(</span><span class="nx">data</span><span class="p">.</span><span class="nx">duration</span><span class="p">)</span> <span class="o">?</span> <span class="nx">cacophony</span><span class="p">.</span><span class="nx">beatLength</span> <span class="p">()</span> <span class="o">*</span> <span class="nx">data</span><span class="p">.</span><span class="nx">duration</span> <span class="o">:</span> <span class="nx">cacophony</span><span class="p">.</span><span class="nx">beatLength</span> <span class="p">()</span> <span class="o">*</span> <span class="p">.</span><span class="mi">375</span><span class="p">;</span>
-	<span class="nx">panel_timeout</span> <span class="o">=</span> <span class="nx">setTimeout</span> <span class="p">(</span><span class="nx">four_panel_clear</span><span class="p">,</span> <span class="nx">dur</span><span class="p">);</span>
+	<span class="nx">panel_dur</span> <span class="o">=</span> <span class="p">(</span><span class="nx">data</span><span class="p">.</span><span class="nx">duration</span><span class="p">)</span> <span class="o">?</span> <span class="nx">cacophony</span><span class="p">.</span><span class="nx">beatLength</span> <span class="p">()</span> <span class="o">*</span> <span class="nx">data</span><span class="p">.</span><span class="nx">duration</span> <span class="o">:</span> <span class="nx">cacophony</span><span class="p">.</span><span class="nx">beatLength</span> <span class="p">()</span> <span class="o">*</span> <span class="p">.</span><span class="mi">375</span><span class="p">;</span>
+	<span class="nx">panel_timeout</span> <span class="o">=</span> <span class="nx">setTimeout</span> <span class="p">(</span><span class="nx">four_panel_clear</span><span class="p">,</span> <span class="nx">panel_dur</span><span class="p">);</span>
 <span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-7">             <td class="docs">               <div class="octowrap">                 <a class="octothorpe" href="#section-7">#</a>               </div>               <p>Clear panels.</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="kd">function</span> <span class="nx">four_panel_clear</span> <span class="p">()</span> <span class="p">{</span>
+	<span class="k">if</span> <span class="p">(</span><span class="o">!</span> <span class="nx">cacophony</span><span class="p">.</span><span class="nx">playing</span><span class="p">)</span> <span class="p">{</span>
+		<span class="nx">panel_timeout</span> <span class="o">=</span> <span class="nx">setTimeout</span> <span class="p">(</span><span class="nx">four_panel_clear</span><span class="p">,</span> <span class="nx">panel_dur</span><span class="p">);</span>
+		<span class="k">return</span><span class="p">;</span>
+	<span class="p">}</span>
+
 	<span class="k">if</span> <span class="p">(</span><span class="nx">panel1</span><span class="p">)</span> <span class="p">{</span>
 		<span class="nx">cacophony</span><span class="p">.</span><span class="nx">canvas</span><span class="p">.</span><span class="nx">remove</span> <span class="p">(</span><span class="nx">panel1</span><span class="p">);</span>
 		<span class="nx">cacophony</span><span class="p">.</span><span class="nx">canvas</span><span class="p">.</span><span class="nx">remove</span> <span class="p">(</span><span class="nx">panel2</span><span class="p">);</span>
@@ -204,6 +221,11 @@ to show each image for.</p>
 	<span class="k">if</span> <span class="p">(</span><span class="nx">data</span><span class="p">)</span> <span class="p">{</span>
 		<span class="nx">seq_dur</span> <span class="o">=</span> <span class="p">(</span><span class="nx">data</span><span class="p">.</span><span class="nx">duration</span><span class="p">)</span> <span class="o">?</span> <span class="nx">cacophony</span><span class="p">.</span><span class="nx">beatLength</span> <span class="p">()</span> <span class="o">*</span> <span class="nx">data</span><span class="p">.</span><span class="nx">duration</span> <span class="o">:</span> <span class="nx">cacophony</span><span class="p">.</span><span class="nx">beatLength</span> <span class="p">()</span> <span class="o">*</span> <span class="p">.</span><span class="mi">375</span><span class="p">;</span>
 		<span class="nx">seq</span> <span class="o">=</span> <span class="nx">data</span><span class="p">.</span><span class="nx">images</span><span class="p">;</span>
+	<span class="p">}</span>
+
+	<span class="k">if</span> <span class="p">(</span><span class="o">!</span> <span class="nx">cacophony</span><span class="p">.</span><span class="nx">playing</span><span class="p">)</span> <span class="p">{</span>
+		<span class="nx">setTimeout</span> <span class="p">(</span><span class="s1">&#39;flicker_sequence ();&#39;</span><span class="p">,</span> <span class="nx">seq_dur</span><span class="p">);</span>
+		<span class="k">return</span><span class="p">;</span>
 	<span class="p">}</span>
 
 	<span class="k">if</span> <span class="p">(</span><span class="nx">seq_img</span><span class="p">)</span> <span class="p">{</span>

@@ -44,8 +44,7 @@ file name, for example:</p>
 
 <pre><code>{a:'flicker', d:{img: 'ribbon', duration: 1}}
 </code></pre>             </td>             <td class="code">               <div class="highlight"><pre><span class="kd">function</span> <span class="nx">ribbon_off</span> <span class="p">()</span> <span class="p">{</span>
-	<span class="nx">flatten</span><span class="p">();</span>
-	<span class="nx">ribbon_img</span> <span class="o">=</span> <span class="nx">flattenCanvas</span><span class="p">.</span><span class="nx">toDataURL</span><span class="p">(</span><span class="s1">&#39;image/png&#39;</span><span class="p">);</span>
+	<span class="nx">ribbon_img</span> <span class="o">=</span> <span class="nx">canvas</span><span class="p">.</span><span class="nx">toDataURL</span><span class="p">(</span><span class="s1">&#39;image/png&#39;</span><span class="p">);</span>
 	<span class="nx">_i</span><span class="p">[</span><span class="s1">&#39;ribbon&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">createElement</span> <span class="p">(</span><span class="s1">&#39;img&#39;</span><span class="p">);</span>
 	<span class="nx">_i</span><span class="p">[</span><span class="s1">&#39;ribbon&#39;</span><span class="p">].</span><span class="nx">src</span> <span class="o">=</span> <span class="nx">ribbon_img</span><span class="p">;</span>
 
