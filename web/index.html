@@ -1,0 +1,156 @@
+<html>
+<head>
+<title>Cacophony - An interactive video player in HTML5 and Javascript.</title>
+<link rel="stylesheet" type="text/css" href="style.css" />
+</head>
+<body>
+
+<div id="wrapper">
+
+<h1>Cacophony</h1>
+
+<p>A tool for creating and viewing interactive videos, especially
+music videos, using HTML5 and Javascript. Interactive elements
+include visuals/story adapting in response to user input as
+text, mouse movement, drawings, and choices (choose-your-own-adventure).</p>
+
+<p>Input from the viewer can affect the subsequent video, and also
+be sent to a server for integration with other web applications
+(social networking, sharing, geotagging), which is possible
+because effects are rendered on-the-fly in the browser, not
+pre-rendered like traditional video. Input can also come from
+external sources (RSS, JSON), so you can integrate external
+data, or previously generated data, back into subsequent
+views of the video.</p>
+
+<p>New effects can be written in Javascript, and several frameworks
+are already integrated into existing effects, including:</p>
+
+<ul>
+<li><a href="http://code.google.com/p/cakejs/">Cake.js</a></li>
+<li><a href="http://code.google.com/p/contextfree/">ContextFree.js</a></li>
+<li><a href="http://mrdoob.com/projects/harmony/">Harmony</a></li>
+<li><a href="http://github.com/mrdoob/three.js/">Three.js</a></li>
+<li><a href="http://jquery.com/">jQuery</a></li>
+</ul>
+
+<p>The basic elements of a Cacophony video are:</p>
+
+<ul>
+<li>An HTML5 Video on the base layer</li>
+<li>A series of HTML5 Canvas layers above that</li>
+<li>A timeline of effects to be triggered to the beat of the song
+(see <code>js/story.js</code>)</li>
+<li>Images to be used by the actions</li>
+<li>EQ data for the song (see <code>eq_data</code> below on generating this data)</li>
+</ul>
+
+<p>The official homepage of Cacophony is <a href="http://www.cacophonyjs.com/">www.cacophonyjs.com</a>.</p>
+
+<p>Copyright 2010, <a href="http://www.johnnybroadway.com/">Johnny Broadway</a>.
+Released under the <a href="http://opensource.org/licenses/gpl-2.0.php">GPL Version 2</a> license.</p>
+
+<h3>Usage</h3>
+
+<p><strong>Step 1:</strong> Include the scripts and stylesheet in your <code>&lt;head&gt;</code>:</p>
+
+<pre><code>&lt;script type="text/javascript" src="js/jquery-1.4.2.min.js"&gt;&lt;/script&gt;
+&lt;script type="text/javascript" src="js/cacophony.min.js"&gt;&lt;/script&gt;
+&lt;script type="text/javascript" src="js/settings.js"&gt;&lt;/script&gt;
+&lt;script type="text/javascript" src="js/story.js"&gt;&lt;/script&gt;
+&lt;link rel="stylesheet" type="text/css" href="css/cacophony.min.css" /&gt;
+</code></pre>
+
+<p><strong>Step 2:</strong> Create an element like this in your page, note the ID must be 'cacophony':</p>
+
+<pre><code>&lt;div id="cacophony"&gt;&lt;/div&gt;
+</code></pre>
+
+<p><strong>Step 3:</strong> Add the following script to your web page:</p>
+
+<pre><code>&lt;script type="text/javascript"&gt;
+$(document).ready (function () {
+    cacophony.init ();
+});
+&lt;/script&gt;
+</code></pre>
+
+<p><strong>Step 4:</strong> Copy the <code>build/settings.js</code> and <code>build/story.js</code> files into your site
+and follow the instructions found in each.</p>
+
+<p>You can also refer to the <code>examples/demo.html</code> file for a complete example, including a
+functioning storyline, and callbacks for integrating the player into your page
+in various ways.</p>
+
+<h3>Examples</h3>
+
+<ul>
+<li><a href="http://www.cacophonyjs.com/examples/demo.html">Basic demo</a></li>
+<li><a href="http://www.cacophonyjs.com/examples/branching.html">Branching/looping video</a></li>
+<li><a href="http://www.cacophonyjs.com/examples/advertising.html">Embedded advertising</a></li>
+<li><a href="http://www.cacophonyjs.com/examples/context.html">Embedded ContextFree.js</a></li>
+<li><a href="http://www.cacophonyjs.com/examples/ribbon.html">Embedded Harmony ribbon pen</a></li>
+<li><a href="http://www.cacophonyjs.com/examples/three.html">Embedded Three.js</a></li>
+<li><a href="http://www.cacophonyjs.com/examples/autocomplete.html">Input with autocomplete</a></li>
+<li><a href="http://www.cacophonyjs.com/examples/parallax.html">Parallax effect</a></li>
+<li><a href="http://www.cacophonyjs.com/examples/datafeed.html">Slideshow from Flickr</a></li>
+<li><a href="http://www.cacophonyjs.com/examples/scrubber.html">Time scrubber</a></li>
+</ul>
+
+<h3>Tutorials</h3>
+
+<ul>
+<li><a href="http://www.cacophonyjs.com/tutorials/customizing.html">Customizing the player</a></li>
+<li><a href="http://www.cacophonyjs.com/tutorials/effects.html">Writing a custom effect</a></li>
+</ul>
+
+<h3>API Documentation</h3>
+
+<ul>
+<li><a href="http://www.cacophonyjs.com/docs/cacophony.html">Cacophony</a></li>
+<li><a href="http://www.cacophonyjs.com/docs/settings.html">Settings</a></li>
+<li><a href="http://www.cacophonyjs.com/docs/story.html">Story</a></li>
+<li>Built-in effects:
+<ul><li><a href="http://www.cacophonyjs.com/docs/core.html">Core</a></li>
+<li><a href="http://www.cacophonyjs.com/docs/circles.html">Circles</a></li>
+<li><a href="http://www.cacophonyjs.com/docs/context.html">Context</a></li>
+<li><a href="http://www.cacophonyjs.com/docs/cube.html">Cube</a></li>
+<li><a href="http://www.cacophonyjs.com/docs/datafeed.html">Datafeed</a></li>
+<li><a href="http://www.cacophonyjs.com/docs/flicker.html">Flicker</a></li>
+<li><a href="http://www.cacophonyjs.com/docs/input.html">Input</a></li>
+<li><a href="http://www.cacophonyjs.com/docs/lyrics.html">Lyrics</a></li>
+<li><a href="http://www.cacophonyjs.com/docs/ribbon.html">Ribbon</a></li>
+<li><a href="http://www.cacophonyjs.com/docs/skyline.html">Skyline</a></li>
+<li><a href="http://www.cacophonyjs.com/docs/three.html">Three</a></li>
+<li><a href="http://www.cacophonyjs.com/docs/volume.html">Volume</a></li></ul></li>
+</ul>
+
+<h3>Compatibility</h3>
+
+<p>Cacophony is compatible with the following browsers:</p>
+
+<ul>
+<li>Firefox 3.6+</li>
+<li>Safari 5+</li>
+<li>Google Chrome 7+</li>
+<li>Opera 10.6+</li>
+<li>Internet Explorer 9</li>
+<li>Internet Explorer 6, 7, 8 through the Google Chrome Frame plugin</li>
+</ul>
+
+<p>The core player is also compatible with iOS 4.2+ devices, however some
+effects will render videos unplayable on current iOS devices (iPhone 4G,
+original iPad). As such, iOS support is disabled by default, but can be
+enabled in your <code>settings.js</code> file with the following setting change:</p>
+
+<pre><code>cacophony.enable_ipad = true;
+</code></pre>
+
+<hr />
+
+<p>Brought to you by <a href="http://www.johnnybroadway.com/">Johnny Broadway</a></p>
+
+</div>
+
+</body>
+</html>

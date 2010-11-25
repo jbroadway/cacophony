@@ -1,0 +1,40 @@
+body {
+	margin: 0px;
+	padding: 0px;
+	border-top: 10px solid #bbb;
+	border-bottom: 10px solid #bbb;
+	font-family: Georgia;
+	color: #444;
+	background-color: #f5f5f5;
+}
+a {
+	color: #468;
+}
+a:hover {
+	color: #864;
+}
+hr {
+	border: 0px none;
+	border-bottom: 1px solid #bbb;
+}
+pre, code {
+	border: 1px solid #ddd;
+	padding-left: 3px;
+	padding-right: 3px;
+	margin-left: 1px;
+	margin-right: 1px;
+	color: #333;
+	background-color: #fafafa;
+}
+pre {
+	padding: 3px;
+}
+pre>code {
+	border: 0px none;
+	padding: 0px;
+	margin: 0px;
+}
+div#wrapper {
+	margin: 50px auto 50px auto;
+	width: 570px;
+}
