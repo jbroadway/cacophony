@@ -744,6 +744,12 @@ var cacophony = (function ($) {
 	// place of `setInterval()`.
 	c.addInterval = function (k, ms) {
 		intervals.push ({f: k, t: false, m: ms});
+		return intervals.length - 1;
+	}
+
+	// Remove an interval function. To be used in place of `clearInterval()`.
+	c.removeInterval = function (i) {
+		intervals = intervals.slice (i, 1);
 	}
 
 	// Starts interval-based functions on play.
