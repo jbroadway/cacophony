@@ -72,6 +72,11 @@
 //     {a:'skyline_on'}
 //     {a:'skyline_off'}
 //
+// An interactive bouncing circles effect:
+//
+//     {a:'sparkles_on'}
+//     {a:'sparkles_off'}
+//
 // Render ContextFree.js code:
 //
 //     {a:'context_on', d: "code here"}
