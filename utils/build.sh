@@ -26,6 +26,7 @@ cat ../src/lib/cake.min.js \
 	../src/effects/volume.js \
 	../src/effects/skyline.js \
 	../src/effects/circles.js \
+	../src/effects/sparkles.js \
 	../src/effects/three.js \
 	../src/effects/cube.js > ../build/cacophony.js
 
