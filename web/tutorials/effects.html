@@ -13,15 +13,79 @@
 
 <p><a href="http://www.cacophonyjs.com/">&laquo; Home</a></p>
 
+<p>In this tutorial, we will create a new effect for the Cacophony player,
+and explore the structure of an effect script, how to include it in your
+video, and how to work with the Cacophony API including timing and
+mouse-based interactions.</p>
+
+<hr />
+
+<h3>Script Outline</h3>
+
+<p>The outline of an effect script is made up of three parts:</p>
+
+<ol>
+	<li>Variable declarations</li>
+	<li>A function for each effect</li>
+	<li>Registering the effects</li>
+</ol>
+
+<p>This takes the basic form:</p>
+
+<pre><code>// Variables for this set of effects
+var myeffect_var1,
+    myeffect_var2;
+
+// Functions to handle the effects themselves
+function myeffect_one (data) {
+    // d:{param1:value, param2:value} become
+    // data.param1 and data.param2 here
+}
+
+// Register the effects
+_e['myeffect_one'] = myeffect_one;
+</code></pre>
+
+<p>Note that everything uses a consistent naming convention of
+<code>prefix_</code> to ensure names of variables and functions
+are unique to your effect.</p>
+
+<p>Also note how parameters are passed into a function as a single
+<code>data</code> value, which is the <code>d:{}</code> object
+from the story file. For optional parameters, checking for their
+existence and setting default values is as easy as:</p>
+
+<pre><code>myeffect_var1 = (data.param1) ? data.param1 : 'default';
+</code></pre>
+
+<p>Registering the effects lets Cacophony know about them, so only
+registered functions can be called from the storyline.</p>
+
+<hr />
+
+<h3>Using Your Effect</h3>
+
+<p>Once you've created your effect script, you simply include it
+in your HTML file as you normally would:</p>
+
+<pre><code>&lt;script type="text/javascript" src="js/myeffect.js"&gt;&lt;/script&gt;
+</code></pre>
+
+<p>Now you can use your new effect in your story line like any other:</p>
+
+<pre><code>_s[0] = [
+    {a:'myeffect_one', d:{param1:'value', param2:'value'}}
+];
+</code></pre>
+
+<hr />
+
+<h3>A Real Example</h3>
+
+<p>Now let's look at a real example that explores some of the different
+ways of interacting with the Cacophony player.</p>
+
 <pre>
-Outline of an effect script
-	Naming conventions
-	Variables
-	Functions
-		Parameters
-	Registering the effects
-Including your script
-	Adding it to the story
 A real example
 	The cacophony object
 	Working with timing
@@ -30,6 +94,23 @@ A real example
 	Working with the mouse
 	Showing/hiding layers
 </pre>
+
+<hr />
+
+<h3>Where to From Here</h3>
+
+<p>Cacophony includes a number of built-in effects, all documented with
+usage examples, that you can learn from in the <code>src/effects</code>
+folder. This is a great place to learn how existing effects have been
+made and get ideas for your own.</p>
+
+<p>You can also refer to these in a more convenient format in the
+<a href="http://www.cacophonyjs.com/docs/">API documentation</a>, where
+comments are more clearly outlined and the syntax for the related code
+is highlighted.</p>
+
+<p>Questions are also welcome on the <a href="http://groups.google.com/group/cacophonyjs">Cacophony Google Group</a>,
+so join in and get involved!</p>
 
 <hr />
 
