@@ -43,6 +43,9 @@ pre>code {
 	padding: 0px;
 	margin: 0px;
 }
+code>b {
+	color: #864;
+}
 div#wrapper {
 	margin: 50px auto 50px auto;
 	width: 570px;

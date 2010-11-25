@@ -82,6 +82,7 @@ in various ways.
 * [Input with autocomplete](http://www.cacophonyjs.com/examples/autocomplete.html)
 * [Parallax effect](http://www.cacophonyjs.com/examples/parallax.html)
 * [Slideshow from Flickr](http://www.cacophonyjs.com/examples/datafeed.html)
+* [Sparkles](http://www.cacophonyjs.com/examples/sparkles.html)
 * [Time scrubber](http://www.cacophonyjs.com/examples/scrubber.html)
 
 ### Tutorials

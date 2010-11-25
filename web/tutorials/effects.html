@@ -83,7 +83,112 @@ in your HTML file as you normally would:</p>
 <h3>A Real Example</h3>
 
 <p>Now let's look at a real example that explores some of the different
-ways of interacting with the Cacophony player.</p>
+ways of interacting with the Cacophony player. We're going to dissect the
+<code>sparkles.js</code> effect and see how each piece comes into play.
+You'll find the final script in the <code>src/effects/sparkles.js</code>
+file. You can also see an example of the
+<a href="http://www.cacophonyjs.com/examples/sparkles.html">effect here</a>.</p>
+
+<h4>Basic Outline</h4>
+
+<p>First, we need functions to be registered, and an array to store the
+list of sparkle objects we'll be creating.</p>
+
+<pre><code>var sparkles = [];
+
+function sparkles_on (data) {
+    // Create a sparkle object and add it to the canvas.
+}
+
+function sparkles_off () {
+	// Remove the sparkle objects from the canvas.
+}
+
+// Register the effects.
+_e['sparkles_on'] = sparkles_on;
+_e['sparkles_off'] = sparkles_off;
+</code></pre>
+
+<p>Next, we want to update the effect on an interval, so we'll use the
+<code>cacophony.addInterval()</code> and <code>cacophony.removeInterval()</code>
+methods to control this, and create a new function for that as well.</p>
+
+<pre><code>var sparkles = []<b>,
+    sparkles_interval = false</b>;
+
+function sparkles_on (data) {
+    // Create a sparkle object and add it to the canvas.
+
+    <b>// Update every 25ms.
+    sparkles_interval = cacophony.addInterval (sparkles_update, 25);</b>
+}
+
+function sparkles_off () {
+    <b>// Remove the interval updates.
+    cacophony.removeInterval (sparkles_interval);
+    sparkles_interval = false;</b>
+
+    // Remove the sparkle objects from the canvas.
+}
+
+<b>function sparkles_update () {
+    // Update the sparkles on interval.
+}</b>
+
+// Register the effects.
+_e['sparkles_on'] = sparkles_on;
+_e['sparkles_off'] = sparkles_off;
+</code></pre>
+
+<p>We also want our effect to react to the mouse, so let's create another
+function for that and register it as a mousemove callback.</p>
+
+<pre><code>var sparkles = [],
+    sparkles_interval = false;
+
+function sparkles_on (data) {
+    // Create a sparkle object and add it to the canvas.
+
+    // Update every 25ms.
+    sparkles_interval = cacophony.addInterval (sparkles_update, 25);
+}
+
+function sparkles_off () {
+    // Remove the interval updates.
+    cacophony.removeInterval (sparkles_interval);
+    sparkles_interval = false;
+
+    // Remove the sparkle objects from the canvas.
+}
+
+function sparkles_update () {
+    // Update the sparkles on interval.
+}
+
+<b>function sparkles_mousemove () {
+    // Update the sparkles on mousemove.
+}
+
+// Register a mousemove callback for the effect.
+cacophony.mousemove (function () {
+    if (sparkles_interval === false) {
+        // Don't call if the effect is not active.
+        return;
+    }
+
+    sparkles_mousemove ();
+});</b>
+
+// Register the effects.
+_e['sparkles_on'] = sparkles_on;
+_e['sparkles_off'] = sparkles_off;
+</code></pre>
+
+<p>Notice that we check the <code>sparkles_interval</code> value before
+calling our callback function. This is so we don't bother to run it
+unless the effect is active. Cacophony will only call mousemove functions
+if the player is playing, but we can further limit when it's called with
+our own state checking.</p>
 
 <pre>
 A real example
