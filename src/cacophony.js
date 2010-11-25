@@ -86,6 +86,8 @@ var cacophony = (function ($) {
 		interval_length = 125,
 		beat = 0,
 		new_beat = false,
+		new_time = false,
+		on_beat = false,
 		beats = [],
 		key = 'c',
 		eq, bg, bg2,
@@ -125,6 +127,9 @@ var cacophony = (function ($) {
 	c.scale = 32;
 	c.bg;
 	c.bg2;
+
+	// The current beat of the song.
+	c.beat = 0;
 
 	// The EQ data for the current beat.
 	c.eq;
@@ -166,7 +171,9 @@ var cacophony = (function ($) {
 		loading: false,
 		ready: false,
 		play: false,
-		pause: false
+		pause: false,
+		timeupdate: false,
+		ended: false
 	};
 
 	// This is a list of effects available as actions to a video's story.
@@ -211,6 +218,9 @@ var cacophony = (function ($) {
 
 	// Has the video ended.
 	c.ended = false;
+
+	// Duration of the video. Available after loading is complete.
+	c.duration = false;
 
 	// Sets the list of videos to play. It's a list so you can
 	// specify multiple formats.
@@ -349,6 +359,7 @@ var cacophony = (function ($) {
 			percent += Math.round (Math.random () * 5 + 1);
 			if (percent >= 100) {
 				is_playable = true;
+				c.duration = song.duration;
 				if (c.callback.ready) {
 					return c.callback.ready ();
 				}
@@ -363,6 +374,7 @@ var cacophony = (function ($) {
 
 		if (song.readyState == 4 || ($.browser.mozilla && song.readyState >= 2) || ($.browser.msie && song.readyState >= 3)) {
 			is_playable = true;
+			c.duration = song.duration;
 			if (c.callback.ready) {
 				return c.callback.ready ();
 			}
@@ -453,11 +465,17 @@ var cacophony = (function ($) {
 
 		$('#cacophony-video').bind ('timeupdate', function () {
 			c.displayTime ();
+			if (c.callback.timeupdate) {
+				return c.callback.timeupdate (song.currentTime);
+			}
 		});
 
 		$('#cacophony-video').bind ('ended', function () {
 			c.pause ();
 			c.ended = true;
+			if (c.callback.ended) {
+				return c.callback.ended ();
+			}
 		});
 
 		// Set the main loop in motion.
@@ -519,6 +537,9 @@ var cacophony = (function ($) {
 			return false;
 		}
 
+		on_beat = true;
+		c.beat = beat;
+
 		if (c.eq_data[beat]) {
 			bn = c.eq_data[beat]; // Get the next `eq_data` value.
 			eq = bn.e;
@@ -544,11 +565,19 @@ var cacophony = (function ($) {
 			song.currentTime = song.currentTime + ((new_beat - beat) * beat_length);
 			beat = Math.ceil (new_beat);
 			new_beat = false;
+			new_time = false;
 			c.downBeat (song.currentTime);
 			return;
 		}
 
 		beat++;
+
+		on_beat = false;
+	}
+
+	// Converts seconds to beats.
+	c.timeToBeat = function (s) {
+		return Math.floor (s / beat_length);
 	}
 
 	// Jump to the specified beat of the song. Actually tells `c.downBeat()`
@@ -558,6 +587,30 @@ var cacophony = (function ($) {
 			c.play ();
 		}
 		new_beat = b;
+		new_time = false;
+	}
+
+	// Jump to the specified point in the song by seconds instead of beat.
+	// Useful for implementing a visual scrubber using the timeupdate callback.
+	// Unlike `c.jumpTo()`, this method allows you to control whether to resume
+	// playback after the jump, and the default is not to resume playback.
+	// `c.jumpToTime()` also doesn't wait for the next beat to finish, unless
+	// the beat is in progress, since it would also be called outside of the
+	// story.
+	c.jumpToTime = function (s, play_if_paused) {
+		if (! play && play_if_paused) {
+			c.play ();
+		}
+		new_time = s;
+		new_beat = c.timeToBeat (s);
+		if (on_beat) {
+			return;
+		}
+		song.currentTime = new_time;
+		beat = new_beat;
+		new_beat = false;
+		new_time = false;
+		c.downBeat (song.currentTime);
 	}
 
 	// Renders the specified html into the canvas (`#cacophony-canvas1`).
