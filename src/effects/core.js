@@ -117,6 +117,15 @@ function core_jump_to (data) {
 	cacophony.jumpTo (data);
 }
 
+// Jump to the specified point in the song in seconds.
+//
+// Usage:
+//
+//     {a:'jump_to_time', d:12.3456}
+function core_jump_to_time (data) {
+	cacophony.jumpToTime (data);
+}
+
 // Pause the video.
 //
 // Usage:
@@ -198,6 +207,7 @@ _e['bg_fade_to'] = bg_fade_to;
 _e['bg_fade_in'] = bg_fade_in;
 _e['bg_fade_out'] = bg_fade_out;
 _e['jump_to'] = core_jump_to;
+_e['jump_to_time'] = core_jump_to_time;
 _e['pause'] = core_pause;
 _e['continue'] = core_continue;
 _e['html'] = core_html;
