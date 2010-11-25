@@ -28,14 +28,19 @@ The basic elements of a Cacophony video are:
 * An HTML5 Video on the base layer
 * A series of HTML5 Canvas layers above that
 * A timeline of effects to be triggered to the beat of the song
-  (see `js/story.js`)
-* Images to be used by the actions
-* EQ data for the song (see `eq_data` below on generating this data)
+* Images and other elements to be used by the effects
 
 The official homepage of Cacophony is [www.cacophonyjs.com](http://www.cacophonyjs.com/).
 
 Copyright 2010, [Johnny Broadway](http://www.johnnybroadway.com/).
 Released under the [GPL Version 2](http://opensource.org/licenses/gpl-2.0.php) license.
+
+### Download/Links
+
+* [Releases](http://github.com/jbroadway/cacophony/downloads)
+* [Source](http://github.com/jbroadway/cacophony)
+* [Google Group](http://groups.google.com/group/cacophonyjs)
+* [Bug Reports](http://github.com/jbroadway/cacophony/issues)
 
 ### Usage
 
