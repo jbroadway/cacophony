@@ -1,15 +1,14 @@
-## Cacophony
+# Cacophony
 
 A tool for creating and viewing interactive videos, especially
 music videos, using HTML5 and Javascript. Interactive elements
 include visuals/story adapting in response to user input as
-text, mouse movement, drawings, and choices (choose-your-own-
-adventure).
+text, mouse movement, drawings, and choices (choose-your-own-adventure).
 
 Input from the viewer can affect the subsequent video, and also
 be sent to a server for integration with other web applications
 (social networking, sharing, geotagging), which is possible
-because the video is rendered on-the-fly in the browser, not
+because effects are rendered on-the-fly in the browser, not
 pre-rendered like traditional video. Input can also come from
 external sources (RSS, JSON), so you can integrate external
 data, or previously generated data, back into subsequent
@@ -78,6 +77,12 @@ in various ways.
 * [Input with autocomplete](http://www.cacophonyjs.com/examples/autocomplete.html)
 * [Parallax effect](http://www.cacophonyjs.com/examples/parallax.html)
 * [Slideshow from Flickr](http://www.cacophonyjs.com/examples/datafeed.html)
+* [Time scrubber](http://www.cacophonyjs.com/examples/scrubber.html)
+
+### Tutorials
+
+* [Customizing the player](http://www.cacophonyjs.com/tutorials/customizing.html)
+* [Writing a custom effect](http://www.cacophonyjs.com/tutorials/effects.html)
 
 ### API Documentation
 
@@ -97,3 +102,25 @@ in various ways.
   * [Skyline](http://www.cacophonyjs.com/docs/skyline.html)
   * [Three](http://www.cacophonyjs.com/docs/three.html)
   * [Volume](http://www.cacophonyjs.com/docs/volume.html)
+
+### Compatibility
+
+Cacophony is compatible with the following browsers:
+
+* Firefox 3.6+
+* Safari 5+
+* Google Chrome 7+
+* Opera 10.6+
+* Internet Explorer 9
+* Internet Explorer 6, 7, 8 through the Google Chrome Frame plugin
+
+The core player is also compatible with iOS 4.2+ devices, however some
+effects will render videos unplayable on current iOS devices (iPhone 4G,
+original iPad). As such, iOS support is disabled by default, but can be
+enabled in your `settings.js` file with the following setting change:
+
+    cacophony.enable_ipad = true;
+
+-----
+
+Brought to you by [Johnny Broadway](http://www.johnnybroadway.com/)
