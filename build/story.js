@@ -8,6 +8,7 @@
 //     {a:'pause', d:4}
 //     {a:'continue'}
 //     {a:'jump_to', d:1}
+//     {a:'jump_to_time', d:12.3456}
 //
 // Background colour effects:
 //
