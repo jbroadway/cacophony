@@ -744,6 +744,9 @@ var cacophony = (function ($) {
 	// place of `setInterval()`.
 	c.addInterval = function (k, ms) {
 		intervals.push ({f: k, t: false, m: ms});
+		if (play) {
+			intervals[intervals.length - 1].t = setInterval (k, ms);
+		}
 		return intervals.length - 1;
 	}
 
