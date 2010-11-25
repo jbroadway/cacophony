@@ -13,42 +13,381 @@
 
 <p><a href="http://www.cacophonyjs.com/">&laquo; Home</a></p>
 
-<pre>
-Basic setup
-	headers
-	div
-	init
-	settings
-	story
-Style-able elements
-	cacophony
-		cacophony-duration
-			cacophony-play
-			cacophony-time
-		cacophony-video-wrapper
-			cacophony-video
-		cacophony-canvas1
-		cacophony-canvas2
-		cacophony-canvas3
-		cacophony-canvas4
-Callbacks
-	browser_check(message, compatible)
-	loading(percent)
-	ready()
-	play()
-	pause()
-	timeupdate(time)
-	ended()
-Other properties
-	playing
-	input
-	beat
-	duration
-	wrapper
-	canvas
-	width/height
-	ended
-</pre>
+<p>This tutorial is mainly a reference for the different elements of the
+Cacophony player and how to use each of them to configure and customize
+the player to your needs.</p>
+
+<hr />
+
+<h3>Basic Setup</h3>
+
+The initial steps to setting up a new Cacophony player go as follows:
+
+<p><strong>Step 1:</strong> Include the scripts and stylesheet in your <code>&lt;head&gt;</code>:</p> 
+ 
+<pre><code>&lt;script type="text/javascript" src="js/jquery-1.4.2.min.js"&gt;&lt;/script&gt;
+&lt;script type="text/javascript" src="js/cacophony.min.js"&gt;&lt;/script&gt;
+&lt;script type="text/javascript" src="js/settings.js"&gt;&lt;/script&gt;
+&lt;script type="text/javascript" src="js/story.js"&gt;&lt;/script&gt;
+&lt;link rel="stylesheet" type="text/css" href="css/cacophony.min.css" /&gt;
+</code></pre> 
+ 
+<p><strong>Step 2:</strong> Create an element like this in your page, note the ID must be 'cacophony':</p> 
+ 
+<pre><code>&lt;div id="cacophony"&gt;&lt;/div&gt;
+</code></pre> 
+ 
+<p><strong>Step 3:</strong> Add the following script to your web page:</p> 
+ 
+<pre><code>&lt;script type="text/javascript"&gt;
+$(document).ready (function () {
+    cacophony.init ();
+});
+&lt;/script&gt;
+</code></pre> 
+ 
+<p><strong>Step 4:</strong> Copy the <code>build/settings.js</code> and
+<code>build/story.js</code> files into your site and follow the instructions
+found in each.</p>
+
+<hr />
+
+<h3>The Settings File</h3>
+
+<p>Here is where you configure the basic settings of the player. Each is commented
+so you can see what to enter for each value. Here is also where you'll need to add
+your videos and other files (images, data feeds).</p>
+
+<h5>Video</h5>
+
+<p>HTML5 videos need to be provided in multiple formats in order to work in
+the various web browsers, since they haven't all agreed on a single common video
+format. For maximum compatibility, you'll need 3 formats: H.264, WebM, and Theora.</p>
+
+<p>A more in-depth overview of the different formats and which browsers support
+them is available on <a href="http://diveintohtml5.org/video.html#what-works">diveintohtml5.org here</a>.</p>
+
+<p>A tool that has worked well for me for converting between formats is the free
+<a href="http://www.mirovideoconverter.com/">Miro Video Converter</a>.</p>
+
+<p>Once you have converted your videos, add them to your site and refer to them
+like this:</p>
+
+<pre><code>cacophony.setVideo (
+	'video/my_video.mp4',
+	'video/my_video.webm',
+	'video/my_video.ogv'
+);
+</code></pre>
+
+<h5>Images</h5>
+
+<p>If you're using any static images in your video, you'll need to preload them
+so they're ready when they need to be called. To do this, add them to your site
+and refer to them in the <code>cacophony.preloadImages()</code> setting like this:</p>
+
+<pre><code>cacophony.preloadImages (
+	'pix/one.png',
+	'pix/two.png',
+	'pix/three.png'
+);
+</code></pre>
+
+<hr />
+
+<h5>Data Feeds</h5>
+
+<p>Some Cacophony effects can take advantage of RSS or JSON data feeds, meaning
+data from external sources can be used in your videos. To add a feed, specify
+the file in the <code>cacophony.preloadData()</code> setting like this:</p>
+
+<pre><code>cacophony.preloadData (
+	'example.rss',
+	'example.json'
+);
+</code></pre>
+
+<p>Note that data feeds are retrieved via a <code>jQuery.ajax()</code> request,
+which means that for security reasons they cannot be retrieved from other
+domains than the one the video is hosted on. However, you can easily write
+a server-side script to retrieve external feeds, cache them locally to improve
+load times, and serve them to the video directly. An example of that in PHP,
+cached using the memcached extension, would be as simple as this:</p>
+
+<pre><code>&lt;?php
+
+$url = 'http://www.example.com/feed.rss';
+
+$m = new Memcached ();
+$m->addServer ('localhost', 11211);
+
+if (! ($data = $m->get ($url))) {
+	$data = file_get_contents ($url);
+	$m->set ($url, $data, 3600);
+}
+
+header ('Content-Type: application/rss+xml');
+echo $data;
+exit;
+
+?&gt;
+</code></pre>
+
+<hr />
+
+<h3>The Story File</h3>
+
+<p>Like the settings file, the story file provides further info for the Cacophony
+player about your video. The file describes a series of effects that should be
+triggered in sequence to the specified beats of the song or video.</p>
+
+<p>The format is a Javascript array of beats, each containing an array of objects
+describing the effect to be triggered and parameters to pass to it. For example:</p>
+
+<pre><code>_s[0] = [
+	{a:'bg_fade_in'}
+];
+
+_s[1] = [
+	{a:'bg_colour', d:{colour:'#900'}}
+];
+
+_s[2] = [
+	{a:'bg_fade_out'}
+];
+</code></pre>
+
+<p>The above story tells Cacophony to fade in on the first beat, change the
+background color to #900 on the second beat, and to fade out on the third beat.</p>
+
+<p><code>_s[]</code> is the story array, an alias for <code>cacophony.story</code>
+and the numbers are the beats, which depend on the beats-per-minute of the video.
+Note that this doesn't mean you have to make music videos with Cacophony, it's
+just a means of dividing the song into points where actions occur. So if you set
+the beats-per-minute to 60, actions will occur once every second. If you set it
+to 120, they will occur every half of a second, and if you set it to 600, they
+will occur every 100 milliseconds, and so on.</p>
+
+<p>Each action is an object containing an <code>a:</code> property specifying the
+action (which effect to trigger), and usually also a <code>d:</code> property
+specifying some data to pass to the effect. For example, in the story above we
+passed <code>d:{color:'#900'}</code> to the <code>bg_colour</code> effect.</p>
+
+<p>Examples of the data for each effect are listed in the default story file,
+and more documentation for each is available in the
+<a href="http://www.cacophonyjs.com/docs/">API documentation</a> as well.</p>
+
+<hr />
+
+<h3>Styleable Elements</h3>
+
+<p>Cacophony generates the following HTML structure for the player, which you
+can use to style however you want.</p>
+
+<pre><code>&lt;div id="cacophony"&gt;
+	&lt;div id="cacophony-duration"&gt;
+		&lt;div id="cacophony-play"&gt;&lt;/div&gt;
+		&lt;span id="cacophony-time"&gt;&lt;/span&gt;
+	&lt;/div&gt;
+	&lt;div id="cacophony-video-wrapper"&gt;
+		&lt;video id="cacophony-video"&gt;&lt;/video&gt;
+	&lt;/div&gt;
+	&lt;div id="cacophony-canvas1"&gt;
+		&lt;canvas&gt;&lt;/canvas&gt;
+	&lt;/div&gt;
+	&lt;div id="cacophony-canvas2"&gt;
+		&lt;canvas&gt;&lt;/canvas&gt;
+	&lt;/div&gt;
+	&lt;div id="cacophony-canvas3"&gt;
+		&lt;canvas&gt;&lt;/canvas&gt;
+	&lt;/div&gt;
+	&lt;div id="cacophony-canvas4"&gt;
+		&lt;canvas&gt;&lt;/canvas&gt;
+	&lt;/div&gt;
+&lt;/div&gt;
+</code></pre>
+
+<p>In the default CSS file, the player is centered and set to a default size
+of 854x480, with an extra 20px on top for the <code>div#cacophony-duration</code>,
+but you can override any style or create your own, as well as additional elements
+in the page for custom player controls. You can also use jQuery to modify the
+CSS for any element on the fly during video playback.</p>
+
+<hr />
+
+<h3>Callback Functions</h3>
+
+<p>Callback functions make it possible for Cacophony to communicate with your
+page and notify it when certain actions have occurred, allowing you to create
+functionality triggered by those actions. This includes things like play/pause
+updates, customizing the loading process, and being notified of when the video
+has ended (useful, for example, in auto-playing the next video in a series).</p>
+
+<p>Each available callback is listed below with an example of how you might
+use it.</p>
+
+<h4><code>browser_check(message, compatible)</code></h4>
+
+<p>Triggered during the initialization so you can handle browser incompatibility
+notices. Example:</p>
+
+<pre><code>cacophony.callback.browser_check = function (message, compatible) {
+	if (! compatible) {
+		// show an incompatible browser message
+		$('#incompatible').html (message).show ();
+	}
+}
+</code></pre>
+
+<h4><code>ended()</code></h4>
+
+<p>Triggered when the video has ended. Example:</p>
+
+<pre><code>cacophony.callback.ended = function () {
+	window.location = 'http://www.example.com/next-video.html';
+}
+</code></pre>
+
+<h4><code>loading(percent)</code></h4>
+
+<p>Triggered while the video is loading. Example:</p>
+
+<pre><code>cacophony.callback.loading = function (percent) {
+	// show the percent loaded
+	$('#percent').html (percent + '%');
+}
+</code></pre>
+
+<h4><code>play()</code></h4>
+
+<p>Triggered when the video has begun or resumed playing. Example:</p>
+
+<pre><code>cacophony.callback.play = function () {
+	alert ('Playing!');
+}
+</code></pre>
+
+<h4><code>pause()</code></h4>
+
+<p>Triggered when the video has been paused. Example:</p>
+
+<pre><code>cacophony.callback.play = function () {
+	alert ('Paused!');
+}
+</code></pre>
+
+<h4><code>ready()</code></h4>
+
+<p>Triggered when the video is loaded and ready to play. Example:</p>
+
+<pre><code>cacophony.callback.ready = function () {
+	// show the play button once it's loaded
+	$('#cacophony-duration').show ();
+}
+</code></pre>
+
+<h4><code>timeupdate(time)</code></h4>
+
+<p>Triggered by the video's ontimeupdate event throughout playback. Example:</p>
+
+<pre><code>cacophony.callback.timeupdate = function (time) {
+	// update a scrubber using a jQuery UI slider
+	$('#scrubber').slider ('option', 'value', time);
+}
+</code></pre>
+
+
+<hr />
+
+<h3>Useful Properties</h3>
+
+<p>In addition to the callbacks, you may need info about the video itself and its
+current state, which you can get by accessing the following properties of the
+<code>cacophony</code> object:</p>
+
+<h4><code>cacophony.beat</code></h4>
+
+<p>The current beat of the song.</p>
+
+<h4><code>cacophony.canvas</code></h4>
+
+<p>The Cake.js canvas object for the first canvas layer.</p>
+
+<h4><code>cacophony.duration</code></h4>
+
+<p>Duration of the video. Available after loading is complete.</p>
+
+<h4><code>cacophony.ended</code></h4>
+
+<p>Has the video ended.</p>
+
+<h4><code>cacophony.height</code></h4>
+
+<p>Height of the video (use <code>cacophony.setSize(w, h)</code> to modify).</p>
+
+<h4><code>cacophony.input</code></h4>
+
+<p>Set to true when an effect is accepting input, so Cacophony can stop listening
+for keyboard input while someone is typing, for example.</p>
+
+<h4><code>cacophony.playing</code></h4>
+
+<p>Whether the video is currently playing or not.</p>
+
+<h4><code>cacophony.width</code></h4>
+
+<p>Width of the video (use <code>cacophony.setSize(w, h)</code> to modify).</p>
+
+<h4><code>cacophony.wrapper</code></h4>
+
+<p>The jQuery object for the wrapper div.</p>
+
+<hr />
+
+<h3>Useful Methods</h3>
+
+<p>Here are some other useful methods of the <code>cacophony</code> object
+that you can use in customizing the player:</p>
+
+<h4><code>cacophony.beatLength()</code></h4>
+
+<p>Returns the length of a single beat in seconds.</p>
+
+<h4><code>cacophony.getVolume()</code></h4>
+
+<p>Returns the current volume, from 0 to 1.</p>
+
+<h4><code>cacophony.jumpTo(beat)</code></h4>
+
+<p>Jumps the player to the specified beat number in the song.</p>
+
+<h4><code>cacophony.jumpToTime(seconds)</code></h4>
+
+<p>Jumps the player to the specified point in the video in seconds.</p>
+
+<h4><code>cacophony.play()</code></h4>
+
+<p>Starts or resumes playback.</p>
+
+<h4><code>cacophony.playPause()</code></h4>
+
+<p>Toggles play/pause state.</p>
+
+<h4><code>cacophony.pause()</code></h4>
+
+<p>Pauses video playback.</p>
+
+<h4><code>cacophony.setSize(w, h)</code></h4>
+
+<p>Sets the size of the video player.</p>
+
+<h4><code>cacophony.setVolume(v)</code></h4>
+
+<p>Sets the volume, from 0 to 1.</p>
+
+<h4><code>cacophony.timeToBeat(seconds)</code></h4>
+
+<p>Returns the beat number for the specified time in the song.</p>
 
 <hr />
 

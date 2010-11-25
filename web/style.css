@@ -29,6 +29,15 @@ pre, code {
 pre {
 	padding: 3px;
 }
+h4 {
+	margin-bottom: -10px;
+	padding-bottom: 0px;
+}
+h5 {
+	font-size: 1em;
+	margin-bottom: -10px;
+	padding-bottom: 0px;
+}
 pre>code {
 	border: 0px none;
 	padding: 0px;

@@ -117,10 +117,10 @@ var cacophony = (function ($) {
 	// assume this will be left as-is).
 	c.id;
 
-	// Width of the video (use `cacophony.setWidthHeight(w, h)` to modify).
+	// Width of the video (use `cacophony.setSize(w, h)` to modify).
 	c.width = 854;
 
-	// Height of the video (use `cacophony.setWidthHeight(w, h)` to modify).
+	// Height of the video (use `cacophony.setSize(w, h)` to modify).
 	c.height = 480;
 
 	c.w = Math.floor (width / 128);
