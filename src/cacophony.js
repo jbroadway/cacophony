@@ -769,6 +769,13 @@ var cacophony = (function ($) {
 		}
 	}
 
+	// Helper function to calculate distance of two points.
+	c.dist = function (x1, y1, x2, y2) {
+		var dx = x1 - x2,
+			dy = y1 - y2;
+		return Math.sqrt (dx * dx + dy * dy);
+	}
+
 	return c;
 }(jQuery));
 

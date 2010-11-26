@@ -3,14 +3,7 @@
 var circles_state = false,
 	circle = [],
 	circle_fill = '#eee',
-	circle_max_dist = dist(0, 0, 400, 400);
-
-// Calculate distance of two points.
-function dist (x1, y1, x2, y2) {
-	var dx = x1 - x2,
-		dy = y1 - y2;
-	return Math.sqrt (dx * dx + dy * dy);
-}
+	circle_max_dist = cacophony.dist(0, 0, 400, 400);
 
 // Turn on the circles effect. Uses the mouse to move a series of
 // circles around the screen.
@@ -45,7 +38,7 @@ function circles () {
 	x = 0;
 	for (var i = 177; i <= 677; i += 20) {
 		for (var j = 40; j <= 440; j += 20) {
-			size = dist (cacophony.mousex, cacophony.mousey, i, j);
+			size = cacophony.dist (cacophony.mousex, cacophony.mousey, i, j);
 			size = size / circle_max_dist * 66;
 			if (circle[x]) {
 				circle[x].radius = size;
