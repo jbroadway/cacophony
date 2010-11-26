@@ -1,6 +1,7 @@
 Core
 * Loading done when all elements preloaded
 * Embeddable version with iframe
+* Use JSONP for remote data fetching
 
 Compatiblity
 * Firefox 4 vs 3.6 readyState
