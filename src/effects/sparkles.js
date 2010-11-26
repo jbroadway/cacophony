@@ -139,7 +139,7 @@ function sparkles_mousemove () {
     // Update each sparkle object's direction only if they're within
     // a certain distance of the mouse.
     for (var i = 0; i < sparkles.length; i++) {
-        if (dist (sparkles[i].x, sparkles[i].y,
+        if (cacophony.dist (sparkles[i].x, sparkles[i].y,
                   cacophony.mousex, cacophony.mousey) <= 25) {
             sparkles_react (i);
         }
