@@ -109,6 +109,8 @@ _e['sparkles_on'] = sparkles_on;
 _e['sparkles_off'] = sparkles_off;
 </code></pre>
 
+<h4>Timing and Intervals</h4>
+
 <p>Next, we want to update the effect on an interval, so we'll use the
 <code>cacophony.addInterval()</code> and <code>cacophony.removeInterval()</code>
 methods to control this, and create a new function for that as well.</p>
@@ -139,6 +141,12 @@ function sparkles_off () {
 _e['sparkles_on'] = sparkles_on;
 _e['sparkles_off'] = sparkles_off;
 </code></pre>
+
+<p>We can also use <code>setTimeout()</code> directly, but we need to make
+sure our callback functions "pause" if the video itself is paused. See the
+<code>flicker.js</code> code for examples of that.</p>
+
+<h4>Using the Mouse</h4>
 
 <p>We also want our effect to react to the mouse, so let's create another
 function for that and register it as a mousemove callback.</p>
@@ -190,15 +198,228 @@ unless the effect is active. Cacophony will only call mousemove functions
 if the player is playing, but we can further limit when it's called with
 our own state checking.</p>
 
-<pre>
-A real example
-	The cacophony object
-	Working with timing
-		Intervals
-		setTimeout()
-	Working with the mouse
-	Showing/hiding layers
-</pre>
+<h4>Adding/Manipulating Objects</h4>
+
+<p>Now we're ready to add the code to draw on our canvas. To do this,
+we use the <a href="http://code.google.com/p/cakejs/">Cake.js</a> library.
+We'll add 50 circles of random sizes, and
+remove them again in <code>sparkles_off()</code>. We'll also create a
+helper function for randomizing the initial values for size, position,
+direction, and opacity, called <code>sparkles_rand()</code>.</p>
+
+<pre><code>var sparkles = [],
+    sparkles_interval = false;
+    
+<b>// Helper function to get a random value between min and max,
+// optionally rounded.
+function sparkles_rand (min, max, round) {
+    var rand = min + (Math.random () * (max - min));
+    return (round) ? Math.round (rand) : rand;
+}</b>
+
+function sparkles_on (data) {
+    // Create a sparkle object and add it to the canvas.
+    <b>for (var i = 0; i &lt; 50; i++) {
+        // Create a new sparkle with random position, opacity,
+        // direction, and speed.
+
+        // Create a circle between 1-5px
+        sparkles[i] = new Circle (sparkles_rand (1, 5));
+
+        // Set its position to within 50px of center
+        sparkles[i].x = cacophony.width / 2 + sparkles_rand (-50, 50);
+        sparkles[i].y = cacophony.height / 2 + sparkles_rand (-50, 50);
+
+        // Give it a random opacity
+        sparkles[i]._opacity = Math.random();
+        sparkles[i].fill = 'rgba(255,255,255,' + sparkles[i]._opacity + ')';
+
+        cacophony.canvas.append (sparkles[i]);
+    }</b>
+
+    // Update every 25ms.
+    sparkles_interval = cacophony.addInterval (sparkles_update, 25);
+}
+
+function sparkles_off () {
+    // Remove the interval updates.
+    cacophony.removeInterval (sparkles_interval);
+    sparkles_interval = false;
+
+    // Remove the sparkle objects from the canvas.
+    <b>for (var i = 0; i &lt; sparkles.length; i++) {
+        cacophony.canvas.remove (sparkles[i]);
+    }
+    sparkles = [];</b>
+}
+
+function sparkles_update () {
+    // Update the sparkles on interval.
+}
+
+function sparkles_mousemove () {
+    // Update the sparkles on mousemove.
+}
+
+// Register a mousemove callback for the effect.
+cacophony.mousemove (function () {
+    if (sparkles_interval === false) {
+        // Don't call if the effect is not active.
+        return;
+    }
+
+    sparkles_mousemove ();
+});
+
+// Register the effects.
+_e['sparkles_on'] = sparkles_on;
+_e['sparkles_off'] = sparkles_off;
+</code></pre>
+
+<h4>The Cacophony Object</h4>
+
+<p>You can see we've made use a couple new properties and methods of the
+<code>cacophony</code> object, specifically:</p>
+
+<ul>
+	<li><code>cacophony.height</code></li>
+	<li><code>cacophony.width</code></li>
+	<li><code>cacophony.canvas.append (object)</code></li>
+	<li><code>cacophony.canvas.remove (object)</code></li>
+</ul>
+
+<p>These are likely the methods you'll use the most often in your effects.
+For a full list of properties and methods, see the
+<a href="http://www.cacophonyjs.com/docs/">API documentation</a>.</p>
+
+<h4>Updating Our Objects</h4>
+
+<p>We should now have a bunch of randomized circles drawn onto our
+video, but they don't do anything yet. Let's make them move on each
+interval, and also change their direction when they get too close to the
+mouse.</p>
+
+<pre><code>var sparkles = [],
+    sparkles_interval = false;
+    
+// Helper function to get a random value between min and max,
+// optionally rounded.
+function sparkles_rand (min, max, round) {
+    var rand = min + (Math.random () * (max - min));
+    return (round) ? Math.round (rand) : rand;
+}
+
+function sparkles_on (data) {
+    // Create a sparkle object and add it to the canvas.
+    for (var i = 0; i &lt; 50; i++) {
+        // Create a new sparkle with random position, opacity,
+        // direction, and speed.
+
+        // Create a circle between 1-5px
+        sparkles[i] = new Circle (sparkles_rand (1, 5));
+
+        // Set its position to within 50px of center
+        sparkles[i].x = cacophony.width / 2 + sparkles_rand (-50, 50);
+        sparkles[i].y = cacophony.height / 2 + sparkles_rand (-50, 50);
+
+        // Give it a random opacity
+        sparkles[i]._opacity = Math.random();
+        sparkles[i].fill = 'rgba(255,255,255,' + sparkles[i]._opacity + ')';
+
+        <b>// Give it a random initial direction and speed in x and y
+        sparkles[i]._dir = [
+            sparkles_rand (-2.5, 2.5),
+            sparkles_rand (-2.5, 2.5)
+        ];</b>
+
+        cacophony.canvas.append (sparkles[i]);
+    }
+
+    // Update every 25ms.
+    sparkles_interval = cacophony.addInterval (sparkles_update, 25);
+}
+
+function sparkles_off () {
+    // Remove the interval updates.
+    cacophony.removeInterval (sparkles_interval);
+    sparkles_interval = false;
+
+    // Remove the sparkle objects from the canvas.
+    for (var i = 0; i &lt; sparkles.length; i++) {
+        cacophony.canvas.remove (sparkles[i]);
+    }
+    sparkles = [];
+}
+
+function sparkles_update () {
+    // Update the sparkles on interval.
+
+    <b>for (var i = 0; i &lt; sparkles.length; i++) {
+        // Detect edges and reverse course
+        if (sparkles[i].x &lt; 0 || sparkles[i].y &gt; cacophony.width) {
+            sparkles[i]._dir[0] *= -1;
+        }
+        if (sparkles[i].y &lt; 0 || sparkles[i].y &gt; cacophony.height) {
+            sparkles[i]._dir[1] *= -1;
+        }
+
+        // Update the position
+        sparkles[i].x += sparkles[i]._dir[0];
+        sparkles[i].y += sparkles[i]._dir[1];
+    }</b>
+}
+
+function sparkles_mousemove () {
+    // Update the sparkles on mousemove.
+
+    <b>for (var i = 0; i &lt; sparkles.length; i++) {
+    	if (cacophony.dist (sparkles[i].x, sparkles[i].y,
+                  cacophony.mousex, cacophony.mousey) <= 25) {
+
+            if ((cacophony.mousex &gt; sparkles[i].x &&
+                 sparkles[i]._dir[0] &gt; 0) ||
+                (cacophony.mousex &lt; sparkles[i].x &&
+                 sparkles[i]._dir[0] &lt; 0)) {
+                sparkles[i]._dir[0] *= -1;
+            }
+
+            if ((cacophony.mousey &gt; sparkles[i].y &&
+                 sparkles[i]._dir[1] &gt; 0) ||
+                (cacophony.mousey &lt; sparkles[i].y &&
+                 sparkles[i]._dir[1] &lt; 0)) {
+                sparkles[i]._dir[1] *= -1;
+            }
+        }
+    }</b>
+}
+
+// Register a mousemove callback for the effect.
+cacophony.mousemove (function () {
+    if (sparkles_interval === false) {
+        // Don't call if the effect is not active.
+        return;
+    }
+
+    sparkles_mousemove ();
+});
+
+// Register the effects.
+_e['sparkles_on'] = sparkles_on;
+_e['sparkles_off'] = sparkles_off;
+</code></pre>
+
+<p>Now you should be able to see the circles bouncing around whenever they
+hit the walls or your mouse. Note the two use of three new methods again here:</p>
+
+<ul>
+	<li><code>cacophony.mousex</code></li>
+	<li><code>cacophony.mousey</code></li>
+	<li><code>cacophony.dist(x1, y1, x2, y2)</code></li>
+</ul>
+
+<p>There are a few more changes to the final sparkles effect, so take a look at
+that script to look for those, but this is enough to show you how to create a
+basic effect.</p>
 
 <hr />
 
