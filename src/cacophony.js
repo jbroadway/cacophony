@@ -201,9 +201,10 @@ var cacophony = (function ($) {
 	// * `b` is the beat number
 	// * `e` is an array of 256 numeric values
 	//
-	// I originally used the [SoundManager 2](http://www.schillmania.com/projects/soundmanager2/) API to retrieve this data
-	// from Flash, then reduced it to only the data for each down
-	// beat, since Flash provided way more data than I needed or was
+	// You can generate EQ data for your song with the utils/eqdata tool, which
+	// uses the [SoundManager 2](http://www.schillmania.com/projects/soundmanager2/) API to retrieve the EQ data
+	// from Flash, then reduces it to only the data for each down
+	// beat, since Flash provided way more data than we need or was
 	// feasible to include in a Javascript file.
 	c.eq_data = [];
 

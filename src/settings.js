@@ -42,9 +42,10 @@ cacophony.preloadData (
 // * `b` is the beat number
 // * `e` is an array of 256 numeric values
 //
-// I originally used the [SoundManager 2](http://www.schillmania.com/projects/soundmanager2/) API to retrieve the EQ data
-// from Flash, then reduced it to only the data for each down
-// beat, since Flash provided way more data than I needed or was
+// You can generate EQ data for your song with the utils/eqdata tool, which
+// uses the [SoundManager 2](http://www.schillmania.com/projects/soundmanager2/) API to retrieve the EQ data
+// from Flash, then reduces it to only the data for each down
+// beat, since Flash provided way more data than we need or was
 // feasible to include in a Javascript file.
 cacophony.eq_data = [
 	{b:0,e:[0.718,0.618,0.844,0,0.454,0.68,0.731,0.204,0,0.571,0,0.296,0,0,0,0,0,0.022,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},

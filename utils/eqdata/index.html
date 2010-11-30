@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>EQ Data Exporter</title>
+<script type="text/javascript">
+
+var SM2_DEFER = true;
+
+var bpm = 120,
+	beat = 0,
+	beat_length = 0.5,
+	eq_data,
+	msg,
+	song
+	finished = false;
+
+function on_submit (f) {
+	bpm = f.elements.bpm.value;
+	beat_length = (60 / bpm) * 1000;
+	eq_data = f.elements.eq_data;
+	eq_data.value = "cacophony.eq_data = [\n";
+	msg = document.getElementById ('msg');
+	msg.innerHTML = 'Please wait while your audio plays through before copying the EQ data.';
+	msg.style.display = 'block';
+	f.sub.disabled = true;
+
+	soundManager = new SoundManager ('soundmanager2_flash9.swf');
+	soundManager.flashVersion = 9;
+	soundManager.useFlashBlock = false;
+	soundManager.useHTML5Audio = false;
+	soundManager.debugMode = false;
+	soundManager.useHighPerformance = true;
+	soundManager.wmode = 'transparent';
+	soundManager.useFastPolling = true;
+	soundManager.usePeakData = true;
+	soundManager.useWaveformData = true;
+	soundManager.useEQData = true;
+	soundManager.allowPolling = true;
+	soundManager.allowScriptAccess = 'always';
+	try {
+		soundManager.onready (function () {
+			song = soundManager.createSound ({
+				id: 'song',
+				url: f.url.value,
+				autoLoad: true,
+				autoPlay: true,
+				usePeakData: true,
+				useWaveformData: true,
+				useEQData: true,
+				volume: 50,
+				whileplaying: function () {
+					if ((beat * beat_length) > this.position) {
+						return;
+					}
+					eq_data.value += "\t{b:" + beat + ',e:[' + this.eqData.left.join(',') + "]},\n";
+					beat++;
+				},
+				onfinish: function () {
+					if (! finished) {
+						eq_data.value = eq_data.value.substring (0, eq_data.value.length - 2) + "\n];";
+						msg.innerHTML = 'Song has finished, please copy the EQ data below into your settings.js file.';
+						msg.style.color = '#b40';
+						finished = true;
+					}
+				},
+				ondataerror: function () {
+					//console.log ('Unable to access computeSpectrum() data.');
+				}
+			});
+		});
+	} catch (ex) {
+		//console.log (ex);
+	}
+	return false;
+}
+
+</script>
+<script type="text/javascript" src="soundmanager2-nodebug-jsmin.js"></script>
+</head>
+<body>
+<h1>EQ Data Exporter</h1>
+<p>Please upload this folder to your server and run the following form
+to generate your EQ data. When it has finished, copy and paste the EQ
+data from here into your settings.js file.</p>
+<hr />
+<form onsubmit="return on_submit (this)">
+<p>URL: <input type="text" size="40" name="url" value="../../examples/video/demo.mp4" /></p>
+<p>BPM: <input type="text" size="5" name="bpm" value="184" />
+<input type="submit" name="sub" value="Go" /></p>
+<p id="msg" style="display: none; color: #00b; font-weight: bold"></p>
+<hr />
+<p>EQ Data:<br />
+<textarea name="eq_data" id="eq_data" cols="80" rows="16"></textarea></p>
+</form>
+</body>
+</html>

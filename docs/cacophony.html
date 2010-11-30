@@ -162,9 +162,10 @@ They are simply references to functions. To add new ones, use:</p>
 <li><code>e</code> is an array of 256 numeric values</li>
 </ul>
 
-<p>I originally used the <a href="http://www.schillmania.com/projects/soundmanager2/">SoundManager 2</a> API to retrieve this data
-from Flash, then reduced it to only the data for each down
-beat, since Flash provided way more data than I needed or was
+<p>You can generate EQ data for your song with the utils/eqdata tool, which
+uses the <a href="http://www.schillmania.com/projects/soundmanager2/">SoundManager 2</a> API to retrieve the EQ data
+from Flash, then reduces it to only the data for each down
+beat, since Flash provided way more data than we need or was
 feasible to include in a Javascript file.</p>             </td>             <td class="code">               <div class="highlight"><pre>	<span class="nx">c</span><span class="p">.</span><span class="nx">eq_data</span> <span class="o">=</span> <span class="p">[];</span></pre></div>             </td>           </tr>                               <tr id="section-20">             <td class="docs">               <div class="octowrap">                 <a class="octothorpe" href="#section-20">#</a>               </div>               <p>A list of data available to effects, fetched prior to the video
 starting to play. Access data from individual feeds via:</p>
 
