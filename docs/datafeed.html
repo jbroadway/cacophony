@@ -10,7 +10,12 @@ file.</p>             </td>             <td class="code">               <div cla
 	<span class="nx">datafeed_slideshow_limit</span> <span class="o">=</span> <span class="kc">false</span><span class="p">,</span>
 	<span class="nx">datafeed_slideshow_cur</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
 	<span class="nx">datafeed_slideshow_images</span> <span class="o">=</span> <span class="p">[],</span>
-	<span class="nx">datafeed_slideshow_img</span><span class="p">;</span></pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="octowrap">                 <a class="octothorpe" href="#section-2">#</a>               </div>               <p>Display a slideshow based on a specified RSS or ATOM feed.
+	<span class="nx">datafeed_slideshow_img</span><span class="p">,</span>
+	<span class="nx">datafeed_headlines_items</span> <span class="o">=</span> <span class="p">[],</span>
+	<span class="nx">datafeed_headlines_cur</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+	<span class="nx">datafeed_headlines_duration</span> <span class="o">=</span> <span class="mi">4</span><span class="p">,</span>
+	<span class="nx">datafeed_headlines_limit</span> <span class="o">=</span> <span class="kc">false</span><span class="p">,</span>
+	<span class="nx">datafeed_headlines_last_y</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span></pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="octowrap">                 <a class="octothorpe" href="#section-2">#</a>               </div>               <p>Display a slideshow based on a specified RSS or ATOM feed.
 TODO: Ken Burns effect, fade between</p>
 
 <p>Usage:</p>
@@ -54,9 +59,49 @@ TODO: Ken Burns effect, fade between</p>
 
 <p>Usage:</p>
 
-<pre><code>{a:'datafeed_headlines', d:{url: '/example.rss'}}
+<pre><code>{a:'datafeed_headlines', d:{
+    url: '/example.rss',
+    duration: 4,
+    limit: 10
+}}
 </code></pre>             </td>             <td class="code">               <div class="highlight"><pre><span class="kd">function</span> <span class="nx">datafeed_headlines</span> <span class="p">(</span><span class="nx">data</span><span class="p">)</span> <span class="p">{</span>
-	<span class="kd">var</span> <span class="nx">feed</span> <span class="o">=</span> <span class="nx">cacophony</span><span class="p">.</span><span class="nx">datafeed</span><span class="p">[</span><span class="nx">data</span><span class="p">.</span><span class="nx">url</span><span class="p">];</span>
+	<span class="k">if</span> <span class="p">(</span><span class="nx">data</span><span class="p">)</span> <span class="p">{</span>
+		<span class="kd">var</span> <span class="nx">feed</span> <span class="o">=</span> <span class="nx">cacophony</span><span class="p">.</span><span class="nx">datafeed</span><span class="p">[</span><span class="nx">data</span><span class="p">.</span><span class="nx">url</span><span class="p">];</span>
+		<span class="nx">datafeed_headlines_items</span> <span class="o">=</span> <span class="nx">feed</span><span class="p">.</span><span class="nx">childNodes</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">getElementsByTagName</span> <span class="p">(</span><span class="s1">&#39;item&#39;</span><span class="p">);</span>
+		<span class="nx">datafeed_headlines_cur</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+		<span class="nx">datafeed_headlines_duration</span> <span class="o">=</span> <span class="p">(</span><span class="nx">data</span><span class="p">.</span><span class="nx">duration</span><span class="p">)</span> <span class="o">?</span> <span class="nx">data</span><span class="p">.</span><span class="nx">duration</span> <span class="o">:</span> <span class="mi">4</span><span class="p">;</span>
+		<span class="nx">datafeed_headlines_limit</span> <span class="o">=</span> <span class="p">(</span><span class="nx">data</span><span class="p">.</span><span class="nx">limit</span><span class="p">)</span> <span class="o">?</span> <span class="nx">data</span><span class="p">.</span><span class="nx">limit</span> <span class="o">:</span> <span class="kc">false</span><span class="p">;</span>
+		<span class="nx">datafeed_headlines_last_y</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+		<span class="nx">datafeed_headlines_colour</span> <span class="o">=</span> <span class="p">(</span><span class="nx">data</span><span class="p">.</span><span class="nx">colour</span><span class="p">)</span> <span class="o">?</span> <span class="nx">data</span><span class="p">.</span><span class="nx">colour</span> <span class="o">:</span> <span class="s1">&#39;rgba(102, 102, 102, 1.0)&#39;</span><span class="p">;</span>
+	<span class="p">}</span>
+
+	<span class="k">if</span> <span class="p">(</span><span class="o">!</span> <span class="nx">cacophony</span><span class="p">.</span><span class="nx">playing</span><span class="p">)</span> <span class="p">{</span>
+		<span class="nx">setTimeout</span> <span class="p">(</span><span class="nx">datafeed_headlines</span><span class="p">,</span> <span class="nx">cacophony</span><span class="p">.</span><span class="nx">beatLength</span> <span class="p">()</span> <span class="o">*</span> <span class="nx">datafeed_headlines_duration</span><span class="p">);</span>
+		<span class="k">return</span><span class="p">;</span>
+	<span class="p">}</span>
+
+	<span class="k">if</span> <span class="p">(</span><span class="nx">datafeed_headlines_limit</span> <span class="o">&amp;&amp;</span> <span class="nx">datafeed_headlines_limit</span> <span class="o">&lt;=</span> <span class="nx">datafeed_headlines_cur</span><span class="p">)</span> <span class="p">{</span>
+		<span class="k">return</span><span class="p">;</span>
+	<span class="p">}</span>
+
+	<span class="k">if</span> <span class="p">(</span><span class="nx">datafeed_headlines_items</span><span class="p">[</span><span class="nx">datafeed_headlines_cur</span><span class="p">])</span> <span class="p">{</span>
+		<span class="kd">var</span> <span class="nx">txt</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="nx">datafeed_headlines_items</span><span class="p">[</span><span class="nx">datafeed_headlines_cur</span><span class="p">]).</span><span class="nx">find</span> <span class="p">(</span><span class="s1">&#39;title&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">].</span><span class="nx">textContent</span><span class="p">;</span>
+		<span class="k">if</span> <span class="p">(</span><span class="o">!</span> <span class="nx">datafeed_headlines_last_y</span> <span class="o">||</span> <span class="nx">datafeed_headlines_last_y</span> <span class="o">&gt;</span> <span class="p">(</span><span class="nx">cacophony</span><span class="p">.</span><span class="nx">height</span> <span class="o">/</span> <span class="mi">2</span><span class="p">))</span> <span class="p">{</span>
+			<span class="nx">datafeed_headlines_last_y</span> <span class="o">=</span> <span class="mi">5</span> <span class="o">+</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">round</span> <span class="p">(</span><span class="nb">Math</span><span class="p">.</span><span class="nx">random</span> <span class="p">()</span> <span class="o">*</span> <span class="p">((</span><span class="nx">cacophony</span><span class="p">.</span><span class="nx">height</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span> <span class="o">-</span> <span class="mi">5</span><span class="p">));</span>
+		<span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+			<span class="nx">datafeed_headlines_last_y</span> <span class="o">=</span> <span class="p">(</span><span class="nx">cacophony</span><span class="p">.</span><span class="nx">height</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">round</span> <span class="p">(</span><span class="nb">Math</span><span class="p">.</span><span class="nx">random</span> <span class="p">()</span> <span class="o">*</span> <span class="p">(</span><span class="nx">cacophony</span><span class="p">.</span><span class="nx">height</span> <span class="o">/</span> <span class="mi">2</span><span class="p">));</span>
+		<span class="p">}</span>
+		<span class="nx">lyrics</span> <span class="p">({</span>
+			<span class="nx">txt</span><span class="o">:</span> <span class="nx">txt</span><span class="p">,</span>
+			<span class="nx">x</span><span class="o">:</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">random</span> <span class="p">()</span> <span class="o">*</span> <span class="p">(</span><span class="nx">cacophony</span><span class="p">.</span><span class="nx">width</span> <span class="o">/</span> <span class="mi">4</span><span class="p">),</span>
+			<span class="nx">y</span><span class="o">:</span> <span class="nx">datafeed_headlines_last_y</span><span class="p">,</span>
+			<span class="nx">colour</span><span class="o">:</span> <span class="nx">datafeed_headlines_colour</span>
+		<span class="p">});</span>
+
+		<span class="nx">datafeed_headlines_cur</span><span class="o">++</span><span class="p">;</span>
+
+		<span class="nx">setTimeout</span> <span class="p">(</span><span class="nx">datafeed_headlines</span><span class="p">,</span> <span class="nx">cacophony</span><span class="p">.</span><span class="nx">beatLength</span> <span class="p">()</span> <span class="o">*</span> <span class="nx">datafeed_headlines_duration</span><span class="p">);</span>
+	<span class="p">}</span>
 <span class="p">}</span></pre></div>             </td>           </tr>                               <tr id="section-4">             <td class="docs">               <div class="octowrap">                 <a class="octothorpe" href="#section-4">#</a>               </div>               <p>Display a series of points on a map based on a JSON feed of the
 following form:</p>
 

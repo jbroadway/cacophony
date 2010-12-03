@@ -12,7 +12,12 @@ var datafeed_map_colours = ['#7E2D95', '#E65008', '#5b6c03', '#9d3e62', '#278699
 	datafeed_slideshow_limit = false,
 	datafeed_slideshow_cur = 0,
 	datafeed_slideshow_images = [],
-	datafeed_slideshow_img;
+	datafeed_slideshow_img,
+	datafeed_headlines_items = [],
+	datafeed_headlines_cur = 0,
+	datafeed_headlines_duration = 4,
+	datafeed_headlines_limit = false,
+	datafeed_headlines_last_y = false;
 
 // Display a slideshow based on a specified RSS or ATOM feed.
 // TODO: Ken Burns effect, fade between
@@ -60,9 +65,49 @@ function datafeed_slideshow (data) {
 //
 // Usage:
 //
-//     {a:'datafeed_headlines', d:{url: '/example.rss'}}
+//     {a:'datafeed_headlines', d:{
+//         url: '/example.rss',
+//         duration: 4,
+//         limit: 10
+//     }}
 function datafeed_headlines (data) {
-	var feed = cacophony.datafeed[data.url];
+	if (data) {
+		var feed = cacophony.datafeed[data.url];
+		datafeed_headlines_items = feed.childNodes[0].getElementsByTagName ('item');
+		datafeed_headlines_cur = 0;
+		datafeed_headlines_duration = (data.duration) ? data.duration : 4;
+		datafeed_headlines_limit = (data.limit) ? data.limit : false;
+		datafeed_headlines_last_y = false;
+		datafeed_headlines_colour = (data.colour) ? data.colour : 'rgba(102, 102, 102, 1.0)';
+	}
+
+	if (! cacophony.playing) {
+		setTimeout (datafeed_headlines, cacophony.beatLength () * datafeed_headlines_duration);
+		return;
+	}
+
+	if (datafeed_headlines_limit && datafeed_headlines_limit <= datafeed_headlines_cur) {
+		return;
+	}
+
+	if (datafeed_headlines_items[datafeed_headlines_cur]) {
+		var txt = $(datafeed_headlines_items[datafeed_headlines_cur]).find ('title')[0].textContent;
+		if (! datafeed_headlines_last_y || datafeed_headlines_last_y > (cacophony.height / 2)) {
+			datafeed_headlines_last_y = 5 + Math.round (Math.random () * ((cacophony.height / 2) - 5));
+		} else {
+			datafeed_headlines_last_y = (cacophony.height / 2) + Math.round (Math.random () * (cacophony.height / 2));
+		}
+		lyrics ({
+			txt: txt,
+			x: Math.random () * (cacophony.width / 4),
+			y: datafeed_headlines_last_y,
+			colour: datafeed_headlines_colour
+		});
+
+		datafeed_headlines_cur++;
+
+		setTimeout (datafeed_headlines, cacophony.beatLength () * datafeed_headlines_duration);
+	}
 }
 
 // Display a series of points on a map based on a JSON feed of the
