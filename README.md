@@ -105,6 +105,7 @@ in various ways.
   * [Input](http://www.cacophonyjs.com/docs/input.html)
   * [Lyrics](http://www.cacophonyjs.com/docs/lyrics.html)
   * [Ribbon](http://www.cacophonyjs.com/docs/ribbon.html)
+  * [Slideshow](http://www.cacophonyjs.com/docs/slideshow.html)
   * [Sparkles](http://www.cacophonyjs.com/docs/sparkles.html)
   * [Skyline](http://www.cacophonyjs.com/docs/skyline.html)
   * [Three](http://www.cacophonyjs.com/docs/three.html)

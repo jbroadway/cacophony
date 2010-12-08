@@ -8,109 +8,11 @@
 // file.
 
 var datafeed_map_colours = ['#7E2D95', '#E65008', '#5b6c03', '#9d3e62', '#278699', '#cc0101', '#ffd800'],
-	datafeed_slideshow_duration = 4,
-	datafeed_slideshow_limit = false,
-	datafeed_slideshow_cur = 0,
-	datafeed_slideshow_n = 0,
-	datafeed_slideshow_images = [],
-	datafeed_slideshow_front_img,
-	datafeed_slideshow_back_img,
-	datafeed_slideshow_front_burns,
-	datafeed_slideshow_back_burns,
 	datafeed_headlines_items = [],
 	datafeed_headlines_cur = 0,
 	datafeed_headlines_duration = 4,
 	datafeed_headlines_limit = false,
 	datafeed_headlines_last_y = false;
-
-// Make the calculations for performing the Ken Burns effect on an image
-// in the slideshow. Based on the Ken Burns implementation at
-// [Adventures in Software](http://adventuresinsoftware.com/blog/?p=209).
-function datafeed_slideshow_burns (proportion) {
-	proportion = (isNaN (proportion)) ? 1.5 : proportion;
-	var burns = {
-		_x0: 0,
-		_x1: 0,
-		_y0: 0,
-		_y1: 0,
-		_w0: 0,
-		_w1: 0,
-		_h0: 0,
-		_h1: 0,
-		apply: function (img, time) {
-			time *= .02;
-			img.x = (this._x0 - this._x1) * time - this._x0;
-			img.y = (this._y0 - this._y1) * time - this._y0;
-			img.dWidth = (this._w1 - this._w0) * time + this._w0;
-			img.dHeight = (this._h1 - this._h0) * time + this._h0;
-		}
-	};
-
-	// Choose rectangles based on more constrained dimension.
-	if (proportion < cacophony.width / cacophony.height) {
-		burns._w0 = cacophony.width * (1 + (.25 * Math.random ()));
-		burns._w1 = cacophony.width * (1 + (.25 * Math.random ()));
-		burns._h0 = burns._w0 / proportion;
-		burns._h1 = burns._w1 / proportion;
-	} else {
-		burns._h0 = cacophony.height * (1 + (.25 * Math.random ()));
-		burns._h1 = cacophony.height * (1 + (.25 * Math.random ()));
-		burns._w0 = burns._h0 * proportion;
-		burns._w1 = burns._h1 * proportion;
-	}
-
-	// Calculate the translation to keep image within window.
-	burns._x0 = (burns._w0 - cacophony.width) * Math.random ();
-	burns._x1 = (burns._w1 - cacophony.width) * Math.random ();
-	burns._y0 = (burns._h0 - cacophony.height) * Math.random ();
-	burns._y1 = (burns._h1 - cacophony.height) * Math.random ();
-
-	return burns;
-}
-
-// Used by `datafeed_slideshow()` to perform the timeout work.
-function datafeed_slideshow_step () {
-	if (! cacophony.playing) {
-		setTimeout (datafeed_slideshow_step, (cacophony.beatLength () * datafeed_slideshow_duration) / 25);
-		return;
-	}
-
-	datafeed_slideshow_n++;
-
-	if (datafeed_slideshow_n == 20) {
-		datafeed_slideshow_cur++;
-
-		if (datafeed_slideshow_images[datafeed_slideshow_cur]) {
-			datafeed_slideshow_front_img = new ImageNode (datafeed_slideshow_images[datafeed_slideshow_cur]);
-			datafeed_slideshow_front_burns = datafeed_slideshow_burns (datafeed_slideshow_front_img.width / datafeed_slideshow_front_img.height);
-			datafeed_slideshow_front_img.opacity = 0;
-			datafeed_slideshow_front_burns.apply (datafeed_slideshow_front_img, -5);
-			cacophony.canvas.append (datafeed_slideshow_front_img);
-		}
-	} else if (datafeed_slideshow_n == 25) {
-		cacophony.canvas.remove (datafeed_slideshow_back_img);
-		datafeed_slideshow_back_img = datafeed_slideshow_front_img;
-		datafeed_slideshow_back_burns = datafeed_slideshow_front_burns;
-		if (datafeed_slideshow_back_img) {
-			datafeed_slideshow_back_img.opacity = 1;
-		}
-		datafeed_slideshow_front_img = null;
-		datafeed_slideshow_front_burns = null;
-		datafeed_slideshow_n = 0;
-	} else if (datafeed_slideshow_n > 20) {
-		if (datafeed_slideshow_front_img) {
-			datafeed_slideshow_front_img.opacity += .2;
-			datafeed_slideshow_front_burns.apply (datafeed_slideshow_front_img, datafeed_slideshow_n - 25);
-		}
-		datafeed_slideshow_back_img.opacity -= .2;
-	}
-
-	if (datafeed_slideshow_back_img) {
-		datafeed_slideshow_back_burns.apply (datafeed_slideshow_back_img, datafeed_slideshow_n);
-
-		setTimeout (datafeed_slideshow_step, (cacophony.beatLength () * datafeed_slideshow_duration) / 25);
-	}
-}
 
 // Display a slideshow based on a specified RSS or ATOM feed.
 //
@@ -119,32 +21,21 @@ function datafeed_slideshow_step () {
 //     {a:'datafeed_slideshow', d:{
 //         url: '/example.rss',
 //         duration: 8,
-//         limit: 10
+//         limit: 10,
+//         effect: 'burns'
 //     }}
 function datafeed_slideshow (data) {
-	if (data) {
-		var feed = cacophony.datafeed[data.url];
-		var images = feed.childNodes[0].getElementsByTagName ('content');
-		datafeed_slideshow_cur = 0;
-		datafeed_slideshow_limit = (data.limit) ? data.limit : false;
-		datafeed_slideshow_duration = (data.duration) ? data.duration : 4;
-		datafeed_slideshow_images = [];
-		for (var i = 0; i < images.length; i++) {
-			if (datafeed_slideshow_limit && i == datafeed_slideshow_limit) {
-				break;
-			}
-			datafeed_slideshow_images[i] = _i[images[i].getAttribute ('url')];
+	var feed = cacophony.datafeed[data.url];
+	var images = feed.childNodes[0].getElementsByTagName ('content');
+	data.images = [];
+	for (var i = 0; i < images.length; i++) {
+		if (data.limit && i == data.limit) {
+			break;
 		}
+		data.images[i] = images[i].getAttribute ('url');
 	}
 
-	datafeed_slideshow_n = 0;
-	datafeed_slideshow_back_img = new ImageNode (datafeed_slideshow_images[0]);
-	datafeed_slideshow_back_burns = datafeed_slideshow_burns (datafeed_slideshow_back_img.width / datafeed_slideshow_back_img.height);
-	datafeed_slideshow_back_img.opacity = 1;
-	datafeed_slideshow_back_burns.apply (datafeed_slideshow_back_img, datafeed_slideshow_n);
-	cacophony.canvas.append (datafeed_slideshow_back_img);
-
-	datafeed_slideshow_step ();
+	slideshow (data);
 }
 
 // Display a series of headlines based on a specified RSS or ATOM feed.

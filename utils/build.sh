@@ -21,6 +21,7 @@ cat ../src/lib/cake.min.js \
 	../src/effects/ribbon.js \
 	../src/effects/lyrics.js \
 	../src/effects/input.js \
+	../src/effects/slideshow.js \
 	../src/effects/datafeed.js \
 	../src/effects/flicker.js \
 	../src/effects/volume.js \
