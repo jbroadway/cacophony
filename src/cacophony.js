@@ -103,7 +103,7 @@ var cacophony = (function ($) {
 		mousemove = [],
 		codecs = {
 			mp4: "video/mp4; codecs='avc1.42E01E, mp4a.40.2'",
-			webm: "video/webm; codecs='vp8, vorbis'",
+			webm: "video/webm",
 			ogv: "video/ogg"
 		};
 
@@ -585,7 +585,10 @@ var cacophony = (function ($) {
 	// to do this after the effects of the current beat are finished.
 	c.jumpTo = function (b) {
 		if (! play) {
+			song.currentTime = song.currentTime + ((b - beat) * beat_length);
+			beat = Math.ceil (b);
 			c.play ();
+			return;
 		}
 		new_beat = b;
 		new_time = false;
