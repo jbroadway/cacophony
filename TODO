@@ -2,6 +2,7 @@ Core
 * Embeddable version with iframe
 * Use JSONP for remote data fetching
 * Keep or replace cake.js with something maintained?
+  * http://ocanvas.org/
   * http://easeljs.com/
   * https://github.com/ysimonson/canvas.js
   * https://github.com/biilly/doodle-js
